@@ -1,0 +1,65 @@
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
+# =============================================================================
+# Large Binary Artifacts (Models & Data)
+# =============================================================================
+# Trained model weights (6.6GB) — download/retrain via Colab notebooks
+models/biomedbert_phenotype_ner/
+models/biobert_phenotype_ner/
+
+# Processed data, embeddings, vector indices (~466MB)
+data/embeddings/
+data/vector_db/
+data/raw/
+data/processed/
+
+# Temporary trainer checkpoints
+tmp_trainer/
+
+# =============================================================================
+# Frontend
+# =============================================================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# =============================================================================
+# IDE / System
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =============================================================================
+# Misc
+# =============================================================================
+*.zip
+*.tar.gz
+*.log
+step595_raw.txt
+landing.html
+temp_phase2_extract/
+sample_data/
+.config/

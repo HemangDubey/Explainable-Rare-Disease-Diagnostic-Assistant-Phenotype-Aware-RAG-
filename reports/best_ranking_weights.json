@@ -1,0 +1,9 @@
+{
+  "hpo_weight": 0.3,
+  "retrieval_weight": 0.2,
+  "population_weight": 0.05,
+  "Recall@1": 0.0,
+  "Recall@5": 0.0,
+  "Recall@10": 0.0,
+  "MRR": 0.0
+}

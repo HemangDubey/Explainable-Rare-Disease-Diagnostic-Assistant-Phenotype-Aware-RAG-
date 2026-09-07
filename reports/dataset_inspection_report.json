@@ -1,0 +1,90 @@
+{
+  "train_stats": {
+    "name": "Train",
+    "total_rows": 2767,
+    "unique_observations": 1716,
+    "total_annotations": 2562,
+    "unique_hpo_ids": 706,
+    "positive_annotations": 2233,
+    "negated_annotations": 329,
+    "decoy_or_na_rows": 205,
+    "continuous_spans": 2193,
+    "discontinuous_spans": 369
+  },
+  "dev_stats": {
+    "name": "Dev",
+    "total_rows": 734,
+    "unique_observations": 454,
+    "total_annotations": 685,
+    "unique_hpo_ids": 358,
+    "positive_annotations": 607,
+    "negated_annotations": 78,
+    "decoy_or_na_rows": 49,
+    "continuous_spans": 589,
+    "discontinuous_spans": 96
+  },
+  "overall_stats": {
+    "name": "Overall",
+    "total_rows": 3501,
+    "unique_observations": 2170,
+    "total_annotations": 3247,
+    "unique_hpo_ids": 784,
+    "positive_annotations": 2840,
+    "negated_annotations": 407,
+    "decoy_or_na_rows": 254,
+    "continuous_spans": 2782,
+    "discontinuous_spans": 465
+  },
+  "samples": [
+    {
+      "StringID": "00036926c134c09473e20a0402dc8f8f",
+      "Text": "MOUTH: High arched palate, superior lingular frenulum attaches low on gumline",
+      "HPO_Term": "HP:0000218",
+      "Negated": NaN,
+      "Spans": "7-25",
+      "Extracted_Substrings": [
+        "High arched palate"
+      ]
+    },
+    {
+      "StringID": "00114dff734efb2f12b08b4ba6a56871",
+      "Text": "EXTREMITIES: Thin with little subcutaneous fat and scant muscle mass.",
+      "HPO_Term": "HP:0003758",
+      "Negated": NaN,
+      "Spans": "23-46",
+      "Extracted_Substrings": [
+        "little subcutaneous fat"
+      ]
+    },
+    {
+      "StringID": "002dbc6dbf5a264d4449d49bec0a2415",
+      "Text": "HANDS FEET: Generous gapt between toes 1 and 2, toe 4 overlaps toe 5",
+      "HPO_Term": "HP:0001852",
+      "Negated": NaN,
+      "Spans": "21-46",
+      "Extracted_Substrings": [
+        "gapt between toes 1 and 2"
+      ]
+    },
+    {
+      "StringID": "002dbc6dbf5a264d4449d49bec0a2415",
+      "Text": "HANDS FEET: Generous gapt between toes 1 and 2, toe 4 overlaps toe 5",
+      "HPO_Term": "HP:0001845",
+      "Negated": NaN,
+      "Spans": "48-68",
+      "Extracted_Substrings": [
+        "toe 4 overlaps toe 5"
+      ]
+    },
+    {
+      "StringID": "0030732b175e8d79cb73dd2bb2da492a",
+      "Text": "MOUTH: thin upper lip and  normal teeth and palate, single uvula, papillomas on the tongue, prognathism",
+      "HPO_Term": "HP:0000219",
+      "Negated": NaN,
+      "Spans": "7-21",
+      "Extracted_Substrings": [
+        "thin upper lip"
+      ]
+    }
+  ]
+}

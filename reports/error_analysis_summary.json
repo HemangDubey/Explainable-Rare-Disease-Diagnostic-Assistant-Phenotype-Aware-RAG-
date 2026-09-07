@@ -1,0 +1,10 @@
+{
+  "total_test_examples": 227,
+  "total_error_examples": 85,
+  "error_counts": {
+    "missed_phenotype": 29,
+    "false_positive": 30,
+    "boundary_error": 71,
+    "multiple_phenotypes": 58
+  }
+}

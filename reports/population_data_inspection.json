@@ -1,0 +1,55 @@
+{
+  "indigen": {
+    "file_name": "indigen_variants_raw.csv",
+    "columns_found": [
+      "Variant_ID",
+      "Chromosome",
+      "Position",
+      "Ref_Allele",
+      "Alt_Allele",
+      "Gene_Symbol",
+      "IndiGen_AF",
+      "IndiGen_AC",
+      "IndiGen_AN",
+      "Population"
+    ],
+    "mapped_fields": {
+      "variant_id": "Variant_ID",
+      "chromosome": "Chromosome",
+      "position": "Position",
+      "ref": "Ref_Allele",
+      "alt": "Alt_Allele",
+      "gene": "Gene_Symbol",
+      "allele_frequency": "IndiGen_AF",
+      "allele_count": "IndiGen_AC",
+      "allele_number": "IndiGen_AN",
+      "population": "IND"
+    }
+  },
+  "gnomad": {
+    "file_name": "gnomad_variants_raw.csv",
+    "columns_found": [
+      "rsid",
+      "chrom",
+      "pos",
+      "ref",
+      "alt",
+      "gene_name",
+      "AF_global",
+      "AF_sas",
+      "AC_global",
+      "AN_global",
+      "source_db"
+    ],
+    "mapped_fields": {
+      "variant_id": "rsid",
+      "chromosome": "chrom",
+      "position": "pos",
+      "ref": "ref",
+      "alt": "alt",
+      "gene": "gene_name",
+      "global_af": "AF_global",
+      "south_asian_af": "AF_sas"
+    }
+  }
+}

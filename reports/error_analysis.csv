@@ -1,0 +1,86 @@
+text,true_phenotype,predicted_phenotype,error_type
+EYES: Bluish hue to sclerae.,bl uish hu e to scler ae,bl uish hu e,boundary_error
+NAILS HAIR SKIN: normal nails. Hypertrichosis of shoulders and temporal region,normal nail s | hypert rich osis | temporal region,normal nail s | hypert rich osis,"missed_phenotype, multiple_phenotypes"
+SPINE: a little more fullness on right mid-back,[NONE],full ness,false_positive
+EARS: Large appearing and posteriorly rotated but not lowset. Left ear with cupped appearance. Posterior ear creases bilaterally.,ears | large appearing | posteriorly rotated | ear with cup ped appearance | posterior ear cre ases,ears | large appearing | posteriorly rotated | low set | ear | cup ped | posterior ear cre ases,"boundary_error, multiple_phenotypes, false_positive"
+HANDS FEET: Mild clinodactyly on left hand.,clin oda ct yly on left hand,clin oda ct yly,boundary_error
+HANDS FEET: 3rd toes medially displaced bilaterally,[NONE],3rd toe s medial ly displaced,false_positive
+NOSE: normal bridge,nose | normal bridge,normal bridge,"missed_phenotype, multiple_phenotypes"
+HANDS FEET: L clinodactyly; unable to examine R hand,l clin oda ct yly | hand,clin oda ct yly,"boundary_error, missed_phenotype, multiple_phenotypes"
+"NOSE: normal nasal bridge, broad tip",nose | normal nasal bridge | broad tip,normal nasal bridge | broad tip,"missed_phenotype, multiple_phenotypes"
+CHEST: Well-healed sternotomy scar.,scar,stern | scar,false_positive
+MOUTH: Prefers to hold mouth open. Prominent lower lip.,mouth open | prominent lower lip,to hold mouth open | prominent lower lip,"boundary_error, multiple_phenotypes"
+GENERAL APPEARANCE: Patient in mild respiratory distress with audible stridor when placed in supine position. Makes eye contact with examiner and tracks.,[NONE],respiratory distress | str ido r,false_positive
+"HANDS FEET: Right hand: scarring between 3 and 4; Left hand: scarring between 2 and 3. 2,3 syndactyly bilaterally in feet. Top of right foot feels fuller than left.","scarring | scarring | 2 , 3 synd actyl y bilaterally in feet | top of right foot feel s fuller","scarring | scarring | 2 , 3 synd actyl y","boundary_error, missed_phenotype, multiple_phenotypes"
+EXTREMITIES: leg length discrepancy (right shorter than left),leg length discrepancy,leg length discrepancy | shorter,false_positive
+"MOUTH: microstomia with high, narrow palate """"""""""""""""""""""""""""""""V"""""""""""""""""""""""""""""""" shaped","micros to mia | high , narrow palate",micros to mia | narrow palate,"boundary_error, multiple_phenotypes"
+NEUROLOGIC: Hypertonia with contractures of the bilateral ankles. No clonus could be elicited. DTRs otherwise 2+. No dysmetria on finger to nose.,hypert onia | contract ures of the bilateral ankle s | no clon us | no dysm etr ia,hypert onia | contract ures of the bilateral ankle s | no clon us could be elicited | dt rs | no dysm etr ia on finger to nose,"boundary_error, multiple_phenotypes, false_positive"
+HEAD: Mild scaphocephaly and relative macrocephaly,scap ho cephaly | relative macroc ep hal y,scap ho cephaly | macroc ep hal y,"boundary_error, multiple_phenotypes"
+"EARS: posteriorly rotated, thickened helices",ears | posteriorly rotated | thickened helices,posteriorly rotated | thickened helices,"missed_phenotype, multiple_phenotypes"
+MOUTH: Right upper front tooth deviated posteriorly.,front tooth devi ated posteriorly,upper front tooth devi ated posteriorly,boundary_error
+"EARS: Right ear with two, fleshy preauricular tags, one associated with the tragus.",pre au ric ular tags,sh y | pre au ric ular tags,false_positive
+ABDOMEN: +umbilical hernia,+ umbilical hernia,umbilical hernia,boundary_error
+"HANDS FEET: Left 1-2 incomplete syndactyly, 2nd finger clinodactyly, decreased in length and bulk of the left arm, Normal variant toe syndactyly 2-3-4 bilaterally",synd actyl y | 2nd finger clin oda ct yly | decreased in length and bulk of the left arm | toe synd actyl y 2 - 3 - 4 bilaterally,1 - 2 incomplete synd actyl y | 2nd finger clin oda ct yly | normal variant toe synd actyl y,"boundary_error, missed_phenotype, multiple_phenotypes"
+HEAD: Large vein on R forehead,large vein on | fore head,large | vein,"boundary_error, missed_phenotype, multiple_phenotypes"
+"ABDOMEN: Slight R>L Abdominal wall, small umbilical hernia",abdominal wall | umbilical | hernia,abdominal wall | umbilical hernia,"boundary_error, multiple_phenotypes"
+EARS: overfolded and squared off L ear; redundant auricular cartilage and Stahl deformity R ear,over folded | squared off | ear | redundant aur icular cartilage | sta hl | ear,over folded | squared off | ear | redundant aur icular cartilage | sta hl deformity,"boundary_error, multiple_phenotypes"
+GENITALIA: minimal pubic hair.,[NONE],minimal pub ic hair,false_positive
+MOUTH: Fewer adult teeth than expected with wide spacing and some pointing of incisors. See photo in electronic health record.,fewer adult | teeth than expected | with wide spacing | pointing of incisors,fewer adult teeth | wide spacing | pointing of incisors,"boundary_error, missed_phenotype, multiple_phenotypes"
+"EXTREMITIES: Bilateral talipes equinovarus, left is irreducible, right is postural and reducible",bilateral tal ipes equ ino var us,tal ipes equ ino var us,boundary_error
+NEUROLOGIC: + head lag,[NONE],head lag,false_positive
+NAILS HAIR SKIN: Nevus flammeus on back of neck and forehead.,nev us fl amm eu s on back of neck | fore head,nev us fl amm eu s,"boundary_error, missed_phenotype, multiple_phenotypes"
+"EXTREMITIES: More skin creases over right thigh compared to left, leg asymmetry",leg asymmetry,more skin cre ases | leg asymmetry,false_positive
+HANDS FEET: positive stemmer sign on the right with scar on foot; texture of skin on the right foot feels thickened; negative stemmer sign on the left,positive stem mer sign | scar | skin on the right foot feel s thickened,positive stem mer sign | negative stem mer sign,"missed_phenotype, multiple_phenotypes, false_positive"
+"SPINE: shallow sacral dimple, base visible, no scolisosis",sacral dim ple | no sc olis osis,shallow | sacral dim ple | no sc olis osis,"multiple_phenotypes, false_positive"
+EYES: Normal brows and lids. Epicanthus.,normal brow s | lid s | epic anth us,normal brow s | lid | epic anth us,"boundary_error, multiple_phenotypes"
+"EARS: Left ear with crumpled, thin helix.",ear with cr ump led | thin | helix,ear | cr ump led | thin helix,"boundary_error, multiple_phenotypes"
+NOSE: short nose with full nasal tip,short | nose with full nasal tip,short nose | full nasal tip,"boundary_error, multiple_phenotypes"
+ABDOMEN: Easily reducible umbilical hernia coming through 1.5cm abdominal wall defect.,umbilical hernia | abdominal wall defect,umbilical hernia,"missed_phenotype, multiple_phenotypes"
+HEAD: frontal bossing more prominent on R side - mild positional plagiocephaly on R,frontal bos sin g | pla gi oc ep hal y,frontal bos sin g | positional pla gi oc ep hal y,"boundary_error, multiple_phenotypes"
+HANDS FEET: Mild sandal gap deformity bilaterally. Metatarsus adductus bilaterally. Right hand with two palmar creases. Left hand covered by peripheral IV line.,sand al gap | metatars us adduct us,sand al gap deformity | metatars us adduct us | palm ar cre ases,"boundary_error, multiple_phenotypes, false_positive"
+HEAD: Normal size with normal hairline. Has prominent occiput. Head circumference is 35cm,head | normal size | normal hair line | prominent occ ip ut,normal size | normal hair line | prominent occ ip ut,"missed_phenotype, multiple_phenotypes"
+HANDS FEET: Bilateral 5th finger clinodactyly. Fetal finger pads.,5th finger clin oda ct yly | fetal finger pads .,5th finger clin oda ct yly | fetal finger pads,"boundary_error, multiple_phenotypes"
+HEAD: turribrachycephaly with frontal bossing; HC <1% for age,tur ri bra ch yc ep hal y | frontal bos sin g | hc < 1 % for age,tur ri bra ch yc ep hal y | frontal bos sin g,"missed_phenotype, multiple_phenotypes"
+"SPINE: Mild scoliosis with Y-shaped gluteal cleft, shallow/well-defined base.",scoliosis,scoliosis | y - shaped | glut eal cleft | shallow,false_positive
+"EARS: Low-set, posteriorly rotated, and squared off ears bilaterally.","low - set , posteriorly rotated | squared off | ears","ears | low - set , posteriorly rotated , | squared off ears","boundary_error, multiple_phenotypes"
+ABDOMEN: Umbilical line in place. No hepatomegaly appreciated.,no hepat omegaly,umbilical | no hepat omegaly,false_positive
+ABDOMEN: Significant abdominal distension appreciated. Normal appearing umbilicus.,abdominal distension | normal appearing umb ilic us,abdominal distension | us,"boundary_error, multiple_phenotypes"
+"EYES: Arched eyebrows, mild up-slant, long eyelash",eyes | arch ed eye bro ws | up - sla nt | long eyel ash,arch ed eye bro ws | up - sla nt | long eyel ash,"missed_phenotype, multiple_phenotypes"
+FACE: Round face shape with prominent cheeks and sloping forehead.,round face | prominent che ek s | slo ping fore head,round face shape | prominent che ek s | slo ping fore head,"boundary_error, multiple_phenotypes"
+EARS: Fleshy ear lobes bilaterally. Squared off left ear helix.,fle sh y ear lobes | squared off left ear helix,fle sh y ear lobes | squared off left | ear helix,"boundary_error, multiple_phenotypes"
+"HANDS FEET: Broad fingertips. Mild 5th digit clinodactyly b/l. Left middle finger 4.5cm (25%ile), palm 7cm (50%ile). Right middle finger 5cm (50%ile), palm 7cm (50%ile).",broad finger tip s | clin oda ct yly,broad finger tip s | 5th digit clin oda ct yly,"boundary_error, multiple_phenotypes"
+"EXTREMITIES: Clear LUE deformity with ulnar hypoplasia, Abnormal rotational movements, three fingers of L hand. Appears to be L digits 1,2,3",ulnar hypoplasia,lu e deformity | ulnar hypoplasia | abnormal rotational movements | fingers,false_positive
+"FACE: Progeria-like face with small chin, inverted triangular shape",pro ger ia - like face | small chin | triangular shape,pro ger ia - like face | small chin | inverted triangular shape,"boundary_error, multiple_phenotypes"
+EARS: Slight squared off top helices,slight squared off top helices,squared off top helices,boundary_error
+GENITALIA: Scars from inguinal hernia repair.,scars | inguinal hernia,inguinal hernia,"missed_phenotype, multiple_phenotypes"
+"ABDOMEN: reducible umbilical hernia, GT in place with slight redness around sight",umbilical hernia | gt in place,umbilical hernia,"missed_phenotype, multiple_phenotypes"
+HANDS FEET: Contractures of 3rd and 4th digits with absent distal interphalangeal creases. Lateral deviation of bilateral toes,contract ures of 3rd | 4th | digits with | absent distal inter phal ange al cre ases | lateral deviation of bilateral toe s,contract ures of 3rd and 4th digits | absent distal inter phal ange al cre ases | lateral deviation of bilateral toe s,"boundary_error, missed_phenotype, multiple_phenotypes"
+EYES: narrow palpebral fissures; horizontal slant; right iris slightly lighter brown compared to left,narrow palp eb ral fis su res | right iris slightly lighter brown compared to left,narrow palp eb ral fis su res | lighter brown,"boundary_error, multiple_phenotypes"
+HANDS FEET: Normal hands/digits. Overlapping toes on right.,overlapping toe s,normal hands | digits | overlapping toe s,false_positive
+HEAD: Head circumference was measured to be 38.5cm at the bedside. Hypertrichosis on forehead.,hypert rich osis on fore head,hypert rich osis | fore head,boundary_error
+"HANDS FEET: Hands with two creases, mild clinodactyly bilaterally. Long appearing fingers. Feet with sandal gap bilaterally.",hands with two cre ases | clin oda ct yly | long appearing fingers | feet with sand al gap,hands with two cre ases | clin oda ct yly | long appearing fingers | feet | sand al gap,"boundary_error, multiple_phenotypes"
+FACE: full cheeks; midface obstructed by ETT,full che ek s,full che ek,boundary_error
+HANDS FEET: Bilateral mild 2/3 syndactyly,synd actyl y,2 / 3 synd actyl y,boundary_error
+EARS: Hypoplastic crumpled upper helices,hypop las tic | cr ump led | upper helices,hypop las tic cr ump led upper helices,"boundary_error, multiple_phenotypes"
+GENITALIA: right undescended testes. diaper rash with sattelite lesions,right undes ce nd ed testes | rash,undes ce nd ed testes | te,"boundary_error, missed_phenotype, multiple_phenotypes"
+MOUTH: thin upper lip with accentuated cupids bow with downturned corners of the mouth,thin upper lip | accent uated cup ids bow | down t urn ed corners of the mouth,thin upper lip | accent uated | cup ids bow | down t urn ed corners of the mouth,"boundary_error, multiple_phenotypes"
+EARS: Prominent and slightlyt cupped bilaterally.,ears | prominent | cup ped,ears | prominent | t cup ped,"boundary_error, multiple_phenotypes"
+"NOSE: broad tip, prominent",nose | broad tip | prominent,broad tip | prominent,"missed_phenotype, multiple_phenotypes"
+HANDS FEET: clubbing of the toe nails,club bing of the toe,club bing of the toe nail s,boundary_error
+"MOUTH: Widely separated, smaller sized teeth.",widely separated | smaller sized | teeth,widely separated | smaller sized teeth,"boundary_error, multiple_phenotypes"
+EYES: slight hooding of eyes bilaterally,hood ing of eyes bilaterally,hood ing of eyes,boundary_error
+SPINE: Asymmetry of the posterior superior ischial spines without scoliosis,asymmetry of the posterior superior isch ial spines | without scoliosis,asymmetry of the posterior superior isch ial spines | scoliosis,"boundary_error, multiple_phenotypes"
+EXTREMITIES: Shortened right forearm with wrist held in ulnar flexion.,shortened | right forearm | wrist held in ulnar | flexion,shortened right forearm | held in ulnar flexion,"boundary_error, missed_phenotype, multiple_phenotypes"
+"NAILS HAIR SKIN: brown raised plaques over glabella, right eyelid, down neck, over left chest shoulder and down left arm",skin | plaques,brown | plaques,"missed_phenotype, multiple_phenotypes, false_positive"
+"HANDS FEET: left 5th digit clinodactyly, right hand not examined due to IV and no-no with taping in place",5th digit clin oda ct yly | hand,5th digit clin oda ct yly,"missed_phenotype, multiple_phenotypes"
+EYES: Slight epicanthus likely consistent with ethnicity. Brows sparse.,eyes | epic anth us | brow s sparse,epic anth us | brow s sparse,"missed_phenotype, multiple_phenotypes"
+MOUTH: purplish red border at edge of lower lip; black and decay in teeth; underneath tongue is red; microcystic areas on tongue; back of throat red;,decay in teeth,purp lish red border | microc ystic areas | tongue | red,"missed_phenotype, false_positive"
+GENITALIA: Bilateral cryptorchidism. Small phallus.,bilateral crypt or chi dis m | small phall us,crypt or chi dis m | small phall us,"boundary_error, multiple_phenotypes"
+"NAILS HAIR SKIN: red blanchable patches on the left hand; pink blanchable patches on the left arm, left chest, left back",red bla nc ha ble patches | pink bla nc ha ble patches,[NONE],"missed_phenotype, multiple_phenotypes"
+HANDS FEET: fetal finger pads,fetal finger pads,fetal | finger pads,boundary_error
+"HEAD: Proportionate microcephaly, posterior plagiocephaly.",microc ep hal y | posterior pla gi oc ep hal y,proportion ate microc ep hal y | posterior pla gi oc ep hal y,"boundary_error, multiple_phenotypes"
+"SPINE: slight deviation of sacral crease, no scoliosis",slight deviation of sacral cre ase | no scoliosis,deviation of sacral cre ase | no scoliosis,"boundary_error, multiple_phenotypes"
+HEAD: Prominent forehead. ~3cm vertical abrasion over the forehead,prominent fore head,prominent fore head | abr asion over,false_positive
+EYES: Short and narrow palpebral fissures with telecanthus.,short | narrow | palp eb ral fis su res | tele can th us,short | narrow palp eb ral fis su res | tele can th us,"boundary_error, multiple_phenotypes"
+"HANDS FEET: hallux valgus, short 5th fingers with clinodactyly bilaterally, tapered fingers; short 5th toes",hall ux val gus | short | 5th fingers with clin oda ct yly | tapered fingers | short 5th toe s,hall ux val gus | short 5th fingers | clin oda ct yly | tapered fingers | short 5th toe s,"boundary_error, multiple_phenotypes"
+"HANDS FEET: Proximally placed right thumb, camptodactyly of right 2nd and 4th digits, dysplastic right fingertips. Left hand in IV board but the 5th digit appear somewhat short.",proximal ly placed right thumb | camp to da ct yly of right 2nd | 4th | digits | dysplastic right finger tip s | 5th digit appear somewhat short,proximal ly placed right thumb | camp to da ct yly of right 2nd and 4th digits | dysplastic right finger tip s | 5th digit appear | short,"boundary_error, multiple_phenotypes"

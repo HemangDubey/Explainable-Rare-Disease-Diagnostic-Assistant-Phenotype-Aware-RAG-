@@ -1,0 +1,26 @@
+{
+  "Experiment A: RAG-Only": {
+    "Configuration": "Experiment A: RAG-Only",
+    "Recall@1": 0.0,
+    "Recall@5": 0.0,
+    "Recall@10": 0.0,
+    "MRR": 0.0,
+    "Avg_Rerank_Latency_ms": 0.18
+  },
+  "Experiment B: RAG + Indian Prior": {
+    "Configuration": "Experiment B: RAG + Indian Prior",
+    "Recall@1": 0.0,
+    "Recall@5": 0.0,
+    "Recall@10": 0.0,
+    "MRR": 0.0,
+    "Avg_Rerank_Latency_ms": 0.235
+  },
+  "Experiment C: RAG + Indian + Global Baseline": {
+    "Configuration": "Experiment C: RAG + Indian + Global Baseline",
+    "Recall@1": 0.0,
+    "Recall@5": 0.0,
+    "Recall@10": 0.0,
+    "MRR": 0.0,
+    "Avg_Rerank_Latency_ms": 0.275
+  }
+}

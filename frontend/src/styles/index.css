@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+    background-color: #eaf3f8 !important;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+:root {
+  --color-ocean-bg: #eaf3f8;
+  --color-ocean-surface: #e5f0f6;
+  --color-ocean-card: #ffffff;
+  --color-ocean-low: #deecf5;
+  --color-ocean-high: #d3e5f0;
+}
+
+body, main {
+  background-color: #eaf3f8 !important;
+}
+
+.bg-surface {
+  background-color: #eaf3f8 !important;
+}
+
+.bg-surface-container-low {
+  background-color: #deecf5 !important;
+}
+
+.bg-surface-container {
+  background-color: #e4eef6 !important;
+}
+
+.bg-surface-container-high {
+  background-color: #d7e8f2 !important;
+}
+
+.bg-surface-container-highest {
+  background-color: #ccdfea !important;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 104, 116, 0.08) !important;
+}
+
+.bg-surface\/85 {
+  background-color: rgba(234, 243, 248, 0.88) !important;
+}
