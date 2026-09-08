@@ -6,14 +6,15 @@
 <h3 align="center">Phenotype-Aware RAG with Indian Population Priors</h3>
 
 <p align="center">
-  <a href="#architecture"><img src="https://img.shields.io/badge/Pipeline-3_Phase-006874?style=for-the-badge" alt="3 Phase Pipeline"></a>
+  <a href="#architecture"><img src="https://img.shields.io/badge/Pipeline-6_Phases-006874?style=for-the-badge" alt="6 Phase Pipeline"></a>
   <a href="#phase-1-biomedical-ner"><img src="https://img.shields.io/badge/NER_F1-0.7203-0a2540?style=for-the-badge" alt="NER F1"></a>
   <a href="#phase-2-knowledge-rag"><img src="https://img.shields.io/badge/HPO_Terms-20%2C482-006874?style=for-the-badge" alt="HPO Terms"></a>
   <a href="#phase-3-population-priors"><img src="https://img.shields.io/badge/IndiGen-Population_Aware-99f0fe?style=for-the-badge&labelColor=0a2540" alt="Population Aware"></a>
+  <a href="#phase-6-evidence--literature-intelligence--clinical-case-report-generation"><img src="https://img.shields.io/badge/PubMed-NCBI_Integrated-006874?style=for-the-badge" alt="PubMed Integrated"></a>
 </p>
 
 <p align="center">
-  An evidence-driven diagnostic assistant that extracts clinical phenotypes from unstructured text, retrieves rare-disease knowledge via semantic search, incorporates Indian population genomic priors, and generates transparent, evidence-linked diagnostic insights.
+  An evidence-driven diagnostic assistant that extracts clinical phenotypes from unstructured text, retrieves rare-disease knowledge via semantic search, incorporates Indian population genomic priors, performs explainable counterfactual reasoning, and synthesizes PubMed literature into structured clinical case reports.
 </p>
 
 ---
@@ -26,7 +27,11 @@
 - [Phase 1: Biomedical NER](#phase-1-biomedical-ner)
 - [Phase 2: Knowledge RAG](#phase-2-knowledge-rag)
 - [Phase 3: Population Priors](#phase-3-population-priors)
-- [Frontend & Landing Page](#frontend--landing-page)
+- [Phase 4: Explainable Clinical Reasoning & Differential](#phase-4-explainable-clinical-reasoning--differential)
+- [Phase 5: Scribe & Counterfactual Diagnosis Lab](#phase-5-advanced-diagnostic-reasoning--counterfactual-analysis)
+- [Phase 6: Literature Intelligence & Case Report Generation](#phase-6-evidence--literature-intelligence--clinical-case-report-generation)
+- [Workflow Guide: How & Where to Click](#workflow-guide-how--where-to-click)
+- [Frontend Unified Dashboard](#frontend--landing-page)
 - [REST API](#rest-api)
 - [Setup & Installation](#setup--installation)
 - [Running the Pipeline](#running-the-pipeline)
@@ -44,13 +49,16 @@ Rare diseases affect over 300 million people worldwide, yet diagnosis takes an a
 2. **Knowledge Fragmentation** — Evidence distributed across HPO, OMIM, Orphanet, and PubMed
 3. **Population Underrepresentation** — Western-centric genomic baselines mischaracterize Indian population variants
 
-This project addresses all three challenges through a **3-phase AI pipeline**:
+This project addresses all three challenges through a unified **6-phase AI pipeline**:
 
 | Phase | Component | Purpose |
 |-------|-----------|---------|
 | **Phase 1** | BiomedBERT NER | Extract phenotype entities from clinical text |
 | **Phase 2** | Semantic RAG | Retrieve candidate diseases via HPO + FAISS vector search |
 | **Phase 3** | Population Prior | Bayesian re-ranking with IndiGen & gnomAD allele frequencies |
+| **Phase 4** | Reasoning & Evidence Fusion | Multi-modal evidence synthesis, differential diagnosis & doctor copilot |
+| **Phase 5** | Clinical Scribe & Counterfactuals | Structured EHR normalization & what-if phenotype perturbation lab |
+| **Phase 6** | Literature Intelligence & Case Reports | Verified NCBI PubMed literature explorer, phenotype matrix & 11-section case reports |
 
 ---
 
@@ -453,6 +461,20 @@ Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_ph
 
 ---
 
+## Phase 4: Explainable Clinical Reasoning & Differential
+
+Phase 4 integrates multi-modal evidence fusion, transparent differential reasoning, and interactive clinical copilot capabilities:
+
+### 1. Evidence Fusion Engine (`src/reasoning/evidence_fusion.py`)
+- Fuses clinical inputs across 4 distinct dimensions: Phenotype overlap, S-PubMedBERT semantic similarity, established genetics, and Indian population priors (IndiGen / gnomAD SAS).
+- Categorizes all clinical observations into **SUPPORTING**, **CONTRADICTING**, **MISSING**, and **NEUTRAL** evidence items with rule-based confidence scoring.
+
+### 2. Differential Diagnosis & Doctor Copilot
+- Synthesizes head-to-head comparison matrices explaining why Disease A is prioritized over Disease B.
+- Provides an interactive clinician copilot answering case queries with strict grounding on retrieved evidence.
+
+---
+
 ## Phase 5: Advanced Diagnostic Reasoning & Counterfactual Analysis
 
 Phase 5 extends the diagnostic architecture with two research modules:
@@ -513,6 +535,40 @@ Phase 6 extends the clinical intelligence stack with authentic literature synthe
 - `POST /api/report/generate` — Synthesize 11-section Clinical Case Report from active case
 - `GET /api/report/{report_id}` — Retrieve generated case report JSON
 - `GET /api/report/{report_id}/export` — Export printable medical HTML case report
+
+---
+
+## Workflow Guide: How & Where to Click
+
+Follow this interactive flow to utilize all modules in the unified workspace (`http://localhost:5173/dashboard`):
+
+### 1. Clinical Presentation Input & AI Quality Gate
+- Navigate to the **Dashboard** at `http://localhost:5173/dashboard`.
+- In the top card **"Patient Clinical Presentation & Physical Exam Findings"**, select one of the quick samples (`Case #1`, `Case #2`, or `Case #3`) or enter unstructured EHR text.
+- *(Optional)* Click **"Enhance with AI"** to validate clinical relevance and standardize medical abbreviations, then click **"Apply Enhancement"**.
+- Click the primary button: **`[ Run Diagnostic Prioritization ]`**.
+
+### 2. Multi-Modal Diagnostic & Evidence Review
+- **Prioritized Candidates & Evidence Tab**: Review ranked disease matches, composite probability tiers, matched HPO terms, and Indian population priors (IndiGen frequency calibration).
+- Click **"Explain Diagnosis"** on any candidate to inspect itemized evidence trails (`SUPPORTING`, `CONTRADICTING`, `MISSING`, `NEUTRAL`).
+- **Differential Diagnosis Explorer Tab**: Inspect head-to-head comparison matrices showing discriminative clinical features between top candidates.
+- **Explainable AI Doctor Copilot Tab**: Ask custom questions (e.g. *"Why was Prader-Willi prioritized over Angelman Syndrome?"*).
+
+### 3. Scribe & Counterfactual Diagnosis Lab
+- **AI Clinical Scribe Tab**: Convert complex unstructured clinic notes into structured JSON models with explicit negative findings (`relevant_negatives`) and evidence gaps (`missing_information`).
+- **Counterfactual Diagnosis Lab Tab**: Test what-if hypotheses by adding, removing, or toggling phenotypes to observe real-time candidate rank shifts and phenotype sensitivity scores.
+
+### 4. Evidence & Literature Explorer (Phase 6)
+- Click the **`Evidence & Literature`** tab in the top navigation bar.
+- **Candidate Selector**: Click any prioritized disease candidate pill to load its authentic PubMed citations.
+- **Phenotype × Literature Matrix**: Review the interactive cross-referencing matrix (`✓` = confirmed reported, `?` = equivocal/partial, `-` = absent) mapping patient phenotypes to PubMed citations.
+- **Evidence Category Filters**: Filter by `Gene-Disease Association`, `Phenotype Evidence`, `🇮🇳 Indian Cohorts`, or `Case Report`.
+- **Abstract Modals & Links**: Click **`Read Abstract ↗`** to open verified PubMed abstracts inline or click the title to view the official citation on NCBI PubMed.
+
+### 5. Clinical Case Report Generation (Phase 6)
+- Click the **`Clinical Case Report`** tab in the navigation bar.
+- Click **`[ Generate Full Case Report ]`** to synthesize the complete 11-section clinical case report.
+- Click **`🖨️ Print / Save as PDF`** to generate a printable medical document or **`Export HTML`** to save an offline report.
 
 ---
 
