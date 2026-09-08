@@ -93,7 +93,7 @@ export default function HeroSection() {
 
                 {/* Central Emblem DNA Asset */}
                 <div className="relative z-10 w-28 h-28 flex items-center justify-center rounded-2xl bg-surface-container p-space-xs shadow-[0_4px_24px_rgba(0,104,116,0.12)]">
-                  <BrandLogo className="w-full h-full object-contain" alt="Genomic Graph Structure" />
+                  <img src="/genomic-graph.jpg" className="w-full h-full object-contain" alt="Genomic Graph Structure" />
                 </div>
 
                 {/* Orbiting Semantic Badges */}

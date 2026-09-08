@@ -16,14 +16,32 @@ from src.reasoning.evidence_fusion import EvidenceFusionEngine
 from src.reasoning.llm_reasoner import LLMReasoner
 from src.reasoning.differential import DifferentialEngine
 from src.reasoning.copilot import DoctorCopilot
+from src.scribe.scribe_engine import ClinicalScribeEngine
+from src.scribe.schemas import ScribeRequest, ScribeResponse
+from src.counterfactual.counterfactual_engine import CounterfactualEngine
+from src.counterfactual.schemas import CounterfactualRequest, CounterfactualResponse
+from src.input_guard.input_validator import InputValidatorGuard
+from src.input_guard.schemas import ValidationRequest, ValidationResponse, EnhanceRequest, EnhanceResponse
+
+from src.literature.pubmed_client import PubMedClient
+from src.literature.query_builder import PubMedQueryBuilder
+from src.literature.relevance import LiteratureRelevanceScorer
+from src.literature.schemas import (
+    PubMedArticle, LiteratureSearchRequest, EvidenceMatrixResponse, DiseaseEvidenceProfile
+)
+from src.evidence.evidence_classifier import EvidenceClassifier
+from src.evidence.evidence_matrix import EvidenceMatrixBuilder
+from src.evidence.evidence_profile import DiseaseEvidenceProfileBuilder
+from src.reporting.report_schema import ClinicalCaseReport
+from src.reporting.report_generator import CaseReportGenerator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("diagnostic_api")
 
 app = FastAPI(
     title="Explainable Rare-Disease Diagnostic Assistant API",
-    description="Phenotype-Aware RAG with Indian Population Priors & LLM Clinical Reasoning (Phases 1–4)",
-    version="4.0.0"
+    description="Phenotype-Aware RAG with Indian Population Priors, Explainable AI Reasoning, Counterfactual Lab & Evidence Intelligence (Phases 1–6)",
+    version="6.0.0"
 )
 
 # Enable CORS for React Vite frontend (port 5173, etc.)
@@ -43,13 +61,21 @@ fusion_engine = None
 llm_reasoner = None
 differential_engine = None
 doctor_copilot = None
+scribe_engine = None
+counterfactual_engine = None
+input_guard = None
+
+# Phase 6 singletons
+pubmed_client = None
+relevance_scorer = None
 
 # In-memory case context session store for persistent navigation
 case_store: Dict[str, Dict[str, Any]] = {}
+report_store: Dict[str, ClinicalCaseReport] = {}
 
 @app.on_event("startup")
 def startup_event():
-    global config, retrieval_pipeline, ranking_pipeline, fusion_engine, llm_reasoner, differential_engine, doctor_copilot
+    global config, retrieval_pipeline, ranking_pipeline, fusion_engine, llm_reasoner, differential_engine, doctor_copilot, scribe_engine, counterfactual_engine, input_guard, pubmed_client, relevance_scorer
     config_path = "configs/config.yaml"
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
@@ -63,7 +89,23 @@ def startup_event():
     llm_reasoner = LLMReasoner(config=config)
     differential_engine = DifferentialEngine(config=config)
     doctor_copilot = DoctorCopilot(config=config)
-    logger.info("All pipelines & reasoning engines initialized successfully.")
+
+    logger.info("Initializing Phase 5 Scribe & Counterfactual Engines...")
+    scribe_engine = ClinicalScribeEngine(config_path=config_path)
+    counterfactual_engine = CounterfactualEngine(ranking_pipeline=ranking_pipeline, config_path=config_path)
+
+    logger.info("Initializing Input Quality Gate & AI Enhancement Guard...")
+    groq_cfg = config.get("groq", {})
+    input_guard = InputValidatorGuard(
+        groq_api_key=groq_cfg.get("api_key"),
+        groq_model=groq_cfg.get("model", "groq/compound-mini")
+    )
+
+    logger.info("Initializing Phase 6 Literature Intelligence Engines...")
+    pubmed_client = PubMedClient()
+    relevance_scorer = LiteratureRelevanceScorer()
+
+    logger.info("All Phase 1-6 pipelines, reasoning & evidence intelligence engines initialized successfully.")
 
 # Request / Response Schemas
 class ClinicalTextRequest(BaseModel):
@@ -147,6 +189,26 @@ def rank_endpoint(request: RankRequest):
         logger.error(f"Ranking error: {e}")
         raise HTTPException(status_code=500, detail=f"Ranking error: {str(e)}")
 
+@app.post("/api/input/validate", response_model=ValidationResponse)
+def validate_input_endpoint(request: ValidationRequest):
+    """
+    Input Quality Gate API:
+    Validates clinical text for relevance, profanity/abuse, and usability.
+    """
+    if not input_guard:
+        raise HTTPException(status_code=500, detail="Input Quality Gate engine not initialized.")
+    return input_guard.validate_input(request.text)
+
+@app.post("/api/input/enhance", response_model=EnhanceResponse)
+def enhance_input_endpoint(request: EnhanceRequest):
+    """
+    AI Text Enhancement API:
+    Normalizes phrasing, fixes grammar and clinical abbreviations using local AI without fabricating facts.
+    """
+    if not input_guard:
+        raise HTTPException(status_code=500, detail="AI Text Enhancement engine not initialized.")
+    return input_guard.enhance_text(request.text)
+
 @app.post("/api/diagnose")
 def diagnose_endpoint(request: DiagnoseRequest):
     """
@@ -156,6 +218,12 @@ def diagnose_endpoint(request: DiagnoseRequest):
     """
     if not request.text or not request.text.strip():
         raise HTTPException(status_code=400, detail="Clinical case text must not be empty.")
+
+    # Quality Gate Check
+    if input_guard:
+        val_res = input_guard.validate_input(request.text)
+        if not val_res.is_valid_clinical:
+            raise HTTPException(status_code=400, detail=val_res.reason)
 
     try:
         case_id = request.case_id or str(uuid.uuid4())[:8]
@@ -321,6 +389,319 @@ def copilot_endpoint(request: CopilotRequest):
     )
     return response
 
+# ==========================================
+# PHASE 5 API ENDPOINTS
+# ==========================================
+
+@app.post("/api/scribe", response_model=ScribeResponse)
+def scribe_endpoint(request: ScribeRequest):
+    """
+    Phase 5 AI Clinical Scribe:
+    Converts unstructured clinical text into a structured clinical case model,
+    mapping phenotypes via HPO Normalization and storing case context for diagnostic pipeline execution.
+    """
+    if not request.clinical_text or not request.clinical_text.strip():
+        raise HTTPException(status_code=400, detail="Clinical narrative text must not be empty.")
+
+    try:
+        scribe_res = scribe_engine.extract_structured_case(
+            clinical_text=request.clinical_text,
+            case_id=request.case_id
+        )
+
+        # Store in-memory case context
+        case_store[scribe_res.case_id] = {
+            "case_id": scribe_res.case_id,
+            "clinical_text": request.clinical_text,
+            "structured_case": scribe_res.structured_case.dict(),
+            "extracted_phenotypes": scribe_res.phenotypes,
+            "hpo_terms": scribe_res.hpo_terms
+        }
+
+        return scribe_res
+    except Exception as e:
+        logger.error(f"Scribe extraction error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Clinical Scribe error: {str(e)}")
+
+@app.post("/api/counterfactual", response_model=CounterfactualResponse)
+def counterfactual_endpoint(request: CounterfactualRequest):
+    """
+    Phase 5 Counterfactual Diagnosis Lab:
+    Executes controlled what-if analysis on candidate disease prioritization
+    by adding, removing, or toggling phenotypes against the baseline pipeline.
+    """
+    try:
+        cf_res = counterfactual_engine.run_analysis(
+            request=request,
+            case_store=case_store
+        )
+        return cf_res
+    except Exception as e:
+        logger.error(f"Counterfactual analysis error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Counterfactual analysis error: {str(e)}")
+
+@app.post("/api/counterfactual/add", response_model=CounterfactualResponse)
+def counterfactual_add_endpoint(request: CounterfactualRequest):
+    """Shortcut endpoint to add phenotypes in counterfactual analysis."""
+    request.operation = "add"
+    return counterfactual_endpoint(request)
+
+@app.post("/api/counterfactual/remove", response_model=CounterfactualResponse)
+def counterfactual_remove_endpoint(request: CounterfactualRequest):
+    """Shortcut endpoint to remove phenotypes in counterfactual analysis."""
+    request.operation = "remove"
+    return counterfactual_endpoint(request)
+
+@app.post("/api/counterfactual/compare", response_model=CounterfactualResponse)
+def counterfactual_compare_endpoint(request: CounterfactualRequest):
+    """Shortcut endpoint to compare two case states in counterfactual analysis."""
+    request.operation = "compare"
+    return counterfactual_endpoint(request)
+
+@app.get("/api/counterfactual/{case_id}")
+def counterfactual_get_endpoint(case_id: str):
+    """Returns counterfactual analysis history for a specific case."""
+    experiments = counterfactual_engine.get_case_experiments(case_id)
+    return {
+        "case_id": case_id,
+        "experiments_count": len(experiments),
+        "experiments": experiments
+    }
+
+# ============================================================
+# PHASE 6: LITERATURE INTELLIGENCE & CLINICAL CASE REPORTING
+# ============================================================
+
+class ReportGenerateRequest(BaseModel):
+    case_id: Optional[str] = Field(default=None)
+    clinical_text: Optional[str] = Field(default=None)
+    top_k: Optional[int] = Field(default=5)
+
+
+@app.post("/api/literature/search")
+def search_literature_endpoint(request: LiteratureSearchRequest):
+    """
+    Module 15: Searches PubMed via NCBI E-Utilities with targeted queries,
+    scores semantic relevance, and classifies evidence categories.
+    """
+    if not request.disease_name or not request.disease_name.strip():
+        raise HTTPException(status_code=400, detail="Disease name is required for literature search.")
+
+    try:
+        # Build queries
+        queries = []
+        if request.custom_query and request.custom_query.strip():
+            queries.append(request.custom_query.strip())
+        else:
+            if request.genes:
+                queries.append(PubMedQueryBuilder.build_disease_gene_query(request.disease_name, request.genes))
+            if request.phenotypes:
+                queries.append(PubMedQueryBuilder.build_phenotype_query(request.disease_name, request.phenotypes))
+            queries.append(PubMedQueryBuilder.build_indian_cohort_query(request.disease_name))
+            queries.append(PubMedQueryBuilder.build_disease_query(request.disease_name))
+
+        all_pmids = []
+        for q in queries:
+            pmids = pubmed_client.search_pmids(q, max_results=request.max_results)
+            for pid in pmids:
+                if pid not in all_pmids:
+                    all_pmids.append(pid)
+            if len(all_pmids) >= request.max_results:
+                break
+
+        articles = pubmed_client.fetch_articles_by_pmids(all_pmids[:request.max_results])
+
+        # Score relevance & classify evidence
+        if articles:
+            doc_texts = [f"{a.title} {a.abstract}" for a in articles]
+            query_ctx = f"{request.disease_name} {' '.join(request.genes)} {' '.join(request.phenotypes)}"
+            relevance_scores = relevance_scorer.compute_similarity(query_ctx, doc_texts)
+
+            for art, score in zip(articles, relevance_scores):
+                art.relevance_score = score
+                EvidenceClassifier.classify_article(
+                    article=art,
+                    disease_name=request.disease_name,
+                    patient_phenotypes=request.phenotypes,
+                    genes=request.genes
+                )
+
+            # Sort articles by relevance
+            articles.sort(key=lambda x: x.relevance_score, reverse=True)
+
+        return {
+            "disease_id": request.disease_id or "UNKNOWN",
+            "disease_name": request.disease_name,
+            "total_found": len(articles),
+            "articles": [a.dict() for a in articles]
+        }
+    except Exception as e:
+        logger.error(f"Literature search error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Literature search error: {str(e)}")
+
+
+@app.get("/api/literature/{pmid}")
+def get_literature_article_endpoint(pmid: str):
+    """Retrieves full metadata and abstract for a specific PubMed ID."""
+    articles = pubmed_client.fetch_articles_by_pmids([pmid])
+    if not articles:
+        raise HTTPException(status_code=404, detail=f"PubMed article {pmid} not found.")
+    return articles[0].dict()
+
+
+@app.get("/api/evidence/profile/{disease_id}")
+def get_evidence_profile_endpoint(disease_id: str, case_id: Optional[str] = None):
+    """Module 15: Returns complete disease evidence profile (literature, categories, strength)."""
+    case_context = case_store.get(case_id) if case_id else None
+    
+    # Locate candidate
+    cand = None
+    if case_context:
+        for c in (case_context.get("fused_candidates") or case_context.get("ranked_candidates", [])):
+            if c.get("disease_id") == disease_id:
+                cand = c
+                break
+
+    disease_name = cand.get("disease_name") if cand else disease_id
+    genes = cand.get("genes", []) if cand else []
+    phenotypes = [p.get("text", "") if isinstance(p, dict) else str(p) for p in (case_context.get("extracted_phenotypes", []) if case_context else [])]
+
+    # Search articles
+    search_req = LiteratureSearchRequest(
+        disease_id=disease_id,
+        disease_name=disease_name,
+        genes=genes,
+        phenotypes=phenotypes,
+        max_results=8
+    )
+    search_res = search_literature_endpoint(search_req)
+    raw_articles = [PubMedArticle(**a) for a in search_res["articles"]]
+
+    profile = DiseaseEvidenceProfileBuilder.build_profile(
+        disease_id=disease_id,
+        disease_name=disease_name,
+        articles=raw_articles,
+        patient_phenotypes=phenotypes
+    )
+    return profile.dict()
+
+
+@app.get("/api/evidence/matrix/{disease_id}")
+def get_evidence_matrix_endpoint(disease_id: str, case_id: Optional[str] = None):
+    """Module 15: Returns Phenotype x Literature Evidence Matrix for a candidate disease."""
+    case_context = case_store.get(case_id) if case_id else None
+    
+    cand = None
+    if case_context:
+        for c in (case_context.get("fused_candidates") or case_context.get("ranked_candidates", [])):
+            if c.get("disease_id") == disease_id:
+                cand = c
+                break
+
+    disease_name = cand.get("disease_name") if cand else disease_id
+    genes = cand.get("genes", []) if cand else []
+    
+    # Format phenotypes
+    phenotypes = []
+    if case_context:
+        for h in case_context.get("hpo_terms", []):
+            phenotypes.append({"text": h.get("name", h.get("term", "")), "hpo_id": h.get("id", "")})
+        if not phenotypes:
+            phenotypes = case_context.get("extracted_phenotypes", [])
+
+    if not phenotypes:
+        phenotypes = ["hypotonia", "short stature", "developmental delay", "seizures"]
+
+    search_req = LiteratureSearchRequest(
+        disease_id=disease_id,
+        disease_name=disease_name,
+        genes=genes,
+        phenotypes=[p.get("text", "") if isinstance(p, dict) else str(p) for p in phenotypes],
+        max_results=6
+    )
+    search_res = search_literature_endpoint(search_req)
+    raw_articles = [PubMedArticle(**a) for a in search_res["articles"]]
+
+    matrix_res = EvidenceMatrixBuilder.build_matrix(
+        disease_id=disease_id,
+        disease_name=disease_name,
+        phenotypes=phenotypes,
+        articles=raw_articles
+    )
+    return matrix_res.dict()
+
+
+@app.post("/api/report/generate", response_model=ClinicalCaseReport)
+def generate_report_endpoint(request: ReportGenerateRequest):
+    """
+    Module 16: Synthesizes complete 11-section Clinical Case Report
+    from active case context and literature intelligence.
+    """
+    case_context = None
+    if request.case_id and request.case_id in case_store:
+        case_context = case_store[request.case_id]
+    elif case_store:
+        # Pick most recent case
+        latest_id = list(case_store.keys())[-1]
+        case_context = case_store[latest_id]
+    elif request.clinical_text:
+        # Run diagnosis to produce case context
+        diag_res = diagnose_endpoint(DiagnoseRequest(text=request.clinical_text, top_k=request.top_k or 5))
+        case_context = case_store[diag_res["case_id"]]
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="No active case found. Please provide clinical_text or run diagnostic analysis first."
+        )
+
+    top_cands = case_context.get("fused_candidates") or case_context.get("ranked_candidates", [])
+    top_cand = top_cands[0] if top_cands else None
+    top_disease_name = top_cand.get("disease_name", "Rare Disease Candidate") if top_cand else "Candidate"
+    top_disease_id = top_cand.get("disease_id", "OMIM:000000") if top_cand else "ID:0000"
+
+    # Fetch literature summary for top candidate
+    lit_summary = None
+    try:
+        profile_dict = get_evidence_profile_endpoint(disease_id=top_disease_id, case_id=case_context.get("case_id"))
+        matrix_dict = get_evidence_matrix_endpoint(disease_id=top_disease_id, case_id=case_context.get("case_id"))
+        lit_summary = {
+            "total_articles": profile_dict.get("total_articles", 0),
+            "top_articles": profile_dict.get("top_articles", []),
+            "indian_cohort_articles": profile_dict.get("indian_cohort_articles", []),
+            "matrix_preview": matrix_dict.get("matrix", [])
+        }
+    except Exception as e:
+        logger.warning(f"Could not compile literature summary for report: {e}")
+
+    report = CaseReportGenerator.generate_report(
+        case_data=case_context,
+        literature_summary=lit_summary
+    )
+
+    report_store[report.header.report_id] = report
+    return report
+
+
+@app.get("/api/report/{report_id}")
+def get_report_endpoint(report_id: str):
+    """Retrieves generated Clinical Case Report by report_id."""
+    if report_id not in report_store:
+        raise HTTPException(status_code=404, detail=f"Report {report_id} not found.")
+    return report_store[report_id]
+
+
+@app.get("/api/report/{report_id}/export")
+def export_report_endpoint(report_id: str):
+    """Renders and returns formatted print-ready HTML for the case report."""
+    if report_id not in report_store:
+        raise HTTPException(status_code=404, detail=f"Report {report_id} not found.")
+    
+    from fastapi.responses import HTMLResponse
+    html_content = CaseReportGenerator.export_to_html(report_store[report_id])
+    return HTMLResponse(content=html_content, status_code=200)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("src.api.main:app", host="0.0.0.0", port=8000, reload=False)
+

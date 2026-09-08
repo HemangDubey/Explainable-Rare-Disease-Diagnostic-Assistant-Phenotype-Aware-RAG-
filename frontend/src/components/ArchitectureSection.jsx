@@ -88,7 +88,7 @@ export default function ArchitectureSection() {
               <div className="flex items-start gap-space-md">
                 <span className="material-symbols-outlined text-secondary-fixed text-[36px]">auto_stories</span>
                 <div>
-                  <h3 className="font-headline-sm text-headline-sm text-on-primary mb-space-3xs">Transparent LLM Explanation Engine</h3>
+                  <h3 className="font-headline-sm text-headline-sm text-on-primary mb-space-3xs">Transparent AI Explanation Engine</h3>
                   <p className="font-body-sm text-body-sm text-on-primary-container max-w-2xl">
                     Synthesizes retrieved clinical literature citations, HPO similarity metrics, and Indian population priors into structured, audit-ready clinical notes.
                   </p>

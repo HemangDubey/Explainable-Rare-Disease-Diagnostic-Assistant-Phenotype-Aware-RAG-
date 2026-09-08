@@ -195,7 +195,7 @@ export default function EvidenceCards({ candidate, onExplain, isExplaining, expl
             <div className="mt-space-sm p-space-md rounded-xl bg-surface-container-low border border-secondary/30 flex flex-col gap-space-xs">
               <div className="flex items-center gap-space-2xs text-secondary font-bold font-title-sm">
                 <span className="material-symbols-outlined text-[18px]">verified</span>
-                <span>Ollama LLM Clinical Evidence Synthesis</span>
+                <span>AI Clinical Evidence Synthesis</span>
               </div>
               <p className="font-body-md text-on-surface leading-relaxed italic">
                 "{explanation.reasoning_summary}"

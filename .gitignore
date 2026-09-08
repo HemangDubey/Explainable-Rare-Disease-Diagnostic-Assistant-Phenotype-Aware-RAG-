@@ -29,6 +29,7 @@ data/embeddings/
 data/vector_db/
 data/raw/
 data/processed/
+data/cache/
 
 # Temporary trainer checkpoints
 tmp_trainer/

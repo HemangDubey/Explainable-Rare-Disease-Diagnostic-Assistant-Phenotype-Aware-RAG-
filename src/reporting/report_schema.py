@@ -1,0 +1,85 @@
+"""Schemas for Clinical Case Report Generation (Phase 6 Module 16)."""
+
+from typing import List, Dict, Any, Optional
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+
+class ReportHeader(BaseModel):
+    report_id: str
+    generated_at: str
+    system_version: str = "Explainable Rare-Disease Diagnostic Assistant v6.0"
+    patient_id: str = "PT-RD-CURRENT"
+    case_type: str = "Rare Disease Differential & Diagnostic Prioritization"
+
+
+class PhenotypeSummaryItem(BaseModel):
+    text: str
+    hpo_id: Optional[str] = None
+    hpo_name: Optional[str] = None
+    confidence: Optional[float] = None
+    category: Optional[str] = None
+
+
+class CandidateSummaryItem(BaseModel):
+    rank: int
+    disease_id: str
+    disease_name: str
+    final_score: float
+    phenotype_score: float
+    retrieval_score: float
+    population_score: float
+    matched_phenotypes: List[str]
+    genes: List[str]
+    key_evidence: List[str]
+    confidence_tier: str
+
+
+class IndianGeneticsContext(BaseModel):
+    population_priors_applied: bool
+    relevant_subpopulations: List[str]
+    carrier_frequency_notes: List[str]
+    founder_mutation_evidence: List[str]
+    indigen_gnomad_comparison: Dict[str, Any]
+
+
+class LiteratureEvidenceSummary(BaseModel):
+    total_papers_analyzed: int
+    top_pubmed_references: List[Dict[str, Any]]
+    phenotype_matrix_preview: List[Dict[str, Any]]
+    indian_cohort_studies: List[Dict[str, Any]]
+
+
+class CounterfactualSensitivitySummary(BaseModel):
+    rank_stability_score: float
+    critical_anchor_phenotypes: List[str]
+    borderline_phenotypes: List[str]
+    top_counterfactual_shifts: List[Dict[str, Any]]
+
+
+class ClinicalNextSteps(BaseModel):
+    confirmatory_genetic_tests: List[str]
+    biochemical_metabolic_workup: List[str]
+    multidisciplinary_referrals: List[str]
+    contraindicated_treatments: List[str]
+
+
+class ClinicalCaseReport(BaseModel):
+    header: ReportHeader
+    section_1_case_summary: Dict[str, Any]
+    section_2_phenotype_extraction: Dict[str, Any]
+    section_3_top_differentials: List[CandidateSummaryItem]
+    section_4_evidence_fusion: Dict[str, Any]
+    section_5_indian_population_context: IndianGeneticsContext
+    section_6_literature_evidence: LiteratureEvidenceSummary
+    section_7_explainable_reasoning: Dict[str, Any]
+    section_8_differential_diagnosis: Dict[str, Any]
+    section_9_counterfactual_sensitivity: CounterfactualSensitivitySummary
+    section_10_recommended_workup: ClinicalNextSteps
+    section_11_limitations_and_gaps: List[str]
+    disclaimer: str = (
+        "CONFIDENTIAL MEDICAL AI DECISION SUPPORT REPORT. FOR INVESTIGATIONAL AND CLINICAL RESEARCH "
+        "PURPOSES ONLY. This diagnostic assistance report is generated through Phenotype-Aware RAG with Indian "
+        "Population Priors. It does not constitute a definitive medical diagnosis and must be interpreted by a "
+        "licensed medical geneticist or physician."
+    )

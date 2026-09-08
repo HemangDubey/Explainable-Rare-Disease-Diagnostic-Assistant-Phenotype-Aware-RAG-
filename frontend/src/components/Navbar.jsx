@@ -19,50 +19,44 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden xl:flex items-center gap-space-md">
-          <a
-            className="px-space-xs py-space-2xs transition-colors bg-surface-container-high text-on-surface font-semibold rounded-lg"
-            href="#platform"
+          <Link
+            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
+            to="/dashboard"
           >
-            Platform
-          </a>
+            Dashboard
+          </Link>
+          <Link
+            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
+            to="/clinical-scribe"
+          >
+            AI Clinical Scribe
+          </Link>
+          <Link
+            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
+            to="/counterfactual"
+          >
+            Counterfactual Lab
+          </Link>
           <a
             className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
-            href="#how-it-works"
-          >
-            How It Works
-          </a>
-          <a
-            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
-            href="#research"
-          >
-            Research
-          </a>
-          <a
-            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
-            href="#technology"
+            href="/#technology"
           >
             Technology
-          </a>
-          <a
-            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
-            href="#evidence"
-          >
-            Evidence
           </a>
         </nav>
 
         <div className="flex items-center gap-space-sm">
-          <a
+          <Link
             className="hidden sm:inline-flex items-center justify-center px-space-md py-space-2xs rounded-lg font-label-md text-label-md text-primary bg-surface-container-lowest shadow-[0_1px_3px_rgba(9,30,58,0.05)] hover:bg-surface-container transition-colors"
-            href="#research"
+            to="/clinical-scribe"
           >
-            Research Portal
-          </a>
+            Clinical Scribe
+          </Link>
           <Link
             to="/dashboard"
             className="inline-flex items-center justify-center px-space-md py-space-2xs rounded-lg font-label-md text-label-md text-on-primary bg-primary-container hover:bg-primary shadow-[0_2px_8px_rgba(10,37,64,0.15)] transition-all"
           >
-            Launch Diagnostic Assistant
+            Diagnostic Workspace
           </Link>
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-2xs">
             <span className="material-symbols-outlined text-on-primary text-[18px]">

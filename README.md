@@ -328,8 +328,31 @@ FastAPI-powered REST endpoints for phenotype retrieval and disease ranking.
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/` | Health check |
+| `POST` | `/api/input/validate` | Quality Gate: Validates clinical relevance & filters profanity |
+| `POST` | `/api/input/enhance` | AI Text Enhancement: Refines grammar/abbreviations without altering medical facts |
 | `POST` | `/api/retrieve` | Phase 2: NER → HPO → FAISS → Candidates |
 | `POST` | `/api/rank` | Phase 3: Full pipeline with population re-ranking |
+| `POST` | `/api/diagnose` | End-to-End Diagnostic Pipeline (Phases 1–5) |
+
+### Clinical Input Quality Gate & AI Text Enhancement
+
+The input validation guard (`src/input_guard/`) implements a multi-layer quality gate before running clinical pipeline execution:
+1. **Content Safety**: Deterministic filter blocks profanity and spam without hitting the LLM.
+2. **Relevance Classification**: Distinguishes valid clinical inputs (e.g. single symptoms "Seizures", "Hypotonia", or full clinical notes) from casual inputs ("hii", "asdfgh", "test").
+3. **Grounded AI Enhancement**: Refines clinical phrasing and expands abbreviations (e.g. `pt` → `Patient`, `dev delay` → `developmental delay`) via internal local AI reasoning without inventing unmentioned clinical facts.
+4. **User Review Approval**: Gives clinicians full control to review side-by-side original vs. enhanced text with an interactive editor before proceeding to diagnosis.
+
+```bash
+# Validate Clinical Input
+curl -X POST http://localhost:8000/api/input/validate \
+  -H "Content-Type: application/json" \
+  -d '{"text": "pt has dev delay and seizures since 2 yrs"}'
+
+# Enhance Clinical Text
+curl -X POST http://localhost:8000/api/input/enhance \
+  -H "Content-Type: application/json" \
+  -d '{"text": "pt has dev delay and seizures since 2 yrs"}'
+```
 
 ### Example Request
 
@@ -427,6 +450,69 @@ Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_ph
 | Experiment A | RAG-Only baseline |
 | Experiment B | RAG + IndiGen Indian prior |
 | Experiment C | RAG + IndiGen + gnomAD global baseline |
+
+---
+
+## Phase 5: Advanced Diagnostic Reasoning & Counterfactual Analysis
+
+Phase 5 extends the diagnostic architecture with two research modules:
+
+### 1. AI Clinical Scribe (`/api/scribe`)
+- Parses unstructured clinical text into structured `ClinicalCase` models.
+- Reuses Phase 1 BiomedBERT NER & HPO Normalizer to map clinical spans to canonical `HP:xxxxxxx` terms.
+- Detects negated statements (e.g. "No seizures") into `relevant_negatives`.
+- Identifies unstated/missing fields under `missing_information` without hallucinating facts.
+
+### 2. Counterfactual Diagnosis Lab (`/api/counterfactual`)
+- Executes controlled what-if experiments by modifying phenotype sets (`add`, `remove`, `toggle`, `compare`).
+- Reruns Phase 2 Retrieval and Phase 3 Population-Aware Ranking for modified phenotype configurations.
+- Calculates exact rank shifts, score deltas, and phenotype ranking sensitivity scores (`phenotype_impact = original_score - counterfactual_score`).
+- Generates evidence-grounded, non-causal analytical insights explaining candidate score movements.
+
+#### Phase 5 Endpoints
+- `POST /api/scribe` — Extract structured clinical case and HPO terms
+- `POST /api/counterfactual` — Execute what-if counterfactual sensitivity analysis
+- `POST /api/counterfactual/add` — Add phenotype to what-if case state
+- `POST /api/counterfactual/remove` — Remove phenotype from what-if case state
+- `POST /api/counterfactual/compare` — Compare two custom case states
+- `GET /api/counterfactual/{case_id}` — Retrieve counterfactual experiment history
+
+---
+
+## Phase 6: Evidence & Literature Intelligence + Clinical Case Report Generation
+
+Phase 6 extends the clinical intelligence stack with authentic literature synthesis and structured reporting:
+
+### 1. Evidence & Literature Explorer (`/api/literature/search`, `/api/evidence/*`)
+- Queries official NCBI PubMed E-Utilities (`esearch`, `esummary`, `efetch`) using targeted multi-strategy queries (disease-gene, phenotype co-occurrence, and Indian cohort publications).
+- **Strict Evidence Integrity**: Zero synthetic/fake PMIDs or hallucinated citations; all articles are fetched directly from PubMed or local disk cache (`data/cache/pubmed/`).
+- **Semantic Relevance Scoring**: Automatically ranks abstracts using S-PubMedBERT semantic similarity against case phenotype representations.
+- **Evidence Categorization & Strength**: Classifies citations into `Disease Definition`, `Gene-Disease Association`, `Phenotype Evidence`, `Indian Cohort / Population`, `Case Report`, and `Functional Study` with strength ratings (`STRONG`, `MODERATE`, `WEAK`).
+- **Phenotype × Literature Evidence Matrix**: Renders a cross-referencing matrix indicating whether patient phenotypes are confirmed (`✓`), equivocal (`?`), or unmentioned (`-`) across retrieved literature.
+
+### 2. Clinical Case Report Generator (`/api/report/generate`, `/api/report/{id}/export`)
+- Synthesizes all diagnostic intelligence (Phases 1–6) into a standardized 11-section Clinical Decision Support Case Report:
+  1. Patient Presentation & Clinical Narrative
+  2. Normalized Phenotype Profile (HPO)
+  3. Top Ranked Differential Diagnoses (with composite scores)
+  4. Evidence Fusion Breakdown (Phenotype + Retrieval + Population Priors)
+  5. Indian Population Genetics Context (IndiGen & gnomAD SAS)
+  6. Curated PubMed Literature & Evidence Highlights
+  7. Explainable Clinical Reasoning & Mechanism
+  8. Differential Diagnosis & Discriminative Features
+  9. Counterfactual Sensitivity & Stability
+  10. Actionable Diagnostic Workup & Recommendations (Genomic, Biochemical, Multi-disciplinary)
+  11. Limitations & Clinical Research Governance
+- Includes print-ready HTML export with dedicated print media stylesheets and structured JSON export.
+
+#### Phase 6 Endpoints
+- `POST /api/literature/search` — Search PubMed citations with deterministic query builder
+- `GET /api/literature/{pmid}` — Fetch authentic metadata and abstract for a PubMed PMID
+- `GET /api/evidence/profile/{disease_id}` — Consolidate disease literature profile & stats
+- `GET /api/evidence/matrix/{disease_id}` — Generate Phenotype × Literature Evidence Matrix
+- `POST /api/report/generate` — Synthesize 11-section Clinical Case Report from active case
+- `GET /api/report/{report_id}` — Retrieve generated case report JSON
+- `GET /api/report/{report_id}/export` — Export printable medical HTML case report
 
 ---
 
