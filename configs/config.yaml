@@ -90,3 +90,20 @@ ranking:
 evaluation:
   k_values: [1, 5, 10]
 
+llm:
+  provider: "ollama"
+  model: "mistral:latest"
+  base_url: "http://127.0.0.1:11434"
+  temperature: 0.1
+  max_tokens: 2000
+  timeout: 60
+
+reasoning:
+  top_k_candidates: 5
+  enable_differential: true
+  enable_copilot: true
+  require_evidence: true
+
+safety:
+  allow_unverified_claims: false
+
