@@ -6,7 +6,8 @@
 <h3 align="center">Phenotype-Aware RAG with Population-Frequency Evidence (gnomAD global &amp; South Asian)</h3>
 
 <p align="center">
-  <a href="#architecture"><img src="https://img.shields.io/badge/Pipeline-6_Phases-006874?style=for-the-badge" alt="6 Phase Pipeline"></a>
+  <a href="#architecture"><img src="https://img.shields.io/badge/Pipeline-NER_→_HPO_→_RAG_→_Ranking-006874?style=for-the-badge" alt="Pipeline"></a>
+  <a href="#clinical-digital-twin--genomic-evidence"><img src="https://img.shields.io/badge/Clinical-Digital_Twin-0a2540?style=for-the-badge" alt="Digital Twin"></a>
   <a href="#phase-1-biomedical-ner"><img src="https://img.shields.io/badge/NER_F1-0.7203-0a2540?style=for-the-badge" alt="NER F1"></a>
   <a href="#phase-2-knowledge-rag"><img src="https://img.shields.io/badge/HPO_Terms-20%2C482-006874?style=for-the-badge" alt="HPO Terms"></a>
   <a href="#phase-3-population-priors"><img src="https://img.shields.io/badge/Population-gnomAD_Global_%2B_South_Asian-99f0fe?style=for-the-badge&labelColor=0a2540" alt="Population Aware"></a>
@@ -30,11 +31,13 @@
 - [Phase 4: Explainable Clinical Reasoning & Differential](#phase-4-explainable-clinical-reasoning--differential)
 - [Phase 5: Scribe & Counterfactual Diagnosis Lab](#phase-5-advanced-diagnostic-reasoning--counterfactual-analysis)
 - [Phase 6: Literature Intelligence & Case Report Generation](#phase-6-evidence--literature-intelligence--clinical-case-report-generation)
+- [Phase 7R: Accounts, Persistence & Security](#phase-7r-accounts-persistence--security)
+- [Clinical Digital Twin & Genomic Evidence](#clinical-digital-twin--genomic-evidence)
 - [Workflow Guide: How & Where to Click](#workflow-guide-how--where-to-click)
-- [Frontend Unified Dashboard](#frontend--landing-page)
+- [Frontend: Unified Clinical Workspace](#frontend-unified-clinical-workspace)
 - [REST API](#rest-api)
 - [Setup & Installation](#setup--installation)
-- [Running the Pipeline](#running-the-pipeline)
+- [Deployment (Docker + PostgreSQL)](#deployment-docker--postgresql)
 - [Evaluation Results](#evaluation-results)
 - [Tech Stack](#tech-stack)
 - [License](#license)
@@ -47,18 +50,21 @@ Rare diseases affect over 300 million people worldwide, yet diagnosis takes an a
 
 1. **Clinical Complexity** — Scattered phenotype observations in unstructured EHRs
 2. **Knowledge Fragmentation** — Evidence distributed across HPO, OMIM, Orphanet, and PubMed
-3. **Population Underrepresentation** — Western-centric genomic baselines mischaracterize Indian population variants
+3. **Population Underrepresentation** — global reference frequencies under-represent South Asian ancestry
 
-This project addresses all three challenges through a unified **6-phase AI pipeline**:
+This project addresses these challenges through a phenotype-aware pipeline plus explainable clinical tooling:
 
 | Phase | Component | Purpose |
 |-------|-----------|---------|
 | **Phase 1** | BiomedBERT NER | Extract phenotype entities from clinical text |
 | **Phase 2** | Semantic RAG | Retrieve candidate diseases via HPO + FAISS vector search |
-| **Phase 3** | Population Prior | Bayesian re-ranking with gnomAD (IndiGen unavailable) allele frequencies |
+| **Phase 3R** | Population evidence | ClinVar P/LP × gnomAD v4.1 (global and South Asian, reported separately); population weight 0, so evidence is shown but does not change the ranking |
 | **Phase 4** | Reasoning & Evidence Fusion | Multi-modal evidence synthesis, differential diagnosis & doctor copilot |
 | **Phase 5** | Clinical Scribe & Counterfactuals | Structured EHR normalization & what-if phenotype perturbation lab |
 | **Phase 6** | Literature Intelligence & Case Reports | Verified NCBI PubMed literature explorer, phenotype matrix & 11-section case reports |
+| **Phase 7R** | Accounts & persistence | Sign-in, owner-scoped storage of cases / scenarios / reports / drafts (SQLite or PostgreSQL) |
+| **Digital Twin** | Clinical Digital Twin | 3D anatomical view of verified findings, genomic evidence, evidence network, counterfactual twin |
+| **Phase 8R** | Release | Docker image + PostgreSQL stack, backup/restore, unified sidebar workspace |
 
 ---
 
@@ -85,15 +91,17 @@ Clinical Text
 └──────────┬──────────────┘
            ▼
 ┌─────────────────────────┐
-│  Phase 3 re-ranking     │  PROTOTYPE: population tables are placeholder data
-│  (Phase 3R pending)     │  (not real IndiGen/gnomAD); no benefit is claimed
+│  Phase 3R ranking       │  final = 0.2·phenotype + 0.8·retrieval (+ 0.0·population)
+│  + population evidence  │  ClinVar × gnomAD v4.1 global / South Asian, gene level
 └──────────┬──────────────┘
            ▼
-   Evidence fusion · reasoning · counterfactuals · literature · reports (Phases 4-6)
+   Evidence fusion · Groq-grounded reasoning & Copilot · counterfactuals · literature · reports · Digital Twin
 ```
 
-> **Status (honest):** Phases 1-2 are trained/measured and validated. Phase 3 population priors use **placeholder data**
-> and are not yet scientifically meaningful (Phase 3R). BioBERT (baseline NER) is implemented but **not trained**.
+> **Status (honest):** Phases 1-2 are trained/measured and validated. Population evidence comes from real ClinVar and gnomAD v4.1
+> data; its ranking weight is 0 (no validated benefit yet). **IndiGen data are not available** — the UI can show an IndiGen
+> *demo* dataset that is synthetic (`data/demo/indigen_demo/README.md`). BioBERT (baseline NER) is implemented but **not trained**.
+> Research prototype; not clinically validated.
 
 ---
 
@@ -190,7 +198,7 @@ Clinical Text
 │           ├── LandingPage.jsx
 │           └── DashboardPage.jsx
 │
-├── reports/                           # Evaluation outputs & analysis
+├── reports/                           # Generated locally by the scripts (not published in git)
 │   ├── ner_evaluation_detailed.json
 │   ├── ner_model_comparison.csv
 │   ├── ranking_ablation.csv
@@ -348,45 +356,44 @@ python src/evaluation/evaluate_ranking.py && python scripts/build_population_rep
 
 ---
 
-## Frontend & Landing Page
+## Frontend: Unified Clinical Workspace
 
-A **React + Vite + TailwindCSS** single-page application showcasing the project's capabilities.
+A **React 18 + Vite + TailwindCSS** application. The static landing page (`frontend/public/landing.html`) is served at `/`; every
+internal module lives in one authenticated shell with a collapsible left sidebar (icon rail with tooltips, mobile drawer), a top bar
+(breadcrumbs, live backend status, active case, account menu with logout) and a shared active case across modules.
 
-### Design System
+| Group | Module | Route |
+|-------|--------|-------|
+| Workspace | Diagnostic Workspace (intake, extraction, ranked candidates) | `/dashboard` |
+| | Differential Diagnosis | `/differential` |
+| Clinical NLP | Clinical Scribe (incl. voice dictation) | `/clinical-scribe` |
+| | Phenotype Verification | `/digital-twin#twin-phenotypes` |
+| | AI Doctor Copilot | `/copilot` |
+| Evidence & Genomics | Evidence & Literature | `/evidence` |
+| | Genomic Evidence (ClinVar, gnomAD, population comparison) | `/digital-twin#twin-genomic` |
+| | Evidence Network | `/digital-twin#twin-network` |
+| Simulation | Clinical Digital Twin (3D) | `/digital-twin` |
+| | Counterfactual Lab | `/counterfactual` |
+| Documents | Clinical Reports | `/reports` |
+| | Saved Cases | `/cases` |
 
-| Token | Value |
-|-------|-------|
-| Background | `#eaf3f8` (Ocean Blue) |
-| Primary | `#000f22` / `#0a2540` |
-| Secondary | `#006874` (Teal) |
-| Accent | `#99f0fe` (Soft Cyan) |
-| Heading Font | Plus Jakarta Sans |
-| Body Font | Inter |
-| Code Font | JetBrains Mono |
-
-### Routes
-
-| Route | Page |
-|-------|------|
-| `/` | Master Landing Page |
-| `/dashboard` | Diagnostic Workspace (placeholder) |
-
-### 13 Components
-
-Navbar · HeroSection · CredibilityStrip · ProblemSection · WorkflowSection · ArchitectureSection · EvidenceSection · ResearchSection · FeaturesSection · EvaluationSection · CTASection · Footer · BrandLogo
+Design tokens (deep navy text, ocean-blue actions, teal success) are defined in `frontend/tailwind.config.js`; shared component classes
+(`.ui-card`, `.ui-btn-*`, `.ui-chip-*`, `.ui-alert-*`) in `frontend/src/styles/index.css`; navigation metadata in
+`frontend/src/app/navigation.js`.
 
 ```bash
-# Run frontend
 cd frontend
 npm install
-npm run dev   # → http://localhost:5173
+npm run dev        # → http://localhost:5173  (API expected at http://localhost:8000; override with VITE_API_BASE_URL)
+npm run build      # production bundle in frontend/dist
 ```
 
 ---
 
 ## REST API
 
-FastAPI-powered REST endpoints for phenotype retrieval and disease ranking.
+FastAPI. **Every `/api/*` route except register/login requires `Authorization: Bearer <session token>`**, and all stored records
+are owner-scoped (another user's ids return 404).
 
 ### Endpoints
 
@@ -397,38 +404,38 @@ FastAPI-powered REST endpoints for phenotype retrieval and disease ranking.
 | `POST` | `/api/input/enhance` | AI Text Enhancement: Refines grammar/abbreviations without altering medical facts |
 | `POST` | `/api/retrieve` | Phase 2R: BiomedBERT NER → HPO normalisation → real embeddings → FAISS → candidates. Body `{"clinical_text": ..., "top_k": 10}` |
 | `POST` | `/api/rank` | Same retrieval pipeline + Phase 3 re-ranking (prototype population data) |
-| `POST` | `/api/diagnose` | End-to-end pipeline (NER → HPO → retrieval → ranking → fusion → reasoning); accepts `clinical_text` or legacy `text` |
+| `POST` | `/api/diagnose` | End-to-end pipeline (NER → HPO → retrieval → ranking → fusion); saves the case to the caller's account |
+| `POST` | `/api/auth/register` · `/api/auth/login` · `/api/auth/logout`, `GET /api/auth/me` | Accounts and sessions |
+| `POST` | `/api/reason` · `/api/explain` · `/api/differential` · `/api/copilot` | Grounded explanations / Copilot (Groq; labelled deterministic fallback when unavailable or rate-limited) |
+| `POST` | `/api/scribe/draft`, `GET/PUT/DELETE /api/scribe/draft/{id}` | Clinical Scribe drafts |
+| `POST` | `/api/counterfactual/scenario`, `GET /api/counterfactual/scenario/{id}` | Counterfactual scenarios (re-run real ranking on a copy) |
+| `POST` | `/api/literature/search`, `GET /api/evidence/profile/{id}` · `/matrix/{id}` | Literature and evidence |
+| `POST` | `/api/report/generate`, `GET /api/report/{id}` · `/export` | Case reports |
+| `GET` | `/api/cases`, `DELETE /api/case/{id}` | Saved cases |
+| `GET` | `/api/twin/cases` · `/api/twin/{case_id}`, `PUT /api/twin/{case_id}/findings`, `POST /api/twin/regions` | Digital Twin |
+| `GET` | `/api/genomic/gene/{symbol}`, `POST /api/genomic/gene/{symbol}/ingest` | Gene-level ClinVar / gnomAD evidence (on-demand gnomAD fetch) |
 
 ### Clinical Input Quality Gate & AI Text Enhancement
 
 The input validation guard (`src/input_guard/`) implements a multi-layer quality gate before running clinical pipeline execution:
 1. **Content Safety**: Deterministic filter blocks profanity and spam without hitting the LLM.
 2. **Relevance Classification**: Distinguishes valid clinical inputs (e.g. single symptoms "Seizures", "Hypotonia", or full clinical notes) from casual inputs ("hii", "asdfgh", "test").
-3. **Grounded AI Enhancement**: Refines clinical phrasing and expands abbreviations (e.g. `pt` → `Patient`, `dev delay` → `developmental delay`) via internal local AI reasoning without inventing unmentioned clinical facts.
+3. **Grounded AI Enhancement**: Refines clinical phrasing and expands abbreviations (e.g. `pt` → `Patient`, `dev delay` → `developmental delay`) via the Groq model without inventing unmentioned clinical facts.
 4. **User Review Approval**: Gives clinicians full control to review side-by-side original vs. enhanced text with an interactive editor before proceeding to diagnosis.
 
 ```bash
-# Validate Clinical Input
-curl -X POST http://localhost:8000/api/input/validate \
-  -H "Content-Type: application/json" \
-  -d '{"text": "pt has dev delay and seizures since 2 yrs"}'
+TOKEN=$(curl -s -X POST http://localhost:8000/api/auth/login -H "Content-Type: application/json" \
+  -d '{"email":"you@example.org","password":"<password>"}' | python -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
 
-# Enhance Clinical Text
-curl -X POST http://localhost:8000/api/input/enhance \
-  -H "Content-Type: application/json" \
+curl -X POST http://localhost:8000/api/input/validate -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"text": "pt has dev delay and seizures since 2 yrs"}'
 ```
 
 ### Example Request
 
 ```bash
-curl -X POST http://localhost:8000/api/rank \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "Patient presents with hypotonia, short stature, developmental delay and recurrent seizures.",
-    "top_k": 10,
-    "exp_config": "rag_indigen_gnomad"
-  }'
+curl -X POST http://localhost:8000/api/diagnose -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"clinical_text": "Patient presents with hypotonia, short stature, developmental delay and recurrent seizures.", "top_k": 5}'
 ```
 
 ### Response Schema
@@ -456,9 +463,9 @@ python src/api/main.py   # → http://localhost:8000
 
 Copy `.env.example` to `.env` and set `GROQ_API_KEY` (used for input enhancement and the grounded explanations/copilot). Never commit keys; `.env` is git-ignored.
 
-**Language model (Groq is the only provider).** The model id lives in `configs/config.yaml` (`llm.model`, currently `openai/gpt-oss-120b`; override with `GROQ_MODEL`). No local model server is needed: the backend starts and retrieval/ranking work without any LLM. If Groq is unreachable, rejects the key, or rate-limits, explanation routes return a clearly labelled deterministic fallback. Note that submitted clinical text is sent to the external provider for these features; assess this against your privacy requirements before real-patient use. The provider enforces a tokens-per-minute limit (about 8,000 on the tested account), so back-to-back large explanation requests may be rate-limited.
+**Language model (Groq is the only provider).** The model id lives in `configs/config.yaml` (`llm.model`, currently `openai/gpt-oss-120b`; override with `GROQ_MODEL`). No local model server is needed: the backend starts and retrieval/ranking work without any LLM. If Groq is unreachable, rejects the key, or rate-limits, explanation routes return a clearly labelled deterministic fallback. Note that submitted clinical text is sent to the external provider for these features; assess this against your privacy requirements before real-patient use. The free tier also has a **daily** token limit (200,000 tokens/day for this model, roughly 65–70 Copilot answers); when it is reached the API returns a labelled fallback immediately with the time to retry.
 
-**Accounts, storage and security (Phase 7R, accurate).** Users register and sign in (argon2id password hashes; opaque bearer sessions with idle and absolute expiry, revoked on logout). Every `/api/*` route except register/login needs a session, and cases, scenarios, reports and scribe drafts are stored in a database (SQLite for development, PostgreSQL for deployment; Alembic migrations) under the owner's id, so another user's ids behave as "not found". CORS is an allowlist, with body-size limits and per-process rate limits; TLS must be terminated by your proxy or platform. Not provided: email verification, password reset, MFA, multi-instance rate limiting, regulatory compliance. See `docs/DEPLOYMENT.md` and `reports/PHASE_7R_SECURE_DEPLOYMENT_COMPLETION_REPORT.md` (including the public-hosting decision).
+**Accounts, storage and security (Phase 7R, accurate).** Users register and sign in (argon2id password hashes; opaque bearer sessions with idle and absolute expiry, revoked on logout). Every `/api/*` route except register/login needs a session, and cases, scenarios, reports and scribe drafts are stored in a database (SQLite for development, PostgreSQL for deployment; Alembic migrations) under the owner's id, so another user's ids behave as "not found". CORS is an allowlist, with body-size limits and per-process rate limits; TLS must be terminated by your proxy or platform. Not provided: email verification, password reset, MFA, multi-instance rate limiting, regulatory compliance. See `docs/DEPLOYMENT.md`.
 
 Verify a deployment: `python -m unittest tests.test_groq_provider` (mocked + live tests; live ones skip without a key) and `GET /` (reports `llm.status` without secrets).
 
@@ -466,7 +473,10 @@ Verify a deployment: `python -m unittest tests.test_groq_provider` (mocked + liv
 
 - Python 3.10+
 - Node.js 18+ (for frontend)
-- CUDA-capable GPU (recommended for training)
+- CUDA-capable GPU (recommended for training only; the API runs on CPU)
+- Model and index artifacts (~5.5 GB: `models/biomedbert_phenotype_ner`, `data/embeddings`, `data/vector_db`, `data/processed`,
+  `data/raw/gnomad/gene_cache`) — not in git; build them with the phase scripts or copy them in (see `docs/DEPLOYMENT.md`).
+  Without them the API starts in a clearly reported `degraded` state.
 
 ### Backend Setup
 
@@ -477,6 +487,9 @@ cd Explainable-Rare-Disease-Diagnostic-Assistant-Phenotype-Aware-RAG-
 
 # Install Python dependencies
 pip install -r requirements.txt
+
+# Configure secrets (GROQ_API_KEY) and, optionally, DATABASE_URL (default: SQLite data/app.db)
+cp .env.example .env
 
 # Run the full pipeline (Phase 1 → 2 → 3)
 python scripts/run_phase1.py
@@ -495,6 +508,20 @@ npm install
 npm run dev
 ```
 
+## Deployment (Docker + PostgreSQL)
+
+```bash
+docker build -t rare-disease-api .            # CPU-only PyTorch image (~2.5 GB); runs as a non-root user, no secrets baked in
+export POSTGRES_PASSWORD=<strong-secret> CORS_ALLOW_ORIGINS=https://your-frontend.example GROQ_API_KEY=<key>
+docker compose up -d --build                  # postgres:16 + API; migrations run on start; models/data are mounted read-only
+```
+
+- Production (`APP_ENV=production`) refuses to start without `DATABASE_URL` and a non-localhost `CORS_ALLOW_ORIGINS`; `/docs` is disabled.
+- Put the API behind a TLS-terminating reverse proxy (it binds to `127.0.0.1:8000`).
+- Backup / restore: `pg_dump --format=custom` / `pg_restore --clean --if-exists` (round trip verified by
+  `python scripts/verify_postgres_backup_restore.py` on a disposable server). SQLite: `python scripts/db_backup.py`.
+- Known issue: on `docker stop` the API finishes its shutdown but the process may need the stop timeout to exit.
+
 ### Google Colab
 
 Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_phase*.py` master scripts handle dataset download, model training, knowledge base construction, and evaluation automatically.
@@ -502,6 +529,8 @@ Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_ph
 ---
 
 ## Evaluation Results
+
+> File paths under `reports/` refer to outputs generated locally by the evaluation scripts; they are not committed to the repository.
 
 ### Phase 1: NER Performance
 
@@ -597,37 +626,56 @@ Phase 6 extends the clinical intelligence stack with authentic literature synthe
 
 ---
 
+## Phase 7R: Accounts, Persistence & Security
+
+- Registration / sign-in (argon2id hashes, opaque sessions with idle and absolute expiry, logout revokes the session).
+- Cases, counterfactual scenarios, reports and scribe drafts are stored per user (SQLAlchemy + Alembic; SQLite or PostgreSQL); every
+  read and write filters by owner. A session expiry shows a sign-in overlay without discarding the open page.
+- CORS allowlist, 256 KiB body limit, per-IP rate limits, generic error bodies, privacy-preserving logs (ids and counts only).
+
+## Clinical Digital Twin & Genomic Evidence
+
+- **3D twin** (`/digital-twin`): BodyParts3D anatomy (CC BY-SA 2.1 JP, see `frontend/public/models/anatomy/LICENSE_ANATOMY.md`) with
+  markers for the case's findings, placed by a deterministic HPO is-a → organ-system table (`src/twin/anatomy.py`). Findings are
+  confirmed only after clinician verification; absent, uncertain, pending and unmapped findings are shown distinctly.
+- **Genomic evidence**: one backend service (`src/population/gene_evidence.py`) provides ClinVar P/LP reference variants and gnomAD v4.1
+  exome counts (global and South Asian kept separate). Genes not yet cached are fetched on demand from the official public gnomAD
+  VCFs (`scripts/ingest_population.py --genes A,B`). No patient genotype is ever inferred.
+- **IndiGen**: no authorised data available. An optional, isolated IndiGen *demo* dataset (synthetic, seeded;
+  `scripts/build_indigen_demo.py`) can be displayed; it never enters ranking or real-source caches. Real data can be ingested with
+  `src/population/indigen_adapter.py` and then replaces the demo automatically.
+- **Evidence network** and **counterfactual twin** (baseline vs hypothetical, saved scenarios) use the same stored case.
+
 ## Workflow Guide: How & Where to Click
 
-Follow this interactive flow to utilize all modules in the unified workspace (`http://localhost:5173/dashboard`):
+Sign in at `http://localhost:5173/dashboard` (create an account on first use). All modules are in the left sidebar; the active case
+follows you between them.
 
 ### 1. Clinical Presentation Input & AI Quality Gate
-- Navigate to the **Dashboard** at `http://localhost:5173/dashboard`.
-- In the top card **"Patient Clinical Presentation & Physical Exam Findings"**, select one of the quick samples (`Case #1`, `Case #2`, or `Case #3`) or enter unstructured EHR text.
-- *(Optional)* Click **"Enhance with AI"** to validate clinical relevance and standardize medical abbreviations, then click **"Apply Enhancement"**.
-- Click the primary button: **`[ Run Diagnostic Prioritization ]`**.
+- **Diagnostic Workspace**: pick a sample (`Case #1–#3`) or type / dictate the clinical text.
+- *(Optional)* **Enhance with AI**, review the side-by-side suggestion, then apply it.
+- Click **Run Diagnostic Prioritization**. The *Extracted phenotypes* panel shows HPO mappings; ranked candidates appear below.
 
 ### 2. Multi-Modal Diagnostic & Evidence Review
-- **Prioritized Candidates & Evidence Tab**: Review ranked disease matches, composite probability tiers, matched HPO terms, and population-frequency evidence (gnomAD global / South Asian; IndiGen shown as unavailable).
-- Click **"Explain Diagnosis"** on any candidate to inspect itemized evidence trails (`SUPPORTING`, `CONTRADICTING`, `MISSING`, `NEUTRAL`).
-- **Differential Diagnosis Explorer Tab**: Inspect head-to-head comparison matrices showing discriminative clinical features between top candidates.
-- **Explainable AI Doctor Copilot Tab**: Ask custom questions (e.g. *"Why was Prader-Willi prioritized over Angelman Syndrome?"*).
+- Expand a candidate for its evidence and population evidence (gnomAD global / South Asian); **Synthesize LLM Explanation** for a grounded explanation.
+- **Differential Diagnosis**: compare candidates side by side.
+- **AI Doctor Copilot**: ask about the case (e.g. *"Why is the top candidate ranked first?"*). Answers cite evidence ids; when the model is unavailable or rate-limited a labelled fallback and a Retry button are shown.
+- **Phenotype Verification** / **Clinical Digital Twin**: verify or reject findings, explore the 3D twin, genomic evidence and evidence network.
 
 ### 3. Scribe & Counterfactual Diagnosis Lab
-- **AI Clinical Scribe Tab**: Convert complex unstructured clinic notes into structured JSON models with explicit negative findings (`relevant_negatives`) and evidence gaps (`missing_information`).
-- **Counterfactual Diagnosis Lab Tab**: Test what-if hypotheses by adding, removing, or toggling phenotypes to observe real-time candidate rank shifts and phenotype sensitivity scores.
+- **Clinical Scribe**: structure a note (with voice dictation), review the draft and send it to the workspace.
+- **Counterfactual Lab**: add, remove or modify phenotypes and compare the baseline and scenario rankings.
 
 ### 4. Evidence & Literature Explorer (Phase 6)
-- Click the **`Evidence & Literature`** tab in the top navigation bar.
+- Open **Evidence & Literature** in the sidebar.
 - **Candidate Selector**: Click any prioritized disease candidate pill to load its authentic PubMed citations.
 - **Phenotype × Literature Matrix**: Review the interactive cross-referencing matrix (`✓` = confirmed reported, `?` = equivocal/partial, `-` = absent) mapping patient phenotypes to PubMed citations.
-- **Evidence Category Filters**: Filter by `Gene-Disease Association`, `Phenotype Evidence`, `🇮🇳 Indian Cohorts`, or `Case Report`.
+- **Evidence Category Filters**: Filter by `Gene-Disease Association`, `Phenotype Evidence`, `Indian Cohorts`, or `Case Report`.
 - **Abstract Modals & Links**: Click **`Read Abstract ↗`** to open verified PubMed abstracts inline or click the title to view the official citation on NCBI PubMed.
 
 ### 5. Clinical Case Report Generation (Phase 6)
-- Click the **`Clinical Case Report`** tab in the navigation bar.
-- Click **`[ Generate Full Case Report ]`** to synthesize the complete 11-section clinical case report.
-- Click **`🖨️ Print / Save as PDF`** to generate a printable medical document or **`Export HTML`** to save an offline report.
+- Open **Clinical Reports** in the sidebar and click **Generate report** (11 sections, saved to your account).
+- **Print / Save as PDF** or **Export HTML**. Previous cases are listed under **Saved Cases**.
 
 ---
 
@@ -642,7 +690,10 @@ Follow this interactive flow to utilize all modules in the unified workspace (`h
 | **Disease DBs** | HPO annotations (OMIM / Orphanet / DECIPHER entries) |
 | **Population** | ClinVar + gnomAD v4.1 (global, South Asian); IndiGen unavailable |
 | **Backend API** | FastAPI + Uvicorn |
-| **Frontend** | React 18 + Vite + TailwindCSS 3 |
+| **LLM** | Groq (`openai/gpt-oss-120b`) — the only provider; grounded, with deterministic fallback |
+| **Persistence / Auth** | SQLAlchemy 2 + Alembic, SQLite / PostgreSQL, argon2id |
+| **Frontend** | React 18 + Vite + TailwindCSS 3, three.js / React Three Fiber (Digital Twin), d3-force |
+| **Deployment** | Docker (CPU image), Docker Compose with PostgreSQL 16 |
 | **Routing** | React Router DOM v6 |
 | **Deep Learning** | PyTorch + HuggingFace |
 
