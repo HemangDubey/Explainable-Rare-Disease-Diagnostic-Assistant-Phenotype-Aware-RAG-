@@ -26,20 +26,20 @@ export default function EvaluationSection() {
             </div>
             <div className="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.89</span>
+                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.719</span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">Precision</span>
               </div>
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.86</span>
+                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.721</span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">Recall</span>
               </div>
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-secondary font-bold">0.875</span>
+                <span className="block font-headline-sm text-headline-sm text-secondary font-bold">0.720</span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">F1 Score</span>
               </div>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Evaluated on gold-standard HPO-annotated clinical corpus of 1,200 rare disease summaries.
+              BiomedBERT, held-out test split (227 observations) of the BioCreative VIII Track 3 physical-exam corpus.
             </p>
           </div>
 
@@ -51,58 +51,41 @@ export default function EvaluationSection() {
             </div>
             <div className="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.91</span>
+                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.942</span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">Recall@5</span>
               </div>
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.96</span>
-                <span className="font-label-sm text-label-sm text-on-surface-variant">Recall@20</span>
+                <span className="block font-headline-sm text-headline-sm text-primary font-bold">0.980</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant">Recall@10</span>
               </div>
               <div className="p-space-xs bg-surface-container-low rounded-lg">
-                <span className="block font-headline-sm text-headline-sm text-secondary font-bold">0.84</span>
+                <span className="block font-headline-sm text-headline-sm text-secondary font-bold">0.868</span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">MRR</span>
               </div>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Tested on PubMed + Orphanet semantic vector index with 120,000 disease profile embeddings.
+              S-PubMedBERT HPO-level retrieval over 12,880 HPO-annotated diseases. Simulated patients (4 phenotypes sampled from a disease's own annotations, 500 queries), not real patients.
             </p>
           </div>
 
           {/* Ranking Comparison Analysis */}
           <div className="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm">
             <div className="flex items-center justify-between mb-space-md">
-              <h3 className="font-title-md text-title-md text-primary">Ranking Enhancement</h3>
+              <h3 className="font-title-md text-title-md text-primary">Population-Aware Ranking</h3>
               <span className="material-symbols-outlined text-secondary text-[20px]">insights</span>
             </div>
-            <div className="flex flex-col gap-space-xs mb-space-md">
-              <div>
-                <div className="flex justify-between font-label-sm text-label-sm text-on-surface-variant mb-space-3xs">
-                  <span>RAG Baseline (Top-3 Accuracy)</span>
-                  <span className="font-code-metric">72.4%</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-surface-container-highest">
-                  <div className="h-full bg-outline rounded-full" style={{ width: '72.4%' }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
-                  <span>+ Indian Population Prior (IndiGen)</span>
-                  <span className="font-code-metric font-bold text-secondary">85.8% (+13.4%)</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-surface-container-highest">
-                  <div className="h-full bg-secondary rounded-full" style={{ width: '85.8%' }}></div>
-                </div>
-              </div>
+            <div className="mb-space-md p-space-sm bg-surface-container-low rounded-lg text-center">
+              <span className="font-code-metric text-on-surface-variant">Pending evaluation</span>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Population-aware re-ranking yields a 13.4% boost in candidate resolution on South Asian cohorts.
+              Not evaluated. The population weight is 0, so population evidence does not alter the ranking, and no improvement from population evidence is claimed. IndiGen is unavailable.
             </p>
           </div>
         </div>
 
         <div className="w-full text-center">
           <span className="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-space-md py-space-xs rounded-full">
-            Live telemetry updated continuously. Research prototype evaluation data.
+            Measured on a research prototype. Not clinical validation.
           </span>
         </div>
       </div>

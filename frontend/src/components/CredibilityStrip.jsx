@@ -25,8 +25,8 @@ export default function CredibilityStrip() {
               <span className="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Literature</span>
             </div>
             <div className="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-semibold">
-              <span className="text-secondary font-code-metric text-label-md">IndiGen</span>
-              <span className="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Genome Variation</span>
+              <span className="text-secondary font-code-metric text-label-md">ClinVar</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Pathogenic variants</span>
             </div>
             <div className="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-semibold">
               <span className="text-secondary font-code-metric text-label-md">gnomAD</span>

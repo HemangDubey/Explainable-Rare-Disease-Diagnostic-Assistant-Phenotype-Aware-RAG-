@@ -23,13 +23,12 @@ def calculate_phenotype_impacts(
         hname = h_obj.get("name", hid)
 
         # Single phenotype ablation: run ranking pipeline on phenotype set excluding this phenotype
-        ablated_terms = [h.get("name", h.get("hpo_id")) for h in baseline_hpos if h.get("hpo_id") != hid and h.get("name") != hname]
-        
+        ablated_terms = [h for h in baseline_hpos if h.get("hpo_id") != hid]
+
         if not ablated_terms:
             impact_score = baseline_top_score
         else:
-            ablated_text = "Patient presents with " + ", ".join(ablated_terms)
-            p3_ablated = ranking_pipeline_fn(ablated_text, top_k_disease=len(baseline_ranked))
+            p3_ablated = ranking_pipeline_fn(ablated_terms, top_k_disease=len(baseline_ranked))
             ablated_candidates = p3_ablated.get("ranked_candidates", [])
             
             if ablated_candidates:

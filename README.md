@@ -3,18 +3,18 @@
 </p>
 
 <h1 align="center">Explainable Rare-Disease Diagnostic Assistant</h1>
-<h3 align="center">Phenotype-Aware RAG with Indian Population Priors</h3>
+<h3 align="center">Phenotype-Aware RAG with Population-Frequency Evidence (gnomAD global &amp; South Asian)</h3>
 
 <p align="center">
   <a href="#architecture"><img src="https://img.shields.io/badge/Pipeline-6_Phases-006874?style=for-the-badge" alt="6 Phase Pipeline"></a>
   <a href="#phase-1-biomedical-ner"><img src="https://img.shields.io/badge/NER_F1-0.7203-0a2540?style=for-the-badge" alt="NER F1"></a>
   <a href="#phase-2-knowledge-rag"><img src="https://img.shields.io/badge/HPO_Terms-20%2C482-006874?style=for-the-badge" alt="HPO Terms"></a>
-  <a href="#phase-3-population-priors"><img src="https://img.shields.io/badge/IndiGen-Population_Aware-99f0fe?style=for-the-badge&labelColor=0a2540" alt="Population Aware"></a>
+  <a href="#phase-3-population-priors"><img src="https://img.shields.io/badge/Population-gnomAD_Global_%2B_South_Asian-99f0fe?style=for-the-badge&labelColor=0a2540" alt="Population Aware"></a>
   <a href="#phase-6-evidence--literature-intelligence--clinical-case-report-generation"><img src="https://img.shields.io/badge/PubMed-NCBI_Integrated-006874?style=for-the-badge" alt="PubMed Integrated"></a>
 </p>
 
 <p align="center">
-  An evidence-driven diagnostic assistant that extracts clinical phenotypes from unstructured text, retrieves rare-disease knowledge via semantic search, incorporates Indian population genomic priors, performs explainable counterfactual reasoning, and synthesizes PubMed literature into structured clinical case reports.
+  An evidence-driven diagnostic assistant that extracts clinical phenotypes from unstructured text, retrieves rare-disease knowledge via semantic search, reports population-frequency evidence (ClinVar × gnomAD v4.1, global and South Asian reported separately; IndiGen not available), performs explainable counterfactual reasoning, and synthesizes PubMed literature into structured clinical case reports.
 </p>
 
 ---
@@ -26,7 +26,7 @@
 - [Project Structure](#project-structure)
 - [Phase 1: Biomedical NER](#phase-1-biomedical-ner)
 - [Phase 2: Knowledge RAG](#phase-2-knowledge-rag)
-- [Phase 3: Population Priors](#phase-3-population-priors)
+- [Phase 3R: Population Evidence](#phase-3r-real-population-evidence--population-aware-re-ranking)
 - [Phase 4: Explainable Clinical Reasoning & Differential](#phase-4-explainable-clinical-reasoning--differential)
 - [Phase 5: Scribe & Counterfactual Diagnosis Lab](#phase-5-advanced-diagnostic-reasoning--counterfactual-analysis)
 - [Phase 6: Literature Intelligence & Case Report Generation](#phase-6-evidence--literature-intelligence--clinical-case-report-generation)
@@ -55,7 +55,7 @@ This project addresses all three challenges through a unified **6-phase AI pipel
 |-------|-----------|---------|
 | **Phase 1** | BiomedBERT NER | Extract phenotype entities from clinical text |
 | **Phase 2** | Semantic RAG | Retrieve candidate diseases via HPO + FAISS vector search |
-| **Phase 3** | Population Prior | Bayesian re-ranking with IndiGen & gnomAD allele frequencies |
+| **Phase 3** | Population Prior | Bayesian re-ranking with gnomAD (IndiGen unavailable) allele frequencies |
 | **Phase 4** | Reasoning & Evidence Fusion | Multi-modal evidence synthesis, differential diagnosis & doctor copilot |
 | **Phase 5** | Clinical Scribe & Counterfactuals | Structured EHR normalization & what-if phenotype perturbation lab |
 | **Phase 6** | Literature Intelligence & Case Reports | Verified NCBI PubMed literature explorer, phenotype matrix & 11-section case reports |
@@ -69,33 +69,31 @@ Clinical Text
       │
       ▼
 ┌─────────────────────────┐
-│   Phase 1: BiomedBERT   │  Token-level NER → Phenotype spans
-│   Phenotype NER         │  Entity-level F1: 0.7203
+│  BiomedBERT NER         │  Token-level BIO tagging -> phenotype mentions
+│  (Phase 1, trained)     │  with character offsets + confidence. Test F1 0.7203
 └──────────┬──────────────┘
-           │
            ▼
 ┌─────────────────────────┐
-│   HPO Normalizer        │  String → HP:xxxxxxx ontology linking
+│  HPO Normalizer         │  exact -> synonym -> lexical -> semantic (S-PubMedBERT)
+│                         │  statuses: exact | synonym | lexical | semantic |
+│                         │  ambiguous | unmatched. Never maps unknown text to a term.
 └──────────┬──────────────┘
-           │
            ▼
 ┌─────────────────────────┐
-│   Phase 2: S-PubMedBERT │  Dense vector retrieval (dim=768)
-│   + FAISS RAG           │  20,482 HPO terms · 12,880 diseases
+│  Phase 2R Retrieval     │  REAL S-PubMedBERT (768-d) embeddings, FAISS exact index,
+│  HPO-level matching     │  19,894 active HPO terms · 12,880 diseases
 └──────────┬──────────────┘
-           │
            ▼
 ┌─────────────────────────┐
-│   Phase 3: IndiGen      │  Bayesian re-weighting with
-│   Population Prior      │  Indian allele frequencies
+│  Phase 3 re-ranking     │  PROTOTYPE: population tables are placeholder data
+│  (Phase 3R pending)     │  (not real IndiGen/gnomAD); no benefit is claimed
 └──────────┬──────────────┘
-           │
            ▼
-┌─────────────────────────┐
-│   Explainable Output    │  Ranked candidates + evidence trails
-│   + REST API            │  + phenotype overlap + population priors
-└─────────────────────────┘
+   Evidence fusion · reasoning · counterfactuals · literature · reports (Phases 4-6)
 ```
+
+> **Status (honest):** Phases 1-2 are trained/measured and validated. Phase 3 population priors use **placeholder data**
+> and are not yet scientifically meaningful (Phase 3R). BioBERT (baseline NER) is implemented but **not trained**.
 
 ---
 
@@ -148,7 +146,7 @@ Clinical Text
 │   │   └── context_builder.py         # RAG context assembly
 │   │
 │   ├── population/
-│   │   ├── indigen_processor.py       # IndiGen allele frequency processor
+│   │   ├── indigen_processor.py       # LEGACY synthetic placeholder (quarantined, unused — see _legacy_synthetic/README.md)
 │   │   ├── gnomad_processor.py        # gnomAD allele frequency processor
 │   │   ├── variant_normalizer.py      # Variant notation normalization
 │   │   ├── frequency_comparator.py    # Population frequency comparison
@@ -238,55 +236,114 @@ python scripts/run_phase1.py
 
 ---
 
-## Phase 2: Knowledge RAG
-
-**Goal:** Normalize extracted phenotypes to HPO terms and retrieve candidate diseases via semantic vector search.
+## Phase 2: Knowledge Base + Real Semantic Retrieval (Phase 2R)
 
 | Component | Detail |
 |-----------|--------|
-| **Knowledge Base** | 20,482 HPO terms + 12,880 disease records |
-| **Embedding Model** | S-PubMedBERT (`pritamdeka/S-PubMedBert-MS-MARCO`, dim=768) |
-| **Vector Index** | FAISS flat inner-product index |
-| **Retrieval Strategy** | Mean vector aggregation across detected phenotype embeddings |
+| **Knowledge base** | HPO `hp.obo` (release 2026-09-01; 19,894 active + 588 obsolete terms) and HPO annotations `phenotype.hpoa` (2026-09-02) -> **12,880 diseases** (OMIM 8,478 · Orphanet 4,355 · DECIPHER 47) |
+| **Primary embedder** | `pritamdeka/S-PubMedBert-MS-MARCO` — 768-d, mean pooling, L2-normalised |
+| **Baseline embedder** | `sentence-transformers/all-MiniLM-L6-v2` — 384-d, mean pooling, L2-normalised |
+| **Index** | FAISS `IndexFlatIP` (exact cosine), one HPO + one disease index **per model** (never mixed) |
+| **Execution** | Real model inference on CPU or GPU via `transformers` (see note below). No random/placeholder vectors anywhere. |
 
-### Pipeline Flow
+Embeddings live in `data/embeddings/<spubmedbert|minilm>/` with a `manifest.json` (model, dimension, device, timestamp,
+source-data versions, SHA-256 checksums); indexes in `data/vector_db/<model>/`. Canonical text is built only from source
+data (HPO name + synonyms + definition; disease name + genes + phenotype names). 8 HPO and 332 disease texts exceed the
+350-token limit of S-PubMedBERT and are truncated (genes are placed before the phenotype list so they survive).
+
+### Pipeline (single source of truth)
 
 ```
-Clinical Text → BiomedBERT NER → Phenotype Spans
-    → HPO Normalizer → Canonical HP:xxxxxxx Terms
-    → S-PubMedBERT Embeddings → FAISS Search
-    → Top-K Candidate Diseases → RAG Context
+Clinical text -> BiomedBERT NER -> HPO normalisation -> real S-PubMedBERT embeddings -> FAISS -> candidate diseases
 ```
+
+`src/pipeline/retrieval_pipeline.py` is the only phenotype-extraction path; `/api/retrieve`, `/api/rank`, `/api/diagnose`
+and the counterfactual lab all use it. Only terms under HP:0000118 *Phenotypic abnormality* are used for retrieval (HPO
+modifier terms such as "Recurrent" are reported but not searched).
+
+### Retrieval strategies
+
+| Strategy | Idea |
+|---|---|
+| `hpo_expansion` | Each phenotype is compared with every HPO term (real HPO embeddings); a disease's score is its best-matching annotated term, sharpened as `exp((cos-1)/tau)`, averaged over phenotypes. `tau = 0.1`, calibrated on a query set disjoint from the evaluation queries (`reports/retrieval_tau_calibration.json`). |
+| `hpo_expansion_sym` (**default**) | The score above averaged with a disease->query score (each annotated disease term matched to its closest query phenotype), i.e. a symmetric best-match average. Statistically indistinguishable from `hpo_expansion` on mean MRR (0.832 vs 0.831: better on name queries, slightly worse on synonym queries); chosen because it breaks exact score ties between diseases that annotate every query term. `tau = 0.1`. |
+| `mean_vector` | One FAISS search with the mean phenotype embedding against whole-disease embeddings. |
+| `per_phenotype_rrf` | Per-phenotype rankings merged with reciprocal-rank fusion (k = 60). |
+| `concat_text` | Phenotype text concatenated into one query. |
+
+### HPO normalisation (BioCreative clinician annotations, held-out test split, n = 270)
+
+Semantic threshold (0.88) and margin (0.02) were calibrated on the *train* split only (rule: maximise coverage subject to precision ≥ 0.85).
+
+| Metric | Value |
+|---|---|
+| Mapped (exact / synonym / lexical / semantic) | 67.8 % (36.0 / 16.7 / 8.5 / 6.7) |
+| Precision when mapped | **97.3 %** |
+| Ambiguous (candidates returned; correct term among them in 51 of 84) | 31.1 % |
+| Unmatched | 1.1 % |
+| Overall accuracy (ambiguous/unmatched counted wrong) | 65.9 % |
+| Semantic top-5 recall (all phrases) | 86.7 % |
+
+### Retrieval evaluation (simulated patients; `reports/retrieval_evaluation.json`)
+
+500 diseases, 4 phenotypes sampled from each disease's own HPO annotations, strict disease-ID ground truth, identical queries
+for all systems. "names" uses preferred HPO names; "synonyms" uses a different surface form of each term.
+
+| System | names R@1 | R@5 | R@10 | MRR | synonyms R@1 | R@10 | MRR | P50 latency |
+|---|---|---|---|---|---|---|---|---|
+| **S-PubMedBERT `hpo_expansion_sym`** (default) | 0.810 | 0.942 | 0.980 | **0.868** | 0.708 | 0.946 | 0.795 | ~85 ms |
+| S-PubMedBERT `hpo_expansion` | 0.764 | 0.948 | 0.980 | 0.846 | 0.730 | 0.966 | **0.815** | ~80 ms |
+| MiniLM `hpo_expansion` | 0.666 | 0.880 | 0.932 | 0.763 | 0.520 | 0.858 | 0.642 | ~44 ms |
+| MiniLM `hpo_expansion_sym` | 0.546 | 0.798 | 0.878 | 0.653 | 0.414 | 0.782 | 0.536 | ~49 ms |
+| TF-IDF lexical baseline | 0.464 | 0.748 | 0.862 | 0.598 | 0.072 | 0.322 | 0.154 | ~3 ms |
+| S-PubMedBERT `mean_vector` | 0.048 | 0.140 | 0.208 | 0.100 | 0.016 | 0.116 | 0.052 | ~31 ms |
+| MiniLM `mean_vector` | 0.058 | 0.174 | 0.228 | 0.112 | 0.038 | 0.148 | 0.075 | ~13 ms |
+| HPO-ID overlap (given oracle IDs, reference) | 0.792 | 0.970 | 0.984 | 0.866 | – | – | – | ~5 ms |
+
+**Limitations of this evaluation:** queries are drawn from the target disease's own annotations, so this measures recovery of a
+disease from a partial phenotype set, **not diagnostic accuracy on real patients** (no real cohort with confirmed diagnoses is
+available here). Whole-disease dense retrieval (`mean_vector`, `per_phenotype_rrf`) performs far worse than lexical baselines;
+the strong result comes from matching at the HPO-term level. MiniLM is a general-domain model and is weaker than S-PubMedBERT.
+
+> **Environment note:** the `sentence_transformers` package (and `datasets`) cannot be imported on the development machine because
+> Windows Application Control blocks `pyarrow.dataset`. `src/retrieval/encoder.py` therefore runs the same Transformer + mean-pooling
+> (+ L2-normalise) pipeline directly with `transformers`/`torch`. It fails loudly if a model cannot load. NER training/evaluation
+> scripts still use `datasets` and need an environment where it imports.
 
 ```bash
-# Run Phase 2
-python scripts/run_phase2.py
+python scripts/run_phase2.py --rebuild          # KB -> real embeddings -> FAISS -> validation -> evaluation (long on CPU: ~50 min)
+python scripts/validate_embeddings.py           # 44 integrity checks, writes reports/embedding_validation.json
+python scripts/e2e_pipeline_check.py            # end-to-end check against a running backend
 ```
 
 ---
 
-## Phase 3: Population Priors
+## Phase 3R: Real Population Evidence + Population-Aware Re-ranking
 
-**Goal:** Incorporate Indian population genomic allele frequencies to re-rank candidate diseases using Bayesian posterior adjustment.
+**What is real:** population evidence is built from public source records only —
+**ClinVar** (germline pathogenic / likely-pathogenic variants, GRCh38) joined to **gnomAD v4.1 exome** allele counts
+(global and the **gnomAD South Asian** ancestry group), read from the official public VCFs by HTTP range requests (no whole-file download).
+Derived tables are produced programmatically from those records; provenance is in `reports/population_data_provenance.json`.
+
+**What is NOT available:** **IndiGen** (CSIR-IGIB) — *access required, unavailable*. No Indian-specific evidence is used. gnomAD South Asian is a
+regional comparator, **not IndiGen and not Indian-specific**. Earlier synthetic placeholder tables are quarantined (`*/_legacy_synthetic/`) and unused.
 
 | Component | Detail |
-|-----------|--------|
-| **IndiGen** | Indian population allele frequency data (1,029 WGS samples) |
-| **gnomAD** | Global allele frequency baseline |
-| **Re-Ranking** | Multi-component weighted scoring: HPO overlap (50%) + Retrieval (35%) + Population prior (15%) |
-| **Ablation** | RAG-only → +IndiGen → +gnomAD baseline comparison |
+|---|---|
+| Variant IDs | canonical `chr:pos:ref:alt` (GRCh38) |
+| Gene statistic | `GENE_LEVEL` cumulative allele frequency of ClinVar P/LP variants found (PASS) in gnomAD exomes, per population |
+| Signals | empirical CDF of the cumulative frequency (South Asian, global) and of `log2(CAF_SAS / CAF_global)` (defined only when both > 0) |
+| Missing data | explicit states `available / not_found / unavailable / not_applicable`; `null`, never a neutral 0.5 |
+| Ranking | `final = w_phenotype·phenotype + w_retrieval·retrieval + w_population·(signal − 0.5)`; the last term is 0 without evidence; one config block |
+| Ablation | A retrieval+phenotype · B +South Asian · C +South Asian & global comparison · D +IndiGen (**blocked**) · E global-only (extra) |
 
-### Scoring Formula
-
-```
-Final_Score = w_hpo × HPO_Overlap + w_ret × Retrieval_Sim + w_pop × Population_Prior
-```
-
-Where `Population_Prior = P(Disease | IndiGen_AF) / P(Disease | gnomAD_AF)`
+Population frequency is evidence about how often pathogenic alleles occur in a population. It is **not** a disease probability or a diagnosis.
+Results, coverage, weights and the research verdict are in `reports/PHASE_3R_FINAL_COMPLETION_REPORT.md` (generated from the measured reports).
 
 ```bash
-# Run Phase 3
-python scripts/run_phase3.py
+python scripts/ingest_population.py --clinvar && python scripts/prioritize_genes.py
+python scripts/ingest_population.py --run --workers 32 --budget-gb 12 && python scripts/ingest_population.py --crosscheck
+python src/evaluation/evaluate_ranking.py && python scripts/build_population_reports.py && python scripts/write_final_report.py
 ```
 
 ---
@@ -338,9 +395,9 @@ FastAPI-powered REST endpoints for phenotype retrieval and disease ranking.
 | `GET` | `/` | Health check |
 | `POST` | `/api/input/validate` | Quality Gate: Validates clinical relevance & filters profanity |
 | `POST` | `/api/input/enhance` | AI Text Enhancement: Refines grammar/abbreviations without altering medical facts |
-| `POST` | `/api/retrieve` | Phase 2: NER → HPO → FAISS → Candidates |
-| `POST` | `/api/rank` | Phase 3: Full pipeline with population re-ranking |
-| `POST` | `/api/diagnose` | End-to-End Diagnostic Pipeline (Phases 1–5) |
+| `POST` | `/api/retrieve` | Phase 2R: BiomedBERT NER → HPO normalisation → real embeddings → FAISS → candidates. Body `{"clinical_text": ..., "top_k": 10}` |
+| `POST` | `/api/rank` | Same retrieval pipeline + Phase 3 re-ranking (prototype population data) |
+| `POST` | `/api/diagnose` | End-to-end pipeline (NER → HPO → retrieval → ranking → fusion → reasoning); accepts `clinical_text` or legacy `text` |
 
 ### Clinical Input Quality Gate & AI Text Enhancement
 
@@ -395,6 +452,16 @@ python src/api/main.py   # → http://localhost:8000
 
 ## Setup & Installation
 
+### Secrets
+
+Copy `.env.example` to `.env` and set `GROQ_API_KEY` (used for input enhancement and the grounded explanations/copilot). Never commit keys; `.env` is git-ignored.
+
+**Language model (Groq is the only provider).** The model id lives in `configs/config.yaml` (`llm.model`, currently `openai/gpt-oss-120b`; override with `GROQ_MODEL`). No local model server is needed: the backend starts and retrieval/ranking work without any LLM. If Groq is unreachable, rejects the key, or rate-limits, explanation routes return a clearly labelled deterministic fallback. Note that submitted clinical text is sent to the external provider for these features; assess this against your privacy requirements before real-patient use. The provider enforces a tokens-per-minute limit (about 8,000 on the tested account), so back-to-back large explanation requests may be rate-limited.
+
+**Accounts, storage and security (Phase 7R, accurate).** Users register and sign in (argon2id password hashes; opaque bearer sessions with idle and absolute expiry, revoked on logout). Every `/api/*` route except register/login needs a session, and cases, scenarios, reports and scribe drafts are stored in a database (SQLite for development, PostgreSQL for deployment; Alembic migrations) under the owner's id, so another user's ids behave as "not found". CORS is an allowlist, with body-size limits and per-process rate limits; TLS must be terminated by your proxy or platform. Not provided: email verification, password reset, MFA, multi-instance rate limiting, regulatory compliance. See `docs/DEPLOYMENT.md` and `reports/PHASE_7R_SECURE_DEPLOYMENT_COMPLETION_REPORT.md` (including the public-hosting decision).
+
+Verify a deployment: `python -m unittest tests.test_groq_provider` (mocked + live tests; live ones skip without a key) and `GET /` (reports `llm.status` without secrets).
+
 ### Prerequisites
 
 - Python 3.10+
@@ -442,22 +509,14 @@ Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_ph
 |-------|-----------|--------|----|----------|
 | **BiomedBERT** | 0.7193 | 0.7213 | **0.7203** | 0.9069 |
 
-### Phase 2: Knowledge Base Statistics
+### Phase 2: Retrieval and HPO normalisation
 
-| Metric | Value |
-|--------|-------|
-| HPO Terms | 20,482 |
-| Disease Records | 12,880 |
-| Embedding Dimension | 768 |
-| Embedding Model | S-PubMedBERT |
+See the Phase 2 section above (`reports/retrieval_evaluation.json`, `reports/retrieval_model_comparison.csv`,
+`reports/hpo_normalization_evaluation.json`, `reports/embedding_validation.json`, `reports/retrieval_pipeline_validation.json`).
 
-### Phase 3: Ranking Ablation
+### Phase 3R: Ranking ablation
 
-| Configuration | Description |
-|---------------|-------------|
-| Experiment A | RAG-Only baseline |
-| Experiment B | RAG + IndiGen Indian prior |
-| Experiment C | RAG + IndiGen + gnomAD global baseline |
+See `reports/PHASE_3R_FINAL_COMPLETION_REPORT.md` and `reports/ranking_evaluation.json`.
 
 ---
 
@@ -466,7 +525,7 @@ Each phase can be run on Google Colab with GPU acceleration. The `scripts/run_ph
 Phase 4 integrates multi-modal evidence fusion, transparent differential reasoning, and interactive clinical copilot capabilities:
 
 ### 1. Evidence Fusion Engine (`src/reasoning/evidence_fusion.py`)
-- Fuses clinical inputs across 4 distinct dimensions: Phenotype overlap, S-PubMedBERT semantic similarity, established genetics, and Indian population priors (IndiGen / gnomAD SAS).
+- Fuses clinical inputs across 4 distinct dimensions: Phenotype overlap, S-PubMedBERT semantic similarity, established genetics, and population-frequency evidence (gnomAD global and gnomAD South Asian, each under its own name; IndiGen unavailable; population weight 0).
 - Categorizes all clinical observations into **SUPPORTING**, **CONTRADICTING**, **MISSING**, and **NEUTRAL** evidence items with rule-based confidence scoring.
 
 ### 2. Differential Diagnosis & Doctor Copilot
@@ -518,7 +577,7 @@ Phase 6 extends the clinical intelligence stack with authentic literature synthe
   2. Normalized Phenotype Profile (HPO)
   3. Top Ranked Differential Diagnoses (with composite scores)
   4. Evidence Fusion Breakdown (Phenotype + Retrieval + Population Priors)
-  5. Indian Population Genetics Context (IndiGen & gnomAD SAS)
+  5. Population-frequency context (gnomAD global and South Asian; IndiGen unavailable)
   6. Curated PubMed Literature & Evidence Highlights
   7. Explainable Clinical Reasoning & Mechanism
   8. Differential Diagnosis & Discriminative Features
@@ -549,7 +608,7 @@ Follow this interactive flow to utilize all modules in the unified workspace (`h
 - Click the primary button: **`[ Run Diagnostic Prioritization ]`**.
 
 ### 2. Multi-Modal Diagnostic & Evidence Review
-- **Prioritized Candidates & Evidence Tab**: Review ranked disease matches, composite probability tiers, matched HPO terms, and Indian population priors (IndiGen frequency calibration).
+- **Prioritized Candidates & Evidence Tab**: Review ranked disease matches, composite probability tiers, matched HPO terms, and population-frequency evidence (gnomAD global / South Asian; IndiGen shown as unavailable).
 - Click **"Explain Diagnosis"** on any candidate to inspect itemized evidence trails (`SUPPORTING`, `CONTRADICTING`, `MISSING`, `NEUTRAL`).
 - **Differential Diagnosis Explorer Tab**: Inspect head-to-head comparison matrices showing discriminative clinical features between top candidates.
 - **Explainable AI Doctor Copilot Tab**: Ask custom questions (e.g. *"Why was Prader-Willi prioritized over Angelman Syndrome?"*).
@@ -577,11 +636,11 @@ Follow this interactive flow to utilize all modules in the unified workspace (`h
 | Layer | Technology |
 |-------|-----------|
 | **NER Model** | BiomedBERT (HuggingFace Transformers) |
-| **Embeddings** | S-PubMedBERT (Sentence-Transformers) |
+| **Embeddings** | S-PubMedBERT / MiniLM via Hugging Face `transformers` |
 | **Vector Search** | FAISS |
 | **Ontology** | HPO (Human Phenotype Ontology) |
-| **Disease DBs** | OMIM, Orphanet, Monarch Initiative |
-| **Population** | IndiGen, gnomAD |
+| **Disease DBs** | HPO annotations (OMIM / Orphanet / DECIPHER entries) |
+| **Population** | ClinVar + gnomAD v4.1 (global, South Asian); IndiGen unavailable |
 | **Backend API** | FastAPI + Uvicorn |
 | **Frontend** | React 18 + Vite + TailwindCSS 3 |
 | **Routing** | React Router DOM v6 |

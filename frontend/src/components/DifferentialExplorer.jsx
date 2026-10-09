@@ -100,12 +100,28 @@ export default function DifferentialExplorer({ differential, onSelectCandidate }
           </div>
 
           <div className="p-space-xs bg-surface-container-low rounded-xl">
-            <span className="font-label-sm text-on-surface-variant block">IndiGen Signal</span>
-            <div className="w-full bg-surface-container-highest h-2 rounded-full mt-1 overflow-hidden">
-              <div className="bg-tertiary h-full rounded-full" style={{ width: `${Math.min(currentCandidate.indian_population_signal * 100, 100)}%` }}></div>
-            </div>
+            <span className="font-label-sm text-on-surface-variant block">Population evidence</span>
             <span className="font-code-metric text-label-sm font-bold text-primary mt-1 block">
-              {currentCandidate.indian_population_signal.toFixed(4)}
+              {currentCandidate.population_contribution == null
+                ? '—'
+                : `contribution ${currentCandidate.population_contribution >= 0 ? '+' : ''}${currentCandidate.population_contribution.toFixed(4)}`}
+            </span>
+            <span className="text-[10px] text-on-surface-variant block mt-1">
+              {currentCandidate.population_status === 'available'
+                ? 'gnomAD evidence available (gene-level, global and South Asian reported separately)'
+                : 'Population evidence unavailable for this candidate'}
+              {currentCandidate.indian_population_signal == null
+                ? ' · IndiGen unavailable (not substituted)'
+                : ` · IndiGen signal ${currentCandidate.indian_population_signal.toFixed(3)}`}
+            </span>
+          </div>
+
+          <div className="p-space-xs bg-surface-container-low rounded-xl">
+            <span className="font-label-sm text-on-surface-variant block">Evidence label</span>
+            <span className="font-label-md font-bold text-primary mt-1 block">{currentCandidate.evidence_label || '—'}</span>
+            <span className="text-[10px] text-on-surface-variant block mt-1">
+              completeness {currentCandidate.evidence_completeness == null ? 'unknown' : `${Math.round(currentCandidate.evidence_completeness * 100)}%`}
+              {' '}(descriptive, not a probability)
             </span>
           </div>
 
@@ -144,7 +160,7 @@ export default function DifferentialExplorer({ differential, onSelectCandidate }
           <div>
             <h5 className="font-label-md font-bold text-primary flex items-center gap-1 mb-1">
               <span className="material-symbols-outlined text-[16px] text-on-surface-variant">help_outline</span>
-              Distinguishing Unreported Features
+              Unverified (annotated to this candidate, not stated in the record)
             </h5>
             <div className="flex flex-wrap gap-1">
               {currentCandidate.missing_phenotypes && currentCandidate.missing_phenotypes.length > 0 ? (
@@ -154,19 +170,37 @@ export default function DifferentialExplorer({ differential, onSelectCandidate }
                   </span>
                 ))
               ) : (
-                <span className="text-body-sm text-on-surface-variant italic">No primary differentiating markers noted</span>
+                <span className="text-body-sm text-on-surface-variant italic">None recorded; absence of a listed finding is never inferred</span>
               )}
             </div>
           </div>
         </div>
       </div>
 
+      {currentCandidate.contradictory_evidence?.length > 0 && (
+        <div className="p-space-sm rounded-xl bg-error-container/40 text-body-sm text-on-surface">
+          <span className="font-bold block">Contradictory evidence</span>
+          <ul className="list-disc list-inside">{currentCandidate.contradictory_evidence.map((t, i) => <li key={i}>{t}</li>)}</ul>
+        </div>
+      )}
+      {currentCandidate.uncertainties?.length > 0 && (
+        <details className="p-space-sm rounded-xl bg-surface-container-low text-body-sm text-on-surface-variant">
+          <summary className="cursor-pointer font-bold text-primary">Uncertainties and sources</summary>
+          <ul className="list-disc list-inside mt-space-2xs">{currentCandidate.uncertainties.map((t, i) => <li key={i}>{t}</li>)}</ul>
+          {currentCandidate.source_references?.length > 0 && (
+            <p className="mt-space-2xs text-label-sm">
+              Sources: {currentCandidate.source_references.map((r) => `${r.evidence_id} (${r.source})`).join('; ')}
+            </p>
+          )}
+        </details>
+      )}
+
       {/* Comparative Pairwise Analysis Table */}
       {comparisons.length > 0 && (
         <div className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm border border-outline-variant/30">
           <h4 className="font-title-md text-primary font-bold mb-space-sm flex items-center gap-space-xs">
             <span className="material-symbols-outlined text-secondary text-[20px]">swap_horiz</span>
-            Comparative Ranking Rationale vs. Rank #1
+            Score comparison vs. Rank #1 (not ruled out)
           </h4>
           <div className="divide-y divide-outline-variant/20">
             {comparisons.map((cmp, idx) => (
@@ -175,7 +209,7 @@ export default function DifferentialExplorer({ differential, onSelectCandidate }
                   <div className="flex items-center gap-space-2xs">
                     <span className="font-bold text-primary">#{cmp.compared_rank} {cmp.compared_disease}</span>
                     <span className="font-code-metric text-label-sm text-on-surface-variant">
-                      (Δ Score: -{cmp.score_delta.toFixed(4)})
+                      (Δ final score vs #1: {cmp.score_delta == null ? '—' : `-${cmp.score_delta.toFixed(4)}`})
                     </span>
                   </div>
                   <ul className="list-disc list-inside text-body-sm text-on-surface-variant mt-1">

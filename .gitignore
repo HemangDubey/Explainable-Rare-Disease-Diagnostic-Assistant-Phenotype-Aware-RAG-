@@ -64,3 +64,21 @@ landing.html
 temp_phase2_extract/
 sample_data/
 .config/
+
+# Secrets
+.env
+
+# Saved scribe drafts and runtime data (may contain clinical text)
+data/drafts/
+
+# Local database and runtime data
+data/app.db
+data/app.db-wal
+data/app.db-shm
+data/*.db
+
+# Not published: generated reports, local logs, presentation material
+reports/
+data/logs/
+docs/*.pdf
+docs/presentation/

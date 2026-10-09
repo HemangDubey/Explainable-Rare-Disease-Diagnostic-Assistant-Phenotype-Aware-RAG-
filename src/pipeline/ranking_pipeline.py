@@ -1,75 +1,82 @@
+"""Phase 3 ranking pipeline - consumes the single Phase 2R retrieval pipeline.
+
+No phenotype extraction happens here: phenotypes come from BiomedBERT NER -> HPO normalisation
+inside Phase2RetrievalPipeline. Population re-ranking itself is unchanged (Phase 3R will replace
+its synthetic population data).
+"""
+import argparse
+import json
 import os
 import sys
-import json
-import yaml
-import argparse
-from pathlib import Path
 
 sys.path.append(os.path.abspath("."))
-from src.knowledge.hpo_normalizer import HPONormalizer
-from src.retrieval.disease_retriever import DiseaseRetriever
+from src.pipeline.retrieval_pipeline import Phase2RetrievalPipeline
 from src.ranking.disease_ranker import DiseaseRanker
 from src.ranking.explanation import generate_ranking_explanation
-from src.rag.context_builder import build_rag_context
+
 
 class Phase3RankingPipeline:
-    def __init__(self, model_key="primary", config_path="configs/config.yaml"):
-        with open(config_path, "r", encoding="utf-8") as f:
-            self.config = yaml.safe_load(f)
-
-        self.normalizer = HPONormalizer(config_path)
-        self.disease_retriever = DiseaseRetriever(model_key=model_key, config_path=config_path)
+    def __init__(self, model_key="primary", config_path="configs/config.yaml", retrieval_pipeline=None):
+        self.retrieval = retrieval_pipeline or Phase2RetrievalPipeline(model_key=model_key, config_path=config_path)
+        self.config = self.retrieval.config
         self.disease_ranker = DiseaseRanker(config_path=config_path)
 
-    def run(self, clinical_text, top_k_disease=10, exp_config="rag_indigen_gnomad"):
-        # 1. Phenotype Extraction (NER mention fallback / Phase 1 integration)
-        phenotype_mentions = [p.strip() for p in clinical_text.replace("Patient presents with", "").replace("and", ",").split(",") if p.strip()]
-        extracted_mentions = [{"phenotype": p, "span": "N/A"} for p in phenotype_mentions]
+    @staticmethod
+    def population_coverage(ranked, pop_engine):
+        """Actual evidence coverage over the returned candidates (no estimates)."""
+        n = len(ranked)
+        st = [c["population"] for c in ranked]
+        return {
+            "candidates": n,
+            "gnomad_global_available": sum(p["gnomad_global"]["status"] == "available" for p in st),
+            "gnomad_south_asian_available": sum(p["gnomad_south_asian"]["status"] == "available" for p in st),
+            "sas_and_global_matched": sum(p["gnomad_south_asian"]["status"] == "available" and p["gnomad_global"]["status"] == "available" for p in st),
+            "indigen_available": sum(p["indigen"]["status"] == "available" for p in st),
+            "indigen_and_gnomad_matched": sum(p["indigen"]["status"] == "available" and p["gnomad_global"]["status"] == "available" for p in st),
+            "signal_available": sum(p["signal"] is not None for p in st),
+            "unavailable": sum(p["status"] in ("unavailable", "not_found", "not_applicable") for p in st),
+            "indigen_dataset": "available" if pop_engine.lookup.indigen.available else "unavailable - access required",
+            "signal_defined": pop_engine.lookup.cdf_global.n >= pop_engine.lookup.min_n,
+            "reference_genes": pop_engine.lookup.cdf_global.n, "reference_genes_required": pop_engine.lookup.min_n,
+            "population_weight": None,
+        }
 
-        # 2. HPO Normalization
-        hpo_mappings, input_hpo_ids = [], []
-        for text_m in phenotype_mentions:
-            norm_c = self.normalizer.normalize(text_m, top_k=1)
-            if norm_c:
-                best = norm_c[0]
-                hpo_mappings.append(best)
-                input_hpo_ids.append(best["hpo_id"])
+    def _rank(self, base, top_k_disease, exp_config):
+        retrieved = base["candidate_diseases"]
+        ranked = self.disease_ranker.rank_candidates(retrieved, exp_config=exp_config)[:top_k_disease]
+        return ranked, retrieved
 
-        # 3. Dense FAISS Semantic Retrieval (Phase 2 candidates)
-        retrieved_candidates = self.disease_retriever.retrieve_diseases(
-            phenotype_terms=phenotype_mentions, input_hpo_ids=input_hpo_ids, top_k=top_k_disease
-        )
-
-        # 4. Population Prior Re-ranking (Phase 3)
-        ranked_candidates = self.disease_ranker.rank_candidates(
-            retrieved_candidates, exp_config=exp_config
-        )
-
-        # 5. Clinical Explainability Rationale
-        ranking_explanations = [generate_ranking_explanation(cand) for cand in ranked_candidates]
-
-        # 6. Structured RAG Context Assembly
-        rag_context = build_rag_context(clinical_text, extracted_mentions, hpo_mappings, ranked_candidates)
-
+    def run(self, clinical_text, top_k_disease=10, exp_config="rag_south_asian_global", strategy=None):
+        pool = max(top_k_disease, self.retrieval.candidate_pool)
+        base = self.retrieval.run(clinical_text, top_k_disease=pool, strategy=strategy)
+        ranked, retrieved = self._rank(base, top_k_disease, exp_config)
         return {
             "input_text": clinical_text,
-            "phenotypes": extracted_mentions,
-            "hpo_terms": hpo_mappings,
-            "retrieved_candidates": retrieved_candidates,
-            "ranked_candidates": ranked_candidates,
-            "ranking_explanations": ranking_explanations,
-            "rag_context": rag_context
+            "phenotypes": base["phenotypes"],
+            "hpo_mappings": base["hpo_mappings"],
+            "hpo_terms": base["hpo_terms"],
+            "unmatched_phenotypes": base["unmatched_phenotypes"],
+            "retrieved_candidates": retrieved[:top_k_disease],
+            "ranked_candidates": ranked,
+            "ranking_explanations": [generate_ranking_explanation(c) for c in ranked],
+            "rag_context": base["rag_context"],
+            "retrieval_metadata": base["retrieval_metadata"],
+            "population_coverage": {**self.population_coverage(ranked, self.disease_ranker.pop),
+                                    "population_weight": self.disease_ranker.weights["w_population"]},
         }
+
+    def run_from_hpo_terms(self, hpo_terms, top_k_disease=10, exp_config="rag_south_asian_global", strategy=None):
+        """Same ranking for an explicit HPO term set (counterfactual what-if analysis)."""
+        pool = max(top_k_disease, self.retrieval.candidate_pool)
+        base = self.retrieval.run_from_hpo_terms(hpo_terms, pool, strategy)
+        ranked, retrieved = self._rank(base, top_k_disease, exp_config)
+        return {"hpo_terms": hpo_terms, "retrieved_candidates": retrieved[:top_k_disease], "ranked_candidates": ranked}
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--text", type=str, default="Patient presents with hypotonia, short stature, developmental delay and recurrent seizures.")
+    parser.add_argument("--text", type=str, required=True)
     args = parser.parse_args()
-
-    p = Phase3RankingPipeline()
-    res = p.run(args.text)
-    print(json.dumps({
-        "input_text": res["input_text"],
-        "top_ranked_candidate": res["ranked_candidates"][0] if res["ranked_candidates"] else None,
-        "sample_explanation": res["ranking_explanations"][0] if res["ranking_explanations"] else None
-    }, indent=2))
+    res = Phase3RankingPipeline().run(args.text)
+    print(json.dumps({"top_ranked_candidate": res["ranked_candidates"][:1],
+                      "hpo_terms": res["hpo_terms"], "unmatched": res["unmatched_phenotypes"]}, indent=2))

@@ -1,124 +1,94 @@
-import os
-import json
+"""Population evidence for a candidate disease (real data only; no neutral placeholders).
+
+Statistic (per gene): cumulative allele frequency CAF(g) = sum over ClinVar pathogenic/likely-pathogenic
+variants v of gene g of AF(v). For a disease with associated genes G with data, CAF(D) = sum_g CAF(g)
+(each causal allele counts once; genes are treated as alternative causes).
+
+Signal: s(D) = F(CAF(D)), where F is the empirical CDF of CAF over the ingested reference genes with CAF > 0,
+and F(0) = 0. s is in [0, 1]; it is undefined (None) when the reference has < MIN_REFERENCE_GENES genes.
+Components: IndiGen (Indian), gnomAD global baseline, gnomAD South-Asian ancestry group (optional).
+population_signal = mean of the enabled components that are available; None if none is.
+
+INTERPRETATION: a larger signal means pathogenic alleles for the disease's genes are more frequent in that
+population. It is evidence about occurrence, not a disease probability and not a diagnosis.
+"""
+from typing import List, Optional
+
 import yaml
-import numpy as np
-import pandas as pd
-from pathlib import Path
+
+from src.population.population_lookup import PopulationLookup, compare_frequencies
+from src.population.population_schema import AVAILABLE, NOT_APPLICABLE, NOT_FOUND, UNAVAILABLE
+
 
 class PopulationPriorEngine:
-    def __init__(self, config_path="configs/config.yaml"):
-        with open(config_path, "r", encoding="utf-8") as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self, config_path="configs/config.yaml", lookup: Optional[PopulationLookup] = None):
+        cfg = yaml.safe_load(open(config_path, encoding="utf-8"))["population"]
+        self.use_indigen = bool(cfg.get("use_indigen", True))
+        self.use_global = bool(cfg.get("use_gnomad_global", True))
+        self.use_sas = bool(cfg.get("use_gnomad_sas", False))
+        self.use_enrich = bool(cfg.get("use_sas_vs_global", False))
+        self.lookup = lookup or PopulationLookup(config_path)
 
-        ind_path = Path(self.config["population"]["indigen_processed_dir"]) / self.config["population"]["indigen_file"]
-        gno_path = Path(self.config["population"]["gnomad_processed_dir"]) / self.config["population"]["gnomad_file"]
+    @staticmethod
+    def _component(gene_infos, source_key, caf_key, cdf):
+        vals, states = [], []
+        for gi in gene_infos:
+            ev = gi[source_key]
+            states.append(ev["status"])
+            if ev["status"] == AVAILABLE:
+                vals.append(ev[caf_key])
+        if vals:
+            caf = float(sum(vals))
+            return {"status": AVAILABLE, "caf": caf, "signal": cdf(caf), "genes_with_data": len(vals), "genes_total": len(gene_infos)}
+        status = NOT_FOUND if states and all(s == NOT_FOUND for s in states) else UNAVAILABLE
+        return {"status": status, "caf": None, "signal": None, "genes_with_data": 0, "genes_total": len(gene_infos)}
 
-        self.indigen_map = {}
-        self.gnomad_map = {}
-
-        if ind_path.exists():
-            try: df_ind = pd.read_parquet(ind_path)
-            except Exception: df_ind = pd.read_csv(Path(self.config["population"]["indigen_processed_dir"]) / "indigen_frequency.csv")
-            for _, r in df_ind.iterrows():
-                gene = str(r["gene"]).upper().strip()
-                if gene not in self.indigen_map: self.indigen_map[gene] = []
-                self.indigen_map[gene].append(float(r["allele_frequency"]))
-
-        if gno_path.exists():
-            try: df_gno = pd.read_parquet(gno_path)
-            except Exception: df_gno = pd.read_csv(Path(self.config["population"]["gnomad_processed_dir"]) / "gnomad_frequency.csv")
-            for _, r in df_gno.iterrows():
-                gene = str(r["gene"]).upper().strip()
-                if gene not in self.gnomad_map: self.gnomad_map[gene] = []
-                self.gnomad_map[gene].append({"global_af": float(r["global_af"]), "sas_af": float(r["south_asian_af"])})
-
-        self._document_scoring_method()
-
-    def _document_scoring_method(self):
-        reports_dir = Path(self.config["dataset"]["reports_dir"])
-        reports_dir.mkdir(parents=True, exist_ok=True)
-        doc_path = reports_dir / "population_scoring_method.md"
-        with open(doc_path, "w", encoding="utf-8") as f:
-            f.write("""# Population Prior Scoring Method
-
-## Scientific Rationale & Interpretation Rule
-Population frequency alone is **NOT** a direct measure of disease causality or probability. In rare disease diagnostics, population allele frequency serves as a population-aware prior signal to calibrate candidate disease prioritization across specific ancestry backgrounds (e.g. Indian population genomes).
-
-## Mathematical Transformation
-For a candidate disease $D$ with associated genes $G = \{g_1, g_2, \\dots, g_m\}$:
-
-1. **Missing Data Neutral Baseline**:
-   If no variant frequency data is available for any associated gene ($G \\cap \\text{IndiGen} = \\emptyset$), the engine sets:
-   $$\\text{status} = \\text{'unavailable' / 'not\\_found'}$$
-   $$\\text{indian\\_population\\_signal} = 0.50$$
-   $$\\text{global\\_population\\_signal} = 0.50$$
-   *This ensures that missing population records never penalize or unfairly boost a candidate disease.*
-
-2. **Population Enrichment Signal**:
-   When variant frequencies are present, average IndiGen frequency $\\text{AF}_{\\text{IND}}$ and gnomAD global frequency $\\text{AF}_{\\text{GLOBAL}}$ are evaluated:
-   $$\\text{raw\\_enrichment} = \\log_{10}\\left(1 + \\frac{\\text{AF}_{\\text{IND}} + 10^{-7}}{\\text{AF}_{\\text{GLOBAL}} + 10^{-7}}\\right)$$
-
-3. **Bounded Sigmoid Normalization**:
-   To ensure stability and interpretability in $[0.0, 1.0]$:
-   $$\\text{indian\\_population\\_signal} = \\frac{1}{1 + e^{-2.0 \\cdot (\\text{raw\\_enrichment} - 0.30)}}$$
-   - Neutral baseline / equal frequencies: $\\approx 0.50$
-   - High relative population prevalence: $> 0.50$ to $1.0$
-   - Depleted relative population prevalence: $< 0.50$
-""")
-
-    def compute_population_scores(self, associated_genes, use_indigen=True, use_gnomad=True):
-        if not associated_genes:
-            return {
-                "indian_population_signal": 0.50,
-                "global_population_signal": 0.50,
-                "population_evidence_status": "unavailable",
-                "evidence_sources": []
-            }
-
-        ind_afs = []
-        gno_afs = []
-        sources = []
-
-        for gene in associated_genes:
-            g_clean = str(gene).upper().strip()
-            if use_indigen and g_clean in self.indigen_map:
-                ind_afs.extend(self.indigen_map[g_clean])
-                if "IndiGen" not in sources: sources.append("IndiGen")
-            if use_gnomad and g_clean in self.gnomad_map:
-                gno_afs.extend([v["global_af"] for v in self.gnomad_map[g_clean]])
-                if "gnomAD" not in sources: sources.append("gnomAD")
-
-        if not ind_afs and not gno_afs:
-            return {
-                "indian_population_signal": 0.50,
-                "global_population_signal": 0.50,
-                "population_evidence_status": "not_found",
-                "evidence_sources": []
-            }
-
-        eps = 1e-7
-        avg_ind = float(np.mean(ind_afs)) if ind_afs else 0.001
-        avg_gno = float(np.mean(gno_afs)) if gno_afs else 0.001
-
-        if use_indigen and ind_afs:
-            raw_enr = np.log10(1.0 + (avg_ind + eps) / (avg_gno + eps))
-            ind_signal = float(round(1.0 / (1.0 + np.exp(-2.0 * (raw_enr - 0.30))), 4))
+    def compute_population_scores(self, associated_genes: List[str], use_indigen=None, use_gnomad_global=None, use_gnomad_sas=None,
+                                  use_sas_vs_global=None):
+        use_i = self.use_indigen if use_indigen is None else use_indigen
+        use_g = self.use_global if use_gnomad_global is None else use_gnomad_global
+        use_s = self.use_sas if use_gnomad_sas is None else use_gnomad_sas
+        use_e = self.use_enrich if use_sas_vs_global is None else use_sas_vs_global
+        genes = [g for g in (associated_genes or []) if g]
+        if not genes:
+            return {"status": NOT_APPLICABLE, "level": "GENE_LEVEL", "population_signal": None, "signal_components": [],
+                    "indigen": {"status": NOT_APPLICABLE}, "gnomad_global": {"status": NOT_APPLICABLE},
+                    "gnomad_sas": {"status": NOT_APPLICABLE}, "sas_vs_global": {"status": NOT_APPLICABLE}, "genes": []}
+        infos = [self.lookup.lookup_gene(g) for g in genes]
+        lk = self.lookup
+        ind = self._component(infos, "indigen", "caf", lk.cdf_indigen)
+        glo = self._component(infos, "gnomad", "caf_global", lk.cdf_global)
+        sas = self._component(infos, "gnomad", "caf_sas", lk.cdf_sas)
+        # South-Asian vs global comparison: log2(CAF_sas / CAF_global); undefined (not zero) unless both are > 0
+        enr = {"status": UNAVAILABLE, "caf": None, "signal": None, "log2_ratio": None}
+        if glo["status"] == AVAILABLE and sas["status"] == AVAILABLE:
+            if glo["caf"] > 0 and sas["caf"] > 0:
+                import math
+                lr = math.log2(sas["caf"] / glo["caf"])
+                enr = {"status": AVAILABLE, "caf": None, "log2_ratio": lr, "signal": lk.cdf_enrich(lr)}
+            else:
+                enr = {"status": UNAVAILABLE, "caf": None, "signal": None, "log2_ratio": None,
+                       "reason": "ratio undefined: a frequency is zero (0 observed carriers)"}
+        used = []
+        sigs = []
+        for name, comp, enabled in (("indigen", ind, use_i), ("gnomad_global", glo, use_g), ("gnomad_sas", sas, use_s),
+                                    ("sas_vs_global", enr, use_e)):
+            if enabled and comp["status"] == AVAILABLE and comp["signal"] is not None:
+                used.append(name); sigs.append(comp["signal"])
+        signal = sum(sigs) / len(sigs) if sigs else None
+        enabled_comps = [c for c, en in ((ind, use_i), (glo, use_g), (sas, use_s), (enr, use_e)) if en]
+        if signal is not None:
+            status = AVAILABLE
+        elif any(c["status"] == AVAILABLE for c in enabled_comps):
+            status = UNAVAILABLE            # data exists but the reference distribution is too small for a signal
+        elif enabled_comps and all(c["status"] == NOT_FOUND for c in enabled_comps):
+            status = NOT_FOUND
         else:
-            ind_signal = 0.50
-
-        if use_gnomad and gno_afs:
-            gno_signal = float(round(min(1.0, max(0.0, 0.50 + np.log10(1.0 + avg_gno * 100) * 0.2)), 4))
-        else:
-            gno_signal = 0.50
-
+            status = UNAVAILABLE
         return {
-            "indian_population_signal": ind_signal,
-            "global_population_signal": gno_signal,
-            "population_evidence_status": "available",
-            "evidence_sources": sources
+            "status": status, "level": "GENE_LEVEL", "population_signal": signal, "signal_components": used,
+            "indigen": ind, "gnomad_global": glo, "gnomad_sas": sas, "sas_vs_global": enr,
+            "indian_vs_global": compare_frequencies(ind["caf"], glo["caf"]),
+            "genes": [{k: gi.get(k) for k in ("input_gene", "normalized_gene", "mapping_source", "mapping_status")}
+                      | {"gnomad_status": gi["gnomad"]["status"], "indigen_status": gi["indigen"]["status"]} for gi in infos],
         }
-
-if __name__ == "__main__":
-    engine = PopulationPriorEngine()
-    print(engine.compute_population_scores(["OTUD7A", "UBE4A"]))
-    print(engine.compute_population_scores(["UNKNOWN_GENE"]))

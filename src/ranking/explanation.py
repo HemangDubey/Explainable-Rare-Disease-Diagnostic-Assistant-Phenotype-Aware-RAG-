@@ -9,8 +9,10 @@ def generate_ranking_explanation(ranked_candidate):
     d_id = ranked_candidate.get("disease_id", "")
     p_score = ranked_candidate.get("phenotype_score", 0.0)
     r_score = ranked_candidate.get("retrieval_score", 0.0)
-    ind_signal = ranked_candidate.get("indian_population_signal", 0.50)
-    gno_signal = ranked_candidate.get("global_population_signal", 0.50)
+    ind_signal = ranked_candidate.get("indian_population_signal")
+    gno_signal = ranked_candidate.get("global_population_signal")
+    contrib = ranked_candidate.get("population_contribution")
+    rank_change = ranked_candidate.get("rank_change")
     final_score = ranked_candidate.get("final_score", 0.0)
     matched_hpo = ranked_candidate.get("matched_hpo_ids", [])
     genes = ranked_candidate.get("associated_genes", [])
@@ -29,18 +31,25 @@ def generate_ranking_explanation(ranked_candidate):
 
     # 2. Dense Semantic Retrieval Evidence
     lines.append(f"  • Dense Retrieval Evidence (Score: {r_score:.4f}):")
-    lines.append(f"    High semantic vector similarity between clinical presentation and knowledge base record.")
+    lines.append(f"    Score reflects HPO-level semantic similarity between the patient's phenotypes and the disease's annotated phenotypes.")
 
     # 3. Population Evidence
-    lines.append(f"  • Population Prior Evidence (Indian Signal: {ind_signal:.4f}, Global Signal: {gno_signal:.4f}):")
+    fmt = lambda x: "unavailable" if x is None else f"{x:.3f}"
+    sas_signal = ranked_candidate.get("south_asian_population_signal")
+    # Each source is reported under its own name. IndiGen is only listed when an authorised export supplied a value; gnomAD South Asian
+    # is never relabelled as Indian data.
+    parts = [f"gnomAD global: {fmt(gno_signal)}", f"gnomAD South Asian (not India-specific): {fmt(sas_signal)}",
+             f"IndiGen: {fmt(ind_signal)}" if ind_signal is not None else "IndiGen: unavailable (access required; nothing substituted)"]
+    lines.append(f"  • Population Evidence ({'; '.join(parts)}):")
+    if contrib is not None:
+        lines.append(f"    Population evidence contributed {contrib:+.4f} to the final score"
+                     + (f" and moved the candidate {abs(rank_change)} place(s) {'up' if rank_change > 0 else 'down'}." if rank_change else " (no rank change)."))
     if status == "available":
-        lines.append(f"    Population variant frequency evidence found for associated gene(s): {', '.join(genes)}.")
-        lines.append(f"    IndiGen allele frequency signal is integrated as an ancestral prior baseline.")
+        lines.append(f"    Gene-level population frequency evidence found for: {', '.join(genes)}.")
     elif status == "not_found":
-        lines.append(f"    No matching variant frequency records in IndiGen/gnomAD for associated gene(s): {', '.join(genes)}.")
-        lines.append(f"    Applied neutral prior signal (0.50) without penalizing candidate.")
+        lines.append(f"    No usable population frequency record for associated gene(s): {', '.join(genes) or 'none'}. No adjustment applied.")
     else:
-        lines.append(f"    Population evidence unavailable. Using neutral prior signal (0.50).")
+        lines.append(f"    Population evidence unavailable. No adjustment applied.")
 
     # 4. Clinical Limitations & Disclaimer
     lines.append(f"  • Scientific & Diagnostic Limitations:")

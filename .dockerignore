@@ -1,0 +1,21 @@
+.venv
+frontend/node_modules
+frontend/dist
+data/logs
+data/drafts
+__pycache__
+*.pyc
+.env
+.git
+# Phase 8R: keep large artifacts, local databases and non-runtime material out of the build context (mounted at run time instead)
+models
+data
+*.db
+*.db-wal
+*.db-shm
+reports
+frontend
+tests
+notebooks
+*.ipynb
+code.html

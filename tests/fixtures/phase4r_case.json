@@ -1,0 +1,2814 @@
+{
+ "_label": "FIXTURE: saved output of the real Phase 2R/3R/4R pipeline for the example sentence (data/logs/diag4.json). Used only to drive unit tests without loading models.",
+ "clinical_text": "Patient presents with hypotonia, short stature, developmental delay and recurrent seizures.",
+ "fused_candidates": [
+  {
+   "disease_id": "ORPHA:1861",
+   "disease_name": "Thoracic dysplasia-hydrocephalus syndrome",
+   "rank": 1,
+   "baseline_rank": 1,
+   "rank_change": 0,
+   "final_score": 0.561846,
+   "base_score": 0.561846,
+   "phenotype_score": 1.0,
+   "retrieval_score": 0.452307,
+   "population": {
+    "status": "not_applicable",
+    "level": "GENE_LEVEL",
+    "signal": null,
+    "components_used": [],
+    "indigen": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_global": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_south_asian": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "sas_vs_global": {
+     "status": "not_applicable",
+     "log2_ratio": null,
+     "signal": null
+    },
+    "genes": []
+   },
+   "population_contribution": 0.0,
+   "phenotype_evidence": {
+    "score": 1.0,
+    "confidence": "Strong phenotype overlap",
+    "label": "Strong phenotype overlap",
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "matched_fraction": 1.0,
+    "matched_hpo_ids": [
+     "HP:0001250",
+     "HP:0001252",
+     "HP:0001263",
+     "HP:0004322"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "missing_phenotypes": [
+     "Conductive hearing impairment",
+     "Depressed nasal ridge",
+     "Narrow chest",
+     "Abnormal metaphysis morphology",
+     "Intellectual disability",
+     "Ataxia",
+     "Communicating hydrocephalus",
+     "Respiratory failure"
+    ],
+    "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+    "contradicting_phenotypes": []
+   },
+   "retrieval_evidence": {
+    "score": 0.452307,
+    "confidence": "retrieval score (not a probability)",
+    "label": "retrieval score (not a probability)",
+    "sources": []
+   },
+   "population_evidence": {
+    "indian_signal": null,
+    "global_signal": null,
+    "status": "not_applicable",
+    "confidence": "",
+    "label": "population frequency is not disease probability",
+    "category": "MISSING"
+   },
+   "genes": [],
+   "evidence_items": [
+    {
+     "id": "C1-E1",
+     "category": "NEUTRAL",
+     "aspect": "Semantic Knowledge Retrieval",
+     "description": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4523. This is a rank-based similarity score, not a probability.",
+     "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+     "type": "retrieval",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E2",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+     "source": "HPO annotation ORPHA:1861 -> HP:0001250",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E3",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+     "source": "HPO annotation ORPHA:1861 -> HP:0001252",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E4",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+     "source": "HPO annotation ORPHA:1861 -> HP:0001263",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E5",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+     "source": "HPO annotation ORPHA:1861 -> HP:0004322",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E6",
+     "category": "MISSING",
+     "aspect": "Phenotype Match",
+     "description": "9 phenotype(s) annotated to Thoracic dysplasia-hydrocephalus syndrome are not stated in the patient record (e.g. Conductive hearing impairment, Depressed nasal ridge, Narrow chest, Abnormal metaphysis morphology, Intellectual disability, Ataxia, Communicating hydrocephalus, Respiratory failure); their absence is not established.",
+     "source": "HPO annotation ORPHA:1861",
+     "type": "disease_phenotype_unverified",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E7",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No gene association is recorded for ORPHA:1861 in the knowledge base.",
+     "source": "knowledge base record ORPHA:1861",
+     "type": "gene_association_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E8",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No patient variant data was provided; no variant-level genetic evidence is available.",
+     "source": "patient input",
+     "type": "variant_evidence_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E9",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD South Asian population evidence: not applicable (no associated gene).",
+     "source": "gnomAD South Asian",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E10",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD global population evidence: not applicable (no associated gene).",
+     "source": "gnomAD global",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E11",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "IndiGen population evidence: not applicable (no associated gene).",
+     "source": "IndiGen",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C1-E12",
+     "category": "NEUTRAL",
+     "aspect": "Score Breakdown",
+     "description": "Base score 0.5618 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4523; population contribution 0.0000; final 0.5618; rank 1. w_population = 0: population evidence did not modify the ranking.",
+     "source": "ranking pipeline (Phase 3R)",
+     "type": "score_breakdown",
+     "confidence": "",
+     "score": null
+    }
+   ],
+   "evidence_sources": [
+    "HPO annotation ORPHA:1861",
+    "HPO annotation ORPHA:1861 -> HP:0001250",
+    "HPO annotation ORPHA:1861 -> HP:0001252",
+    "HPO annotation ORPHA:1861 -> HP:0001263",
+    "HPO annotation ORPHA:1861 -> HP:0004322",
+    "IndiGen",
+    "gnomAD South Asian",
+    "gnomAD global",
+    "knowledge base record ORPHA:1861",
+    "patient input",
+    "ranking pipeline (Phase 3R)",
+    "retrieval:pritamdeka/S-PubMedBert-MS-MARCO"
+   ],
+   "packet": {
+    "candidate_id": "ORPHA:1861",
+    "disease_name": "Thoracic dysplasia-hydrocephalus syndrome",
+    "rank": 1,
+    "baseline_rank": 1,
+    "source_db": "ORPHA",
+    "evidence": [
+     {
+      "id": "C1-E1",
+      "type": "retrieval",
+      "text": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4523. This is a rank-based similarity score, not a probability.",
+      "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+      "data": {
+       "retrieval_score": 0.452307,
+       "strategy": "hpo_expansion_sym"
+      }
+     },
+     {
+      "id": "C1-E2",
+      "type": "phenotype_match",
+      "text": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+      "source": "HPO annotation ORPHA:1861 -> HP:0001250",
+      "data": {
+       "hpo_id": "HP:0001250",
+       "term": "Seizure",
+       "mention": "seizures",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C1-E3",
+      "type": "phenotype_match",
+      "text": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+      "source": "HPO annotation ORPHA:1861 -> HP:0001252",
+      "data": {
+       "hpo_id": "HP:0001252",
+       "term": "Hypotonia",
+       "mention": "hypotonia",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C1-E4",
+      "type": "phenotype_match",
+      "text": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+      "source": "HPO annotation ORPHA:1861 -> HP:0001263",
+      "data": {
+       "hpo_id": "HP:0001263",
+       "term": "Global developmental delay",
+       "mention": "developmental delay",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C1-E5",
+      "type": "phenotype_match",
+      "text": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Thoracic dysplasia-hydrocephalus syndrome (ORPHA:1861).",
+      "source": "HPO annotation ORPHA:1861 -> HP:0004322",
+      "data": {
+       "hpo_id": "HP:0004322",
+       "term": "Short stature",
+       "mention": "short stature",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C1-E6",
+      "type": "disease_phenotype_unverified",
+      "text": "9 phenotype(s) annotated to Thoracic dysplasia-hydrocephalus syndrome are not stated in the patient record (e.g. Conductive hearing impairment, Depressed nasal ridge, Narrow chest, Abnormal metaphysis morphology, Intellectual disability, Ataxia, Communicating hydrocephalus, Respiratory failure); their absence is not established.",
+      "source": "HPO annotation ORPHA:1861",
+      "data": {
+       "hpo_ids": [
+        "HP:0000405",
+        "HP:0000457",
+        "HP:0000774",
+        "HP:0000944",
+        "HP:0001249",
+        "HP:0001251",
+        "HP:0001334",
+        "HP:0002878"
+       ],
+       "names": [
+        "Conductive hearing impairment",
+        "Depressed nasal ridge",
+        "Narrow chest",
+        "Abnormal metaphysis morphology",
+        "Intellectual disability",
+        "Ataxia",
+        "Communicating hydrocephalus",
+        "Respiratory failure"
+       ],
+       "total": 9
+      }
+     },
+     {
+      "id": "C1-E7",
+      "type": "gene_association_unavailable",
+      "text": "No gene association is recorded for ORPHA:1861 in the knowledge base.",
+      "source": "knowledge base record ORPHA:1861",
+      "data": {}
+     },
+     {
+      "id": "C1-E8",
+      "type": "variant_evidence_unavailable",
+      "text": "No patient variant data was provided; no variant-level genetic evidence is available.",
+      "source": "patient input",
+      "data": {}
+     },
+     {
+      "id": "C1-E9",
+      "type": "population_unavailable",
+      "text": "gnomAD South Asian population evidence: not applicable (no associated gene).",
+      "source": "gnomAD South Asian",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C1-E10",
+      "type": "population_unavailable",
+      "text": "gnomAD global population evidence: not applicable (no associated gene).",
+      "source": "gnomAD global",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C1-E11",
+      "type": "population_unavailable",
+      "text": "IndiGen population evidence: not applicable (no associated gene).",
+      "source": "IndiGen",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C1-E12",
+      "type": "score_breakdown",
+      "text": "Base score 0.5618 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4523; population contribution 0.0000; final 0.5618; rank 1. w_population = 0: population evidence did not modify the ranking.",
+      "source": "ranking pipeline (Phase 3R)",
+      "data": {
+       "phenotype_score": 1.0,
+       "retrieval_score": 0.452307,
+       "weights": {
+        "w_phenotype": 0.2,
+        "w_retrieval": 0.8,
+        "w_population": 0.0,
+        "population_reference": 0.5
+       },
+       "base_score": 0.561846,
+       "population_status": "not_applicable",
+       "population_signal": null,
+       "population_contribution": 0.0,
+       "final_score": 0.561846,
+       "rank": 1,
+       "baseline_rank": 1,
+       "rank_change": 0,
+       "recomputed_base_score": 0.561846,
+       "recomputed_final_score": 0.561846,
+       "matches_backend": true
+      }
+     }
+    ],
+    "evidence_ids": [
+     "C1-E1",
+     "C1-E2",
+     "C1-E3",
+     "C1-E4",
+     "C1-E5",
+     "C1-E6",
+     "C1-E7",
+     "C1-E8",
+     "C1-E9",
+     "C1-E10",
+     "C1-E11",
+     "C1-E12"
+    ],
+    "groups": {
+     "supporting": [
+      "C1-E2",
+      "C1-E3",
+      "C1-E4",
+      "C1-E5"
+     ],
+     "unverified": [
+      "C1-E6"
+     ],
+     "contradictory": [],
+     "genetic": [
+      "C1-E7"
+     ],
+     "population": [
+      "C1-E9",
+      "C1-E10",
+      "C1-E11"
+     ]
+    },
+    "labels": {
+     "label": "Strong phenotype overlap",
+     "matched_fraction": 1.0,
+     "conflicting_evidence": false,
+     "labels": [
+      "Strong phenotype overlap"
+     ],
+     "calibrated": false
+    },
+    "completeness": {
+     "available": [
+      "phenotype overlap"
+     ],
+     "unavailable": [
+      "gene association",
+      "population evidence"
+     ],
+     "fraction": 0.333,
+     "literature": "not assessed in this phase",
+     "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+    },
+    "score_breakdown": {
+     "phenotype_score": 1.0,
+     "retrieval_score": 0.452307,
+     "weights": {
+      "w_phenotype": 0.2,
+      "w_retrieval": 0.8,
+      "w_population": 0.0,
+      "population_reference": 0.5
+     },
+     "base_score": 0.561846,
+     "population_status": "not_applicable",
+     "population_signal": null,
+     "population_contribution": 0.0,
+     "final_score": 0.561846,
+     "rank": 1,
+     "baseline_rank": 1,
+     "rank_change": 0,
+     "recomputed_base_score": 0.561846,
+     "recomputed_final_score": 0.561846,
+     "matches_backend": true,
+     "population_note": "w_population = 0: population evidence did not modify the ranking."
+    },
+    "genes": [],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "negated_mentions": []
+   },
+   "labels": {
+    "label": "Strong phenotype overlap",
+    "matched_fraction": 1.0,
+    "conflicting_evidence": false,
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "calibrated": false
+   },
+   "evidence_completeness": {
+    "available": [
+     "phenotype overlap"
+    ],
+    "unavailable": [
+     "gene association",
+     "population evidence"
+    ],
+    "fraction": 0.333,
+    "literature": "not assessed in this phase",
+    "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+   },
+   "score_breakdown": {
+    "phenotype_score": 1.0,
+    "retrieval_score": 0.452307,
+    "weights": {
+     "w_phenotype": 0.2,
+     "w_retrieval": 0.8,
+     "w_population": 0.0,
+     "population_reference": 0.5
+    },
+    "base_score": 0.561846,
+    "population_status": "not_applicable",
+    "population_signal": null,
+    "population_contribution": 0.0,
+    "final_score": 0.561846,
+    "rank": 1,
+    "baseline_rank": 1,
+    "rank_change": 0,
+    "recomputed_base_score": 0.561846,
+    "recomputed_final_score": 0.561846,
+    "matches_backend": true,
+    "population_note": "w_population = 0: population evidence did not modify the ranking."
+   },
+   "label_rules": {
+    "Strong phenotype overlap": "matched_fraction >= 0.75 (share of the patient's mapped HPO terms that are annotated to the disease)",
+    "Partial phenotype overlap": "0.40 <= matched_fraction < 0.75",
+    "Limited supporting evidence": "0 < matched_fraction < 0.40",
+    "Insufficient evidence": "matched_fraction == 0, or the patient has no mapped HPO terms",
+    "Conflicting evidence": "the patient record explicitly negates a phenotype that is annotated to the disease (shown in addition to the overlap label)"
+   }
+  },
+  {
+   "disease_id": "ORPHA:1442",
+   "disease_name": "Ring chromosome 18 syndrome",
+   "rank": 2,
+   "baseline_rank": 2,
+   "rank_change": 0,
+   "final_score": 0.558138,
+   "base_score": 0.558138,
+   "phenotype_score": 1.0,
+   "retrieval_score": 0.447672,
+   "population": {
+    "status": "not_applicable",
+    "level": "GENE_LEVEL",
+    "signal": null,
+    "components_used": [],
+    "indigen": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_global": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_south_asian": {
+     "status": "not_applicable",
+     "caf": null,
+     "signal": null
+    },
+    "sas_vs_global": {
+     "status": "not_applicable",
+     "log2_ratio": null,
+     "signal": null
+    },
+    "genes": []
+   },
+   "population_contribution": 0.0,
+   "phenotype_evidence": {
+    "score": 1.0,
+    "confidence": "Strong phenotype overlap",
+    "label": "Strong phenotype overlap",
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "matched_fraction": 1.0,
+    "matched_hpo_ids": [
+     "HP:0001250",
+     "HP:0001252",
+     "HP:0001263",
+     "HP:0004322"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "missing_phenotypes": [
+     "Microcephaly",
+     "Intellectual disability",
+     "Cognitive impairment",
+     "Abnormal internal genitalia",
+     "Hypothyroidism",
+     "Intrauterine growth retardation",
+     "Talipes equinovarus",
+     "Language impairment"
+    ],
+    "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+    "contradicting_phenotypes": []
+   },
+   "retrieval_evidence": {
+    "score": 0.447672,
+    "confidence": "retrieval score (not a probability)",
+    "label": "retrieval score (not a probability)",
+    "sources": []
+   },
+   "population_evidence": {
+    "indian_signal": null,
+    "global_signal": null,
+    "status": "not_applicable",
+    "confidence": "",
+    "label": "population frequency is not disease probability",
+    "category": "MISSING"
+   },
+   "genes": [],
+   "evidence_items": [
+    {
+     "id": "C2-E1",
+     "category": "NEUTRAL",
+     "aspect": "Semantic Knowledge Retrieval",
+     "description": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4477. This is a rank-based similarity score, not a probability.",
+     "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+     "type": "retrieval",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E2",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+     "source": "HPO annotation ORPHA:1442 -> HP:0001250",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E3",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+     "source": "HPO annotation ORPHA:1442 -> HP:0001252",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E4",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+     "source": "HPO annotation ORPHA:1442 -> HP:0001263",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E5",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+     "source": "HPO annotation ORPHA:1442 -> HP:0004322",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E6",
+     "category": "MISSING",
+     "aspect": "Phenotype Match",
+     "description": "10 phenotype(s) annotated to Ring chromosome 18 syndrome are not stated in the patient record (e.g. Microcephaly, Intellectual disability, Cognitive impairment, Abnormal internal genitalia, Hypothyroidism, Intrauterine growth retardation, Talipes equinovarus, Language impairment); their absence is not established.",
+     "source": "HPO annotation ORPHA:1442",
+     "type": "disease_phenotype_unverified",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E7",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No gene association is recorded for ORPHA:1442 in the knowledge base.",
+     "source": "knowledge base record ORPHA:1442",
+     "type": "gene_association_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E8",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No patient variant data was provided; no variant-level genetic evidence is available.",
+     "source": "patient input",
+     "type": "variant_evidence_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E9",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD South Asian population evidence: not applicable (no associated gene).",
+     "source": "gnomAD South Asian",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E10",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD global population evidence: not applicable (no associated gene).",
+     "source": "gnomAD global",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E11",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "IndiGen population evidence: not applicable (no associated gene).",
+     "source": "IndiGen",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C2-E12",
+     "category": "NEUTRAL",
+     "aspect": "Score Breakdown",
+     "description": "Base score 0.5581 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4477; population contribution 0.0000; final 0.5581; rank 2. w_population = 0: population evidence did not modify the ranking.",
+     "source": "ranking pipeline (Phase 3R)",
+     "type": "score_breakdown",
+     "confidence": "",
+     "score": null
+    }
+   ],
+   "evidence_sources": [
+    "HPO annotation ORPHA:1442",
+    "HPO annotation ORPHA:1442 -> HP:0001250",
+    "HPO annotation ORPHA:1442 -> HP:0001252",
+    "HPO annotation ORPHA:1442 -> HP:0001263",
+    "HPO annotation ORPHA:1442 -> HP:0004322",
+    "IndiGen",
+    "gnomAD South Asian",
+    "gnomAD global",
+    "knowledge base record ORPHA:1442",
+    "patient input",
+    "ranking pipeline (Phase 3R)",
+    "retrieval:pritamdeka/S-PubMedBert-MS-MARCO"
+   ],
+   "packet": {
+    "candidate_id": "ORPHA:1442",
+    "disease_name": "Ring chromosome 18 syndrome",
+    "rank": 2,
+    "baseline_rank": 2,
+    "source_db": "ORPHA",
+    "evidence": [
+     {
+      "id": "C2-E1",
+      "type": "retrieval",
+      "text": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4477. This is a rank-based similarity score, not a probability.",
+      "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+      "data": {
+       "retrieval_score": 0.447672,
+       "strategy": "hpo_expansion_sym"
+      }
+     },
+     {
+      "id": "C2-E2",
+      "type": "phenotype_match",
+      "text": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+      "source": "HPO annotation ORPHA:1442 -> HP:0001250",
+      "data": {
+       "hpo_id": "HP:0001250",
+       "term": "Seizure",
+       "mention": "seizures",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C2-E3",
+      "type": "phenotype_match",
+      "text": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+      "source": "HPO annotation ORPHA:1442 -> HP:0001252",
+      "data": {
+       "hpo_id": "HP:0001252",
+       "term": "Hypotonia",
+       "mention": "hypotonia",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C2-E4",
+      "type": "phenotype_match",
+      "text": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+      "source": "HPO annotation ORPHA:1442 -> HP:0001263",
+      "data": {
+       "hpo_id": "HP:0001263",
+       "term": "Global developmental delay",
+       "mention": "developmental delay",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C2-E5",
+      "type": "phenotype_match",
+      "text": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Ring chromosome 18 syndrome (ORPHA:1442).",
+      "source": "HPO annotation ORPHA:1442 -> HP:0004322",
+      "data": {
+       "hpo_id": "HP:0004322",
+       "term": "Short stature",
+       "mention": "short stature",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C2-E6",
+      "type": "disease_phenotype_unverified",
+      "text": "10 phenotype(s) annotated to Ring chromosome 18 syndrome are not stated in the patient record (e.g. Microcephaly, Intellectual disability, Cognitive impairment, Abnormal internal genitalia, Hypothyroidism, Intrauterine growth retardation, Talipes equinovarus, Language impairment); their absence is not established.",
+      "source": "HPO annotation ORPHA:1442",
+      "data": {
+       "hpo_ids": [
+        "HP:0000252",
+        "HP:0001249",
+        "HP:0100543",
+        "HP:0000812",
+        "HP:0000821",
+        "HP:0001511",
+        "HP:0001762",
+        "HP:0002463"
+       ],
+       "names": [
+        "Microcephaly",
+        "Intellectual disability",
+        "Cognitive impairment",
+        "Abnormal internal genitalia",
+        "Hypothyroidism",
+        "Intrauterine growth retardation",
+        "Talipes equinovarus",
+        "Language impairment"
+       ],
+       "total": 10
+      }
+     },
+     {
+      "id": "C2-E7",
+      "type": "gene_association_unavailable",
+      "text": "No gene association is recorded for ORPHA:1442 in the knowledge base.",
+      "source": "knowledge base record ORPHA:1442",
+      "data": {}
+     },
+     {
+      "id": "C2-E8",
+      "type": "variant_evidence_unavailable",
+      "text": "No patient variant data was provided; no variant-level genetic evidence is available.",
+      "source": "patient input",
+      "data": {}
+     },
+     {
+      "id": "C2-E9",
+      "type": "population_unavailable",
+      "text": "gnomAD South Asian population evidence: not applicable (no associated gene).",
+      "source": "gnomAD South Asian",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C2-E10",
+      "type": "population_unavailable",
+      "text": "gnomAD global population evidence: not applicable (no associated gene).",
+      "source": "gnomAD global",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C2-E11",
+      "type": "population_unavailable",
+      "text": "IndiGen population evidence: not applicable (no associated gene).",
+      "source": "IndiGen",
+      "data": {
+       "status": "not_applicable"
+      }
+     },
+     {
+      "id": "C2-E12",
+      "type": "score_breakdown",
+      "text": "Base score 0.5581 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4477; population contribution 0.0000; final 0.5581; rank 2. w_population = 0: population evidence did not modify the ranking.",
+      "source": "ranking pipeline (Phase 3R)",
+      "data": {
+       "phenotype_score": 1.0,
+       "retrieval_score": 0.447672,
+       "weights": {
+        "w_phenotype": 0.2,
+        "w_retrieval": 0.8,
+        "w_population": 0.0,
+        "population_reference": 0.5
+       },
+       "base_score": 0.558138,
+       "population_status": "not_applicable",
+       "population_signal": null,
+       "population_contribution": 0.0,
+       "final_score": 0.558138,
+       "rank": 2,
+       "baseline_rank": 2,
+       "rank_change": 0,
+       "recomputed_base_score": 0.558138,
+       "recomputed_final_score": 0.558138,
+       "matches_backend": true
+      }
+     }
+    ],
+    "evidence_ids": [
+     "C2-E1",
+     "C2-E2",
+     "C2-E3",
+     "C2-E4",
+     "C2-E5",
+     "C2-E6",
+     "C2-E7",
+     "C2-E8",
+     "C2-E9",
+     "C2-E10",
+     "C2-E11",
+     "C2-E12"
+    ],
+    "groups": {
+     "supporting": [
+      "C2-E2",
+      "C2-E3",
+      "C2-E4",
+      "C2-E5"
+     ],
+     "unverified": [
+      "C2-E6"
+     ],
+     "contradictory": [],
+     "genetic": [
+      "C2-E7"
+     ],
+     "population": [
+      "C2-E9",
+      "C2-E10",
+      "C2-E11"
+     ]
+    },
+    "labels": {
+     "label": "Strong phenotype overlap",
+     "matched_fraction": 1.0,
+     "conflicting_evidence": false,
+     "labels": [
+      "Strong phenotype overlap"
+     ],
+     "calibrated": false
+    },
+    "completeness": {
+     "available": [
+      "phenotype overlap"
+     ],
+     "unavailable": [
+      "gene association",
+      "population evidence"
+     ],
+     "fraction": 0.333,
+     "literature": "not assessed in this phase",
+     "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+    },
+    "score_breakdown": {
+     "phenotype_score": 1.0,
+     "retrieval_score": 0.447672,
+     "weights": {
+      "w_phenotype": 0.2,
+      "w_retrieval": 0.8,
+      "w_population": 0.0,
+      "population_reference": 0.5
+     },
+     "base_score": 0.558138,
+     "population_status": "not_applicable",
+     "population_signal": null,
+     "population_contribution": 0.0,
+     "final_score": 0.558138,
+     "rank": 2,
+     "baseline_rank": 2,
+     "rank_change": 0,
+     "recomputed_base_score": 0.558138,
+     "recomputed_final_score": 0.558138,
+     "matches_backend": true,
+     "population_note": "w_population = 0: population evidence did not modify the ranking."
+    },
+    "genes": [],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "negated_mentions": []
+   },
+   "labels": {
+    "label": "Strong phenotype overlap",
+    "matched_fraction": 1.0,
+    "conflicting_evidence": false,
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "calibrated": false
+   },
+   "evidence_completeness": {
+    "available": [
+     "phenotype overlap"
+    ],
+    "unavailable": [
+     "gene association",
+     "population evidence"
+    ],
+    "fraction": 0.333,
+    "literature": "not assessed in this phase",
+    "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+   },
+   "score_breakdown": {
+    "phenotype_score": 1.0,
+    "retrieval_score": 0.447672,
+    "weights": {
+     "w_phenotype": 0.2,
+     "w_retrieval": 0.8,
+     "w_population": 0.0,
+     "population_reference": 0.5
+    },
+    "base_score": 0.558138,
+    "population_status": "not_applicable",
+    "population_signal": null,
+    "population_contribution": 0.0,
+    "final_score": 0.558138,
+    "rank": 2,
+    "baseline_rank": 2,
+    "rank_change": 0,
+    "recomputed_base_score": 0.558138,
+    "recomputed_final_score": 0.558138,
+    "matches_backend": true,
+    "population_note": "w_population = 0: population evidence did not modify the ranking."
+   },
+   "label_rules": {
+    "Strong phenotype overlap": "matched_fraction >= 0.75 (share of the patient's mapped HPO terms that are annotated to the disease)",
+    "Partial phenotype overlap": "0.40 <= matched_fraction < 0.75",
+    "Limited supporting evidence": "0 < matched_fraction < 0.40",
+    "Insufficient evidence": "matched_fraction == 0, or the patient has no mapped HPO terms",
+    "Conflicting evidence": "the patient record explicitly negates a phenotype that is annotated to the disease (shown in addition to the overlap label)"
+   }
+  },
+  {
+   "disease_id": "OMIM:616632",
+   "disease_name": "Seizures, cortical blindness, and microcephaly syndrome",
+   "rank": 3,
+   "baseline_rank": 3,
+   "rank_change": 0,
+   "final_score": 0.557982,
+   "base_score": 0.557982,
+   "phenotype_score": 1.0,
+   "retrieval_score": 0.447477,
+   "population": {
+    "status": "available",
+    "level": "GENE_LEVEL",
+    "signal": 0.620711,
+    "components_used": [
+     "gnomad_sas",
+     "sas_vs_global"
+    ],
+    "indigen": {
+     "status": "unavailable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_global": {
+     "status": "available",
+     "caf": 0.00020393375869374314,
+     "signal": 0.7621540762902019
+    },
+    "gnomad_south_asian": {
+     "status": "available",
+     "caf": 0.00020983372489041056,
+     "signal": 0.6850490196078431
+    },
+    "sas_vs_global": {
+     "status": "available",
+     "log2_ratio": 0.041145954026403135,
+     "signal": 0.5563725490196079
+    },
+    "genes": [
+     {
+      "input_gene": "DIAPH1",
+      "normalized_gene": "DIAPH1",
+      "mapping_source": "gnomAD/GENCODE gene lookup",
+      "mapping_status": "mapped",
+      "gnomad_status": "available",
+      "indigen_status": "unavailable"
+     }
+    ]
+   },
+   "population_contribution": 0.0,
+   "phenotype_evidence": {
+    "score": 1.0,
+    "confidence": "Strong phenotype overlap",
+    "label": "Strong phenotype overlap",
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "matched_fraction": 1.0,
+    "matched_hpo_ids": [
+     "HP:0001250",
+     "HP:0001252",
+     "HP:0001263",
+     "HP:0004322"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "missing_phenotypes": [
+     "Poor speech",
+     "Microcephaly",
+     "Hypoplasia of the corpus callosum",
+     "Bronchiectasis",
+     "Infantile onset",
+     "Cerebral visual impairment",
+     "Autosomal recessive inheritance",
+     "Optic atrophy"
+    ],
+    "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+    "contradicting_phenotypes": []
+   },
+   "retrieval_evidence": {
+    "score": 0.447477,
+    "confidence": "retrieval score (not a probability)",
+    "label": "retrieval score (not a probability)",
+    "sources": []
+   },
+   "population_evidence": {
+    "indian_signal": null,
+    "global_signal": 0.7621540762902019,
+    "status": "available",
+    "confidence": "",
+    "label": "population frequency is not disease probability",
+    "category": "NEUTRAL"
+   },
+   "genes": [
+    "DIAPH1"
+   ],
+   "evidence_items": [
+    {
+     "id": "C3-E1",
+     "category": "NEUTRAL",
+     "aspect": "Semantic Knowledge Retrieval",
+     "description": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4475. This is a rank-based similarity score, not a probability.",
+     "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+     "type": "retrieval",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E2",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+     "source": "HPO annotation OMIM:616632 -> HP:0001250",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E3",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+     "source": "HPO annotation OMIM:616632 -> HP:0001252",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E4",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+     "source": "HPO annotation OMIM:616632 -> HP:0001263",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E5",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+     "source": "HPO annotation OMIM:616632 -> HP:0004322",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E6",
+     "category": "MISSING",
+     "aspect": "Phenotype Match",
+     "description": "10 phenotype(s) annotated to Seizures, cortical blindness, and microcephaly syndrome are not stated in the patient record (e.g. Poor speech, Microcephaly, Hypoplasia of the corpus callosum, Bronchiectasis, Infantile onset, Cerebral visual impairment, Autosomal recessive inheritance, Optic atrophy); their absence is not established.",
+     "source": "HPO annotation OMIM:616632",
+     "type": "disease_phenotype_unverified",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E7",
+     "category": "SUPPORTING",
+     "aspect": "Associated Genetics",
+     "description": "The knowledge base associates DIAPH1 with Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+     "source": "HPO phenotype_to_genes (OMIM record OMIM:616632)",
+     "type": "gene_association",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E8",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No patient variant data was provided; no variant-level genetic evidence is available.",
+     "source": "patient input",
+     "type": "variant_evidence_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E9",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 2.098e-04 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E10",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 2.039e-04 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E11",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+     "source": "IndiGen",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C3-E12",
+     "category": "NEUTRAL",
+     "aspect": "Score Breakdown",
+     "description": "Base score 0.5580 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4475; population contribution 0.0000; final 0.5580; rank 3. w_population = 0: population evidence did not modify the ranking.",
+     "source": "ranking pipeline (Phase 3R)",
+     "type": "score_breakdown",
+     "confidence": "",
+     "score": null
+    }
+   ],
+   "evidence_sources": [
+    "HPO annotation OMIM:616632",
+    "HPO annotation OMIM:616632 -> HP:0001250",
+    "HPO annotation OMIM:616632 -> HP:0001252",
+    "HPO annotation OMIM:616632 -> HP:0001263",
+    "HPO annotation OMIM:616632 -> HP:0004322",
+    "HPO phenotype_to_genes (OMIM record OMIM:616632)",
+    "IndiGen",
+    "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+    "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+    "patient input",
+    "ranking pipeline (Phase 3R)",
+    "retrieval:pritamdeka/S-PubMedBert-MS-MARCO"
+   ],
+   "packet": {
+    "candidate_id": "OMIM:616632",
+    "disease_name": "Seizures, cortical blindness, and microcephaly syndrome",
+    "rank": 3,
+    "baseline_rank": 3,
+    "source_db": "OMIM",
+    "evidence": [
+     {
+      "id": "C3-E1",
+      "type": "retrieval",
+      "text": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4475. This is a rank-based similarity score, not a probability.",
+      "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+      "data": {
+       "retrieval_score": 0.447477,
+       "strategy": "hpo_expansion_sym"
+      }
+     },
+     {
+      "id": "C3-E2",
+      "type": "phenotype_match",
+      "text": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+      "source": "HPO annotation OMIM:616632 -> HP:0001250",
+      "data": {
+       "hpo_id": "HP:0001250",
+       "term": "Seizure",
+       "mention": "seizures",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C3-E3",
+      "type": "phenotype_match",
+      "text": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+      "source": "HPO annotation OMIM:616632 -> HP:0001252",
+      "data": {
+       "hpo_id": "HP:0001252",
+       "term": "Hypotonia",
+       "mention": "hypotonia",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C3-E4",
+      "type": "phenotype_match",
+      "text": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+      "source": "HPO annotation OMIM:616632 -> HP:0001263",
+      "data": {
+       "hpo_id": "HP:0001263",
+       "term": "Global developmental delay",
+       "mention": "developmental delay",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C3-E5",
+      "type": "phenotype_match",
+      "text": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+      "source": "HPO annotation OMIM:616632 -> HP:0004322",
+      "data": {
+       "hpo_id": "HP:0004322",
+       "term": "Short stature",
+       "mention": "short stature",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C3-E6",
+      "type": "disease_phenotype_unverified",
+      "text": "10 phenotype(s) annotated to Seizures, cortical blindness, and microcephaly syndrome are not stated in the patient record (e.g. Poor speech, Microcephaly, Hypoplasia of the corpus callosum, Bronchiectasis, Infantile onset, Cerebral visual impairment, Autosomal recessive inheritance, Optic atrophy); their absence is not established.",
+      "source": "HPO annotation OMIM:616632",
+      "data": {
+       "hpo_ids": [
+        "HP:0002465",
+        "HP:0000252",
+        "HP:0002079",
+        "HP:0002110",
+        "HP:0003593",
+        "HP:0100704",
+        "HP:0000007",
+        "HP:0000648"
+       ],
+       "names": [
+        "Poor speech",
+        "Microcephaly",
+        "Hypoplasia of the corpus callosum",
+        "Bronchiectasis",
+        "Infantile onset",
+        "Cerebral visual impairment",
+        "Autosomal recessive inheritance",
+        "Optic atrophy"
+       ],
+       "total": 10
+      }
+     },
+     {
+      "id": "C3-E7",
+      "type": "gene_association",
+      "text": "The knowledge base associates DIAPH1 with Seizures, cortical blindness, and microcephaly syndrome (OMIM:616632).",
+      "source": "HPO phenotype_to_genes (OMIM record OMIM:616632)",
+      "data": {
+       "genes": [
+        "DIAPH1"
+       ]
+      }
+     },
+     {
+      "id": "C3-E8",
+      "type": "variant_evidence_unavailable",
+      "text": "No patient variant data was provided; no variant-level genetic evidence is available.",
+      "source": "patient input",
+      "data": {}
+     },
+     {
+      "id": "C3-E9",
+      "type": "population_evidence",
+      "text": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 2.098e-04 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 0.00020983372489041056,
+       "population": "gnomAD South Asian"
+      }
+     },
+     {
+      "id": "C3-E10",
+      "type": "population_evidence",
+      "text": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 2.039e-04 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 0.00020393375869374314,
+       "population": "gnomAD global"
+      }
+     },
+     {
+      "id": "C3-E11",
+      "type": "population_unavailable",
+      "text": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+      "source": "IndiGen",
+      "data": {
+       "status": "unavailable"
+      }
+     },
+     {
+      "id": "C3-E12",
+      "type": "score_breakdown",
+      "text": "Base score 0.5580 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4475; population contribution 0.0000; final 0.5580; rank 3. w_population = 0: population evidence did not modify the ranking.",
+      "source": "ranking pipeline (Phase 3R)",
+      "data": {
+       "phenotype_score": 1.0,
+       "retrieval_score": 0.447477,
+       "weights": {
+        "w_phenotype": 0.2,
+        "w_retrieval": 0.8,
+        "w_population": 0.0,
+        "population_reference": 0.5
+       },
+       "base_score": 0.557982,
+       "population_status": "available",
+       "population_signal": 0.620711,
+       "population_contribution": 0.0,
+       "final_score": 0.557982,
+       "rank": 3,
+       "baseline_rank": 3,
+       "rank_change": 0,
+       "recomputed_base_score": 0.557982,
+       "recomputed_final_score": 0.557982,
+       "matches_backend": true
+      }
+     }
+    ],
+    "evidence_ids": [
+     "C3-E1",
+     "C3-E2",
+     "C3-E3",
+     "C3-E4",
+     "C3-E5",
+     "C3-E6",
+     "C3-E7",
+     "C3-E8",
+     "C3-E9",
+     "C3-E10",
+     "C3-E11",
+     "C3-E12"
+    ],
+    "groups": {
+     "supporting": [
+      "C3-E2",
+      "C3-E3",
+      "C3-E4",
+      "C3-E5"
+     ],
+     "unverified": [
+      "C3-E6"
+     ],
+     "contradictory": [],
+     "genetic": [
+      "C3-E7"
+     ],
+     "population": [
+      "C3-E9",
+      "C3-E10",
+      "C3-E11"
+     ]
+    },
+    "labels": {
+     "label": "Strong phenotype overlap",
+     "matched_fraction": 1.0,
+     "conflicting_evidence": false,
+     "labels": [
+      "Strong phenotype overlap"
+     ],
+     "calibrated": false
+    },
+    "completeness": {
+     "available": [
+      "phenotype overlap",
+      "gene association",
+      "population evidence"
+     ],
+     "unavailable": [],
+     "fraction": 1.0,
+     "literature": "not assessed in this phase",
+     "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+    },
+    "score_breakdown": {
+     "phenotype_score": 1.0,
+     "retrieval_score": 0.447477,
+     "weights": {
+      "w_phenotype": 0.2,
+      "w_retrieval": 0.8,
+      "w_population": 0.0,
+      "population_reference": 0.5
+     },
+     "base_score": 0.557982,
+     "population_status": "available",
+     "population_signal": 0.620711,
+     "population_contribution": 0.0,
+     "final_score": 0.557982,
+     "rank": 3,
+     "baseline_rank": 3,
+     "rank_change": 0,
+     "recomputed_base_score": 0.557982,
+     "recomputed_final_score": 0.557982,
+     "matches_backend": true,
+     "population_note": "w_population = 0: population evidence did not modify the ranking."
+    },
+    "genes": [
+     "DIAPH1"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "negated_mentions": []
+   },
+   "labels": {
+    "label": "Strong phenotype overlap",
+    "matched_fraction": 1.0,
+    "conflicting_evidence": false,
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "calibrated": false
+   },
+   "evidence_completeness": {
+    "available": [
+     "phenotype overlap",
+     "gene association",
+     "population evidence"
+    ],
+    "unavailable": [],
+    "fraction": 1.0,
+    "literature": "not assessed in this phase",
+    "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+   },
+   "score_breakdown": {
+    "phenotype_score": 1.0,
+    "retrieval_score": 0.447477,
+    "weights": {
+     "w_phenotype": 0.2,
+     "w_retrieval": 0.8,
+     "w_population": 0.0,
+     "population_reference": 0.5
+    },
+    "base_score": 0.557982,
+    "population_status": "available",
+    "population_signal": 0.620711,
+    "population_contribution": 0.0,
+    "final_score": 0.557982,
+    "rank": 3,
+    "baseline_rank": 3,
+    "rank_change": 0,
+    "recomputed_base_score": 0.557982,
+    "recomputed_final_score": 0.557982,
+    "matches_backend": true,
+    "population_note": "w_population = 0: population evidence did not modify the ranking."
+   },
+   "label_rules": {
+    "Strong phenotype overlap": "matched_fraction >= 0.75 (share of the patient's mapped HPO terms that are annotated to the disease)",
+    "Partial phenotype overlap": "0.40 <= matched_fraction < 0.75",
+    "Limited supporting evidence": "0 < matched_fraction < 0.40",
+    "Insufficient evidence": "matched_fraction == 0, or the patient has no mapped HPO terms",
+    "Conflicting evidence": "the patient record explicitly negates a phenotype that is annotated to the disease (shown in addition to the overlap label)"
+   }
+  },
+  {
+   "disease_id": "OMIM:245570",
+   "disease_name": "Epilepsy, focal, with speech disorder and with or without impaired intellectual development",
+   "rank": 4,
+   "baseline_rank": 4,
+   "rank_change": 0,
+   "final_score": 0.556574,
+   "base_score": 0.556574,
+   "phenotype_score": 1.0,
+   "retrieval_score": 0.445717,
+   "population": {
+    "status": "available",
+    "level": "GENE_LEVEL",
+    "signal": 0.0,
+    "components_used": [
+     "gnomad_sas"
+    ],
+    "indigen": {
+     "status": "unavailable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_global": {
+     "status": "available",
+     "caf": 1.779944872889636e-05,
+     "signal": 0.4158563949139865
+    },
+    "gnomad_south_asian": {
+     "status": "available",
+     "caf": 0.0,
+     "signal": 0.0
+    },
+    "sas_vs_global": {
+     "status": "unavailable",
+     "log2_ratio": null,
+     "signal": null
+    },
+    "genes": [
+     {
+      "input_gene": "GRIN2A",
+      "normalized_gene": "GRIN2A",
+      "mapping_source": "gnomAD/GENCODE gene lookup",
+      "mapping_status": "mapped",
+      "gnomad_status": "available",
+      "indigen_status": "unavailable"
+     }
+    ]
+   },
+   "population_contribution": 0.0,
+   "phenotype_evidence": {
+    "score": 1.0,
+    "confidence": "Strong phenotype overlap",
+    "label": "Strong phenotype overlap",
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "matched_fraction": 1.0,
+    "matched_hpo_ids": [
+     "HP:0001250",
+     "HP:0001252",
+     "HP:0001263",
+     "HP:0004322"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "missing_phenotypes": [
+     "Bilateral tonic-clonic seizure",
+     "Delayed speech and language development",
+     "Pes cavus",
+     "Developmental regression",
+     "Focal impaired awareness seizure",
+     "Atonic seizure",
+     "Short nose",
+     "Aphasia"
+    ],
+    "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+    "contradicting_phenotypes": []
+   },
+   "retrieval_evidence": {
+    "score": 0.445717,
+    "confidence": "retrieval score (not a probability)",
+    "label": "retrieval score (not a probability)",
+    "sources": []
+   },
+   "population_evidence": {
+    "indian_signal": null,
+    "global_signal": 0.4158563949139865,
+    "status": "available",
+    "confidence": "",
+    "label": "population frequency is not disease probability",
+    "category": "NEUTRAL"
+   },
+   "genes": [
+    "GRIN2A"
+   ],
+   "evidence_items": [
+    {
+     "id": "C4-E1",
+     "category": "NEUTRAL",
+     "aspect": "Semantic Knowledge Retrieval",
+     "description": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4457. This is a rank-based similarity score, not a probability.",
+     "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+     "type": "retrieval",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E2",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+     "source": "HPO annotation OMIM:245570 -> HP:0001250",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E3",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+     "source": "HPO annotation OMIM:245570 -> HP:0001252",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E4",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+     "source": "HPO annotation OMIM:245570 -> HP:0001263",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E5",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+     "source": "HPO annotation OMIM:245570 -> HP:0004322",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E6",
+     "category": "MISSING",
+     "aspect": "Phenotype Match",
+     "description": "20 phenotype(s) annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development are not stated in the patient record (e.g. Bilateral tonic-clonic seizure, Delayed speech and language development, Pes cavus, Developmental regression, Focal impaired awareness seizure, Atonic seizure, Short nose, Aphasia); their absence is not established.",
+     "source": "HPO annotation OMIM:245570",
+     "type": "disease_phenotype_unverified",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E7",
+     "category": "SUPPORTING",
+     "aspect": "Associated Genetics",
+     "description": "The knowledge base associates GRIN2A with Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+     "source": "HPO phenotype_to_genes (OMIM record OMIM:245570)",
+     "type": "gene_association",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E8",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No patient variant data was provided; no variant-level genetic evidence is available.",
+     "source": "patient input",
+     "type": "variant_evidence_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E9",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E10",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 1.780e-05 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E11",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+     "source": "IndiGen",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C4-E12",
+     "category": "NEUTRAL",
+     "aspect": "Score Breakdown",
+     "description": "Base score 0.5566 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4457; population contribution 0.0000; final 0.5566; rank 4. w_population = 0: population evidence did not modify the ranking.",
+     "source": "ranking pipeline (Phase 3R)",
+     "type": "score_breakdown",
+     "confidence": "",
+     "score": null
+    }
+   ],
+   "evidence_sources": [
+    "HPO annotation OMIM:245570",
+    "HPO annotation OMIM:245570 -> HP:0001250",
+    "HPO annotation OMIM:245570 -> HP:0001252",
+    "HPO annotation OMIM:245570 -> HP:0001263",
+    "HPO annotation OMIM:245570 -> HP:0004322",
+    "HPO phenotype_to_genes (OMIM record OMIM:245570)",
+    "IndiGen",
+    "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+    "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+    "patient input",
+    "ranking pipeline (Phase 3R)",
+    "retrieval:pritamdeka/S-PubMedBert-MS-MARCO"
+   ],
+   "packet": {
+    "candidate_id": "OMIM:245570",
+    "disease_name": "Epilepsy, focal, with speech disorder and with or without impaired intellectual development",
+    "rank": 4,
+    "baseline_rank": 4,
+    "source_db": "OMIM",
+    "evidence": [
+     {
+      "id": "C4-E1",
+      "type": "retrieval",
+      "text": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4457. This is a rank-based similarity score, not a probability.",
+      "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+      "data": {
+       "retrieval_score": 0.445717,
+       "strategy": "hpo_expansion_sym"
+      }
+     },
+     {
+      "id": "C4-E2",
+      "type": "phenotype_match",
+      "text": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+      "source": "HPO annotation OMIM:245570 -> HP:0001250",
+      "data": {
+       "hpo_id": "HP:0001250",
+       "term": "Seizure",
+       "mention": "seizures",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C4-E3",
+      "type": "phenotype_match",
+      "text": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+      "source": "HPO annotation OMIM:245570 -> HP:0001252",
+      "data": {
+       "hpo_id": "HP:0001252",
+       "term": "Hypotonia",
+       "mention": "hypotonia",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C4-E4",
+      "type": "phenotype_match",
+      "text": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+      "source": "HPO annotation OMIM:245570 -> HP:0001263",
+      "data": {
+       "hpo_id": "HP:0001263",
+       "term": "Global developmental delay",
+       "mention": "developmental delay",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C4-E5",
+      "type": "phenotype_match",
+      "text": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+      "source": "HPO annotation OMIM:245570 -> HP:0004322",
+      "data": {
+       "hpo_id": "HP:0004322",
+       "term": "Short stature",
+       "mention": "short stature",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C4-E6",
+      "type": "disease_phenotype_unverified",
+      "text": "20 phenotype(s) annotated to Epilepsy, focal, with speech disorder and with or without impaired intellectual development are not stated in the patient record (e.g. Bilateral tonic-clonic seizure, Delayed speech and language development, Pes cavus, Developmental regression, Focal impaired awareness seizure, Atonic seizure, Short nose, Aphasia); their absence is not established.",
+      "source": "HPO annotation OMIM:245570",
+      "data": {
+       "hpo_ids": [
+        "HP:0002069",
+        "HP:0000750",
+        "HP:0001761",
+        "HP:0002376",
+        "HP:0002384",
+        "HP:0010819",
+        "HP:0003196",
+        "HP:0002381"
+       ],
+       "names": [
+        "Bilateral tonic-clonic seizure",
+        "Delayed speech and language development",
+        "Pes cavus",
+        "Developmental regression",
+        "Focal impaired awareness seizure",
+        "Atonic seizure",
+        "Short nose",
+        "Aphasia"
+       ],
+       "total": 20
+      }
+     },
+     {
+      "id": "C4-E7",
+      "type": "gene_association",
+      "text": "The knowledge base associates GRIN2A with Epilepsy, focal, with speech disorder and with or without impaired intellectual development (OMIM:245570).",
+      "source": "HPO phenotype_to_genes (OMIM record OMIM:245570)",
+      "data": {
+       "genes": [
+        "GRIN2A"
+       ]
+      }
+     },
+     {
+      "id": "C4-E8",
+      "type": "variant_evidence_unavailable",
+      "text": "No patient variant data was provided; no variant-level genetic evidence is available.",
+      "source": "patient input",
+      "data": {}
+     },
+     {
+      "id": "C4-E9",
+      "type": "population_evidence",
+      "text": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 0.0,
+       "population": "gnomAD South Asian"
+      }
+     },
+     {
+      "id": "C4-E10",
+      "type": "population_evidence",
+      "text": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 1.780e-05 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 1.779944872889636e-05,
+       "population": "gnomAD global"
+      }
+     },
+     {
+      "id": "C4-E11",
+      "type": "population_unavailable",
+      "text": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+      "source": "IndiGen",
+      "data": {
+       "status": "unavailable"
+      }
+     },
+     {
+      "id": "C4-E12",
+      "type": "score_breakdown",
+      "text": "Base score 0.5566 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4457; population contribution 0.0000; final 0.5566; rank 4. w_population = 0: population evidence did not modify the ranking.",
+      "source": "ranking pipeline (Phase 3R)",
+      "data": {
+       "phenotype_score": 1.0,
+       "retrieval_score": 0.445717,
+       "weights": {
+        "w_phenotype": 0.2,
+        "w_retrieval": 0.8,
+        "w_population": 0.0,
+        "population_reference": 0.5
+       },
+       "base_score": 0.556574,
+       "population_status": "available",
+       "population_signal": 0.0,
+       "population_contribution": 0.0,
+       "final_score": 0.556574,
+       "rank": 4,
+       "baseline_rank": 4,
+       "rank_change": 0,
+       "recomputed_base_score": 0.556574,
+       "recomputed_final_score": 0.556574,
+       "matches_backend": true
+      }
+     }
+    ],
+    "evidence_ids": [
+     "C4-E1",
+     "C4-E2",
+     "C4-E3",
+     "C4-E4",
+     "C4-E5",
+     "C4-E6",
+     "C4-E7",
+     "C4-E8",
+     "C4-E9",
+     "C4-E10",
+     "C4-E11",
+     "C4-E12"
+    ],
+    "groups": {
+     "supporting": [
+      "C4-E2",
+      "C4-E3",
+      "C4-E4",
+      "C4-E5"
+     ],
+     "unverified": [
+      "C4-E6"
+     ],
+     "contradictory": [],
+     "genetic": [
+      "C4-E7"
+     ],
+     "population": [
+      "C4-E9",
+      "C4-E10",
+      "C4-E11"
+     ]
+    },
+    "labels": {
+     "label": "Strong phenotype overlap",
+     "matched_fraction": 1.0,
+     "conflicting_evidence": false,
+     "labels": [
+      "Strong phenotype overlap"
+     ],
+     "calibrated": false
+    },
+    "completeness": {
+     "available": [
+      "phenotype overlap",
+      "gene association",
+      "population evidence"
+     ],
+     "unavailable": [],
+     "fraction": 1.0,
+     "literature": "not assessed in this phase",
+     "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+    },
+    "score_breakdown": {
+     "phenotype_score": 1.0,
+     "retrieval_score": 0.445717,
+     "weights": {
+      "w_phenotype": 0.2,
+      "w_retrieval": 0.8,
+      "w_population": 0.0,
+      "population_reference": 0.5
+     },
+     "base_score": 0.556574,
+     "population_status": "available",
+     "population_signal": 0.0,
+     "population_contribution": 0.0,
+     "final_score": 0.556574,
+     "rank": 4,
+     "baseline_rank": 4,
+     "rank_change": 0,
+     "recomputed_base_score": 0.556574,
+     "recomputed_final_score": 0.556574,
+     "matches_backend": true,
+     "population_note": "w_population = 0: population evidence did not modify the ranking."
+    },
+    "genes": [
+     "GRIN2A"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "negated_mentions": []
+   },
+   "labels": {
+    "label": "Strong phenotype overlap",
+    "matched_fraction": 1.0,
+    "conflicting_evidence": false,
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "calibrated": false
+   },
+   "evidence_completeness": {
+    "available": [
+     "phenotype overlap",
+     "gene association",
+     "population evidence"
+    ],
+    "unavailable": [],
+    "fraction": 1.0,
+    "literature": "not assessed in this phase",
+    "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+   },
+   "score_breakdown": {
+    "phenotype_score": 1.0,
+    "retrieval_score": 0.445717,
+    "weights": {
+     "w_phenotype": 0.2,
+     "w_retrieval": 0.8,
+     "w_population": 0.0,
+     "population_reference": 0.5
+    },
+    "base_score": 0.556574,
+    "population_status": "available",
+    "population_signal": 0.0,
+    "population_contribution": 0.0,
+    "final_score": 0.556574,
+    "rank": 4,
+    "baseline_rank": 4,
+    "rank_change": 0,
+    "recomputed_base_score": 0.556574,
+    "recomputed_final_score": 0.556574,
+    "matches_backend": true,
+    "population_note": "w_population = 0: population evidence did not modify the ranking."
+   },
+   "label_rules": {
+    "Strong phenotype overlap": "matched_fraction >= 0.75 (share of the patient's mapped HPO terms that are annotated to the disease)",
+    "Partial phenotype overlap": "0.40 <= matched_fraction < 0.75",
+    "Limited supporting evidence": "0 < matched_fraction < 0.40",
+    "Insufficient evidence": "matched_fraction == 0, or the patient has no mapped HPO terms",
+    "Conflicting evidence": "the patient record explicitly negates a phenotype that is annotated to the disease (shown in addition to the overlap label)"
+   }
+  },
+  {
+   "disease_id": "OMIM:620027",
+   "disease_name": "Neurodevelopmental disorder with microcephaly, short stature, and speech delay",
+   "rank": 5,
+   "baseline_rank": 5,
+   "rank_change": 0,
+   "final_score": 0.553729,
+   "base_score": 0.553729,
+   "phenotype_score": 1.0,
+   "retrieval_score": 0.442161,
+   "population": {
+    "status": "available",
+    "level": "GENE_LEVEL",
+    "signal": 0.0,
+    "components_used": [
+     "gnomad_sas"
+    ],
+    "indigen": {
+     "status": "unavailable",
+     "caf": null,
+     "signal": null
+    },
+    "gnomad_global": {
+     "status": "available",
+     "caf": 0.0,
+     "signal": 0.0
+    },
+    "gnomad_south_asian": {
+     "status": "available",
+     "caf": 0.0,
+     "signal": 0.0
+    },
+    "sas_vs_global": {
+     "status": "unavailable",
+     "log2_ratio": null,
+     "signal": null
+    },
+    "genes": [
+     {
+      "input_gene": "TRAPPC10",
+      "normalized_gene": "TRAPPC10",
+      "mapping_source": "gnomAD/GENCODE gene lookup",
+      "mapping_status": "mapped",
+      "gnomad_status": "available",
+      "indigen_status": "unavailable"
+     }
+    ]
+   },
+   "population_contribution": 0.0,
+   "phenotype_evidence": {
+    "score": 1.0,
+    "confidence": "Strong phenotype overlap",
+    "label": "Strong phenotype overlap",
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "matched_fraction": 1.0,
+    "matched_hpo_ids": [
+     "HP:0001250",
+     "HP:0001252",
+     "HP:0001263",
+     "HP:0004322"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "missing_phenotypes": [
+     "Poor speech",
+     "Microcephaly",
+     "Upslanted palpebral fissure",
+     "Delayed speech and language development",
+     "Absent speech",
+     "Delayed ability to walk",
+     "Severe intellectual disability",
+     "Childhood onset"
+    ],
+    "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+    "contradicting_phenotypes": []
+   },
+   "retrieval_evidence": {
+    "score": 0.442161,
+    "confidence": "retrieval score (not a probability)",
+    "label": "retrieval score (not a probability)",
+    "sources": []
+   },
+   "population_evidence": {
+    "indian_signal": null,
+    "global_signal": 0.0,
+    "status": "available",
+    "confidence": "",
+    "label": "population frequency is not disease probability",
+    "category": "NEUTRAL"
+   },
+   "genes": [
+    "TRAPPC10"
+   ],
+   "evidence_items": [
+    {
+     "id": "C5-E1",
+     "category": "NEUTRAL",
+     "aspect": "Semantic Knowledge Retrieval",
+     "description": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4422. This is a rank-based similarity score, not a probability.",
+     "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+     "type": "retrieval",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E2",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+     "source": "HPO annotation OMIM:620027 -> HP:0001250",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E3",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+     "source": "HPO annotation OMIM:620027 -> HP:0001252",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E4",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+     "source": "HPO annotation OMIM:620027 -> HP:0001263",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E5",
+     "category": "SUPPORTING",
+     "aspect": "Phenotype Match",
+     "description": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+     "source": "HPO annotation OMIM:620027 -> HP:0004322",
+     "type": "phenotype_match",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E6",
+     "category": "MISSING",
+     "aspect": "Phenotype Match",
+     "description": "12 phenotype(s) annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay are not stated in the patient record (e.g. Poor speech, Microcephaly, Upslanted palpebral fissure, Delayed speech and language development, Absent speech, Delayed ability to walk, Severe intellectual disability, Childhood onset); their absence is not established.",
+     "source": "HPO annotation OMIM:620027",
+     "type": "disease_phenotype_unverified",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E7",
+     "category": "SUPPORTING",
+     "aspect": "Associated Genetics",
+     "description": "The knowledge base associates TRAPPC10 with Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+     "source": "HPO phenotype_to_genes (OMIM record OMIM:620027)",
+     "type": "gene_association",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E8",
+     "category": "MISSING",
+     "aspect": "Associated Genetics",
+     "description": "No patient variant data was provided; no variant-level genetic evidence is available.",
+     "source": "patient input",
+     "type": "variant_evidence_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E9",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E10",
+     "category": "NEUTRAL",
+     "aspect": "Population Frequency Evidence",
+     "description": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+     "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+     "type": "population_evidence",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E11",
+     "category": "MISSING",
+     "aspect": "Population Frequency Evidence",
+     "description": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+     "source": "IndiGen",
+     "type": "population_unavailable",
+     "confidence": "",
+     "score": null
+    },
+    {
+     "id": "C5-E12",
+     "category": "NEUTRAL",
+     "aspect": "Score Breakdown",
+     "description": "Base score 0.5537 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4422; population contribution 0.0000; final 0.5537; rank 5. w_population = 0: population evidence did not modify the ranking.",
+     "source": "ranking pipeline (Phase 3R)",
+     "type": "score_breakdown",
+     "confidence": "",
+     "score": null
+    }
+   ],
+   "evidence_sources": [
+    "HPO annotation OMIM:620027",
+    "HPO annotation OMIM:620027 -> HP:0001250",
+    "HPO annotation OMIM:620027 -> HP:0001252",
+    "HPO annotation OMIM:620027 -> HP:0001263",
+    "HPO annotation OMIM:620027 -> HP:0004322",
+    "HPO phenotype_to_genes (OMIM record OMIM:620027)",
+    "IndiGen",
+    "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+    "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+    "patient input",
+    "ranking pipeline (Phase 3R)",
+    "retrieval:pritamdeka/S-PubMedBert-MS-MARCO"
+   ],
+   "packet": {
+    "candidate_id": "OMIM:620027",
+    "disease_name": "Neurodevelopmental disorder with microcephaly, short stature, and speech delay",
+    "rank": 5,
+    "baseline_rank": 5,
+    "source_db": "OMIM",
+    "evidence": [
+     {
+      "id": "C5-E1",
+      "type": "retrieval",
+      "text": "Retrieved by strategy 'hpo_expansion_sym' over S-PubMedBERT; retrieval score 0.4422. This is a rank-based similarity score, not a probability.",
+      "source": "retrieval:pritamdeka/S-PubMedBert-MS-MARCO",
+      "data": {
+       "retrieval_score": 0.442161,
+       "strategy": "hpo_expansion_sym"
+      }
+     },
+     {
+      "id": "C5-E2",
+      "type": "phenotype_match",
+      "text": "Patient mention 'seizures' maps to HP:0001250 (Seizure; synonym), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+      "source": "HPO annotation OMIM:620027 -> HP:0001250",
+      "data": {
+       "hpo_id": "HP:0001250",
+       "term": "Seizure",
+       "mention": "seizures",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C5-E3",
+      "type": "phenotype_match",
+      "text": "Patient mention 'hypotonia' maps to HP:0001252 (Hypotonia; exact), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+      "source": "HPO annotation OMIM:620027 -> HP:0001252",
+      "data": {
+       "hpo_id": "HP:0001252",
+       "term": "Hypotonia",
+       "mention": "hypotonia",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C5-E4",
+      "type": "phenotype_match",
+      "text": "Patient mention 'developmental delay' maps to HP:0001263 (Global developmental delay; synonym), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+      "source": "HPO annotation OMIM:620027 -> HP:0001263",
+      "data": {
+       "hpo_id": "HP:0001263",
+       "term": "Global developmental delay",
+       "mention": "developmental delay",
+       "mapping_method": "synonym",
+       "mapping_score": 0.95
+      }
+     },
+     {
+      "id": "C5-E5",
+      "type": "phenotype_match",
+      "text": "Patient mention 'short stature' maps to HP:0004322 (Short stature; exact), which is annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+      "source": "HPO annotation OMIM:620027 -> HP:0004322",
+      "data": {
+       "hpo_id": "HP:0004322",
+       "term": "Short stature",
+       "mention": "short stature",
+       "mapping_method": "exact",
+       "mapping_score": 1.0
+      }
+     },
+     {
+      "id": "C5-E6",
+      "type": "disease_phenotype_unverified",
+      "text": "12 phenotype(s) annotated to Neurodevelopmental disorder with microcephaly, short stature, and speech delay are not stated in the patient record (e.g. Poor speech, Microcephaly, Upslanted palpebral fissure, Delayed speech and language development, Absent speech, Delayed ability to walk, Severe intellectual disability, Childhood onset); their absence is not established.",
+      "source": "HPO annotation OMIM:620027",
+      "data": {
+       "hpo_ids": [
+        "HP:0002465",
+        "HP:0000252",
+        "HP:0000582",
+        "HP:0000750",
+        "HP:0001344",
+        "HP:0031936",
+        "HP:0010864",
+        "HP:0011463"
+       ],
+       "names": [
+        "Poor speech",
+        "Microcephaly",
+        "Upslanted palpebral fissure",
+        "Delayed speech and language development",
+        "Absent speech",
+        "Delayed ability to walk",
+        "Severe intellectual disability",
+        "Childhood onset"
+       ],
+       "total": 12
+      }
+     },
+     {
+      "id": "C5-E7",
+      "type": "gene_association",
+      "text": "The knowledge base associates TRAPPC10 with Neurodevelopmental disorder with microcephaly, short stature, and speech delay (OMIM:620027).",
+      "source": "HPO phenotype_to_genes (OMIM record OMIM:620027)",
+      "data": {
+       "genes": [
+        "TRAPPC10"
+       ]
+      }
+     },
+     {
+      "id": "C5-E8",
+      "type": "variant_evidence_unavailable",
+      "text": "No patient variant data was provided; no variant-level genetic evidence is available.",
+      "source": "patient input",
+      "data": {}
+     },
+     {
+      "id": "C5-E9",
+      "type": "population_evidence",
+      "text": "gnomAD South Asian: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD South Asian (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 0.0,
+       "population": "gnomAD South Asian"
+      }
+     },
+     {
+      "id": "C5-E10",
+      "type": "population_evidence",
+      "text": "gnomAD global: cumulative allele frequency of ClinVar pathogenic/likely-pathogenic variants in the associated gene(s) = 0.000e+00 (gene-level; population frequency is not a disease probability).",
+      "source": "gnomAD global (gnomAD v4.1 exomes + ClinVar)",
+      "data": {
+       "caf": 0.0,
+       "population": "gnomAD global"
+      }
+     },
+     {
+      "id": "C5-E11",
+      "type": "population_unavailable",
+      "text": "IndiGen population evidence: unavailable. Access to the IndiGen dataset is required.",
+      "source": "IndiGen",
+      "data": {
+       "status": "unavailable"
+      }
+     },
+     {
+      "id": "C5-E12",
+      "type": "score_breakdown",
+      "text": "Base score 0.5537 = 0.2 x phenotype 1.0000 + 0.8 x retrieval 0.4422; population contribution 0.0000; final 0.5537; rank 5. w_population = 0: population evidence did not modify the ranking.",
+      "source": "ranking pipeline (Phase 3R)",
+      "data": {
+       "phenotype_score": 1.0,
+       "retrieval_score": 0.442161,
+       "weights": {
+        "w_phenotype": 0.2,
+        "w_retrieval": 0.8,
+        "w_population": 0.0,
+        "population_reference": 0.5
+       },
+       "base_score": 0.553729,
+       "population_status": "available",
+       "population_signal": 0.0,
+       "population_contribution": 0.0,
+       "final_score": 0.553729,
+       "rank": 5,
+       "baseline_rank": 5,
+       "rank_change": 0,
+       "recomputed_base_score": 0.553729,
+       "recomputed_final_score": 0.553729,
+       "matches_backend": true
+      }
+     }
+    ],
+    "evidence_ids": [
+     "C5-E1",
+     "C5-E2",
+     "C5-E3",
+     "C5-E4",
+     "C5-E5",
+     "C5-E6",
+     "C5-E7",
+     "C5-E8",
+     "C5-E9",
+     "C5-E10",
+     "C5-E11",
+     "C5-E12"
+    ],
+    "groups": {
+     "supporting": [
+      "C5-E2",
+      "C5-E3",
+      "C5-E4",
+      "C5-E5"
+     ],
+     "unverified": [
+      "C5-E6"
+     ],
+     "contradictory": [],
+     "genetic": [
+      "C5-E7"
+     ],
+     "population": [
+      "C5-E9",
+      "C5-E10",
+      "C5-E11"
+     ]
+    },
+    "labels": {
+     "label": "Strong phenotype overlap",
+     "matched_fraction": 1.0,
+     "conflicting_evidence": false,
+     "labels": [
+      "Strong phenotype overlap"
+     ],
+     "calibrated": false
+    },
+    "completeness": {
+     "available": [
+      "phenotype overlap",
+      "gene association",
+      "population evidence"
+     ],
+     "unavailable": [],
+     "fraction": 1.0,
+     "literature": "not assessed in this phase",
+     "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+    },
+    "score_breakdown": {
+     "phenotype_score": 1.0,
+     "retrieval_score": 0.442161,
+     "weights": {
+      "w_phenotype": 0.2,
+      "w_retrieval": 0.8,
+      "w_population": 0.0,
+      "population_reference": 0.5
+     },
+     "base_score": 0.553729,
+     "population_status": "available",
+     "population_signal": 0.0,
+     "population_contribution": 0.0,
+     "final_score": 0.553729,
+     "rank": 5,
+     "baseline_rank": 5,
+     "rank_change": 0,
+     "recomputed_base_score": 0.553729,
+     "recomputed_final_score": 0.553729,
+     "matches_backend": true,
+     "population_note": "w_population = 0: population evidence did not modify the ranking."
+    },
+    "genes": [
+     "TRAPPC10"
+    ],
+    "matched_phenotypes": [
+     {
+      "hpo_id": "HP:0001250",
+      "name": "Seizure"
+     },
+     {
+      "hpo_id": "HP:0001252",
+      "name": "Hypotonia"
+     },
+     {
+      "hpo_id": "HP:0001263",
+      "name": "Global developmental delay"
+     },
+     {
+      "hpo_id": "HP:0004322",
+      "name": "Short stature"
+     }
+    ],
+    "negated_mentions": []
+   },
+   "labels": {
+    "label": "Strong phenotype overlap",
+    "matched_fraction": 1.0,
+    "conflicting_evidence": false,
+    "labels": [
+     "Strong phenotype overlap"
+    ],
+    "calibrated": false
+   },
+   "evidence_completeness": {
+    "available": [
+     "phenotype overlap",
+     "gene association",
+     "population evidence"
+    ],
+    "unavailable": [],
+    "fraction": 1.0,
+    "literature": "not assessed in this phase",
+    "rule": "evidence_completeness = (number of available evidence categories) / 3 over: phenotype overlap, disease-gene association in the knowledge base, population-frequency evidence. Literature evidence is not assessed in this phase and is reported as such. Completeness says how much was checked, not how likely the disease is."
+   },
+   "score_breakdown": {
+    "phenotype_score": 1.0,
+    "retrieval_score": 0.442161,
+    "weights": {
+     "w_phenotype": 0.2,
+     "w_retrieval": 0.8,
+     "w_population": 0.0,
+     "population_reference": 0.5
+    },
+    "base_score": 0.553729,
+    "population_status": "available",
+    "population_signal": 0.0,
+    "population_contribution": 0.0,
+    "final_score": 0.553729,
+    "rank": 5,
+    "baseline_rank": 5,
+    "rank_change": 0,
+    "recomputed_base_score": 0.553729,
+    "recomputed_final_score": 0.553729,
+    "matches_backend": true,
+    "population_note": "w_population = 0: population evidence did not modify the ranking."
+   },
+   "label_rules": {
+    "Strong phenotype overlap": "matched_fraction >= 0.75 (share of the patient's mapped HPO terms that are annotated to the disease)",
+    "Partial phenotype overlap": "0.40 <= matched_fraction < 0.75",
+    "Limited supporting evidence": "0 < matched_fraction < 0.40",
+    "Insufficient evidence": "matched_fraction == 0, or the patient has no mapped HPO terms",
+    "Conflicting evidence": "the patient record explicitly negates a phenotype that is annotated to the disease (shown in addition to the overlap label)"
+   }
+  }
+ ]
+}

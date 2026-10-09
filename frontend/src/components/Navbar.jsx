@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
+import { useAuth } from './AuthContext';
 
 export default function Navbar() {
+  const { session, logout } = useAuth();
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
       <div className="h-20 max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop flex items-center justify-between">
@@ -37,6 +39,12 @@ export default function Navbar() {
           >
             Counterfactual Lab
           </Link>
+          <Link
+            className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
+            to="/digital-twin"
+          >
+            Digital Twin
+          </Link>
           <a
             className="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg"
             href="/#technology"
@@ -58,11 +66,19 @@ export default function Navbar() {
           >
             Diagnostic Workspace
           </Link>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-2xs">
-            <span className="material-symbols-outlined text-on-primary text-[18px]">
-              person
-            </span>
-          </div>
+          {session ? (
+            <div className="flex items-center gap-space-xs ml-space-2xs">
+              <span className="hidden md:inline text-label-sm text-on-surface-variant max-w-[160px] truncate" title={session.user?.email}>{session.user?.email}</span>
+              <button type="button" onClick={logout}
+                className="inline-flex items-center gap-1 px-space-sm py-space-2xs rounded-lg font-label-md text-label-md text-primary bg-surface-container-lowest hover:bg-surface-container transition-colors">
+                <span className="material-symbols-outlined text-[16px]">logout</span> Log out
+              </button>
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-2xs">
+              <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
+            </div>
+          )}
         </div>
       </div>
     </header>

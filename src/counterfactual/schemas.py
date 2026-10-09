@@ -9,19 +9,19 @@ class CounterfactualRequest(BaseModel):
     added_phenotypes: Optional[List[str]] = Field(default_factory=list, description="List of HPO IDs or phenotype terms to add.")
     removed_phenotypes: Optional[List[str]] = Field(default_factory=list, description="List of HPO IDs or phenotype terms to remove.")
     modified_phenotypes: Optional[List[str]] = Field(default_factory=list, description="Exact target phenotype list for custom state comparison.")
-    exp_config: Optional[str] = Field(default="rag_indigen_gnomad", description="Population ranking experiment configuration.")
+    exp_config: Optional[str] = Field(default="rag_south_asian_global", description="Population ranking experiment configuration.")
     top_k: Optional[int] = Field(default=5, description="Top K candidate diseases to compare.")
 
 class CandidateRankDelta(BaseModel):
     disease_id: str
     disease_name: str
-    original_rank: int
-    counterfactual_rank: int
-    original_score: float
-    counterfactual_score: float
-    score_delta: float
-    rank_change: int  # e.g., +2 (moved up), -2 (moved down), 0 (unchanged)
-    trend: str        # "up", "down", "unchanged"
+    original_rank: Optional[int] = None            # None = not in the baseline list (no score is invented)
+    counterfactual_rank: Optional[int] = None      # None = not in the scenario list
+    original_score: Optional[float] = None
+    counterfactual_score: Optional[float] = None
+    score_delta: Optional[float] = None
+    rank_change: Optional[int] = None  # baseline_rank - counterfactual_rank: +2 moved up, -2 moved down, 0 unchanged, None if absent from either list
+    trend: str = "unchanged"          # "up", "down", "unchanged", "left_list", "entered_list"
 
 class PhenotypeImpactItem(BaseModel):
     hpo_id: str

@@ -1,214 +1,77 @@
-import os
-import sys
-from typing import List, Dict, Any, Optional
+"""Evidence fusion (Phase 4R repair).
+
+Takes the REAL ranked candidates from the upstream pipeline and organises their evidence into separate, traceable groups:
+phenotype evidence, retrieval evidence, disease-phenotype association, genetic evidence, population-frequency evidence, and
+contradictory / unverified evidence. It does not recompute or alter retrieval, phenotype, population or final scores, does not
+add scores from different scales, and does not treat correlated sources as independent proof. Labels are descriptive rules
+(see labels.py), not calibrated confidences. Legacy keys used by the UI / tests are kept.
+"""
+from typing import Any, Dict, List, Optional
+
+from src.reasoning.evidence_builder import EvidenceBuilder
+from src.reasoning.labels import LABEL_RULES
+
+_CATEGORY = {
+    "phenotype_match": "SUPPORTING", "gene_association": "SUPPORTING",
+    "contradiction": "CONTRADICTING",
+    "patient_phenotype_not_annotated": "MISSING", "disease_phenotype_unverified": "MISSING", "disease_phenotypes_unavailable": "MISSING",
+    "gene_association_unavailable": "MISSING", "variant_evidence_unavailable": "MISSING", "population_unavailable": "MISSING",
+    "retrieval": "NEUTRAL", "population_evidence": "NEUTRAL", "score_breakdown": "NEUTRAL",   # frequency / similarity are not support
+}
+_ASPECT = {
+    "phenotype_match": "Phenotype Match", "patient_phenotype_not_annotated": "Phenotype Match", "disease_phenotype_unverified": "Phenotype Match",
+    "disease_phenotypes_unavailable": "Phenotype Match", "retrieval": "Semantic Knowledge Retrieval", "gene_association": "Associated Genetics",
+    "gene_association_unavailable": "Associated Genetics", "variant_evidence_unavailable": "Associated Genetics",
+    "population_evidence": "Population Frequency Evidence", "population_unavailable": "Population Frequency Evidence",
+    "contradiction": "Contradictory Evidence", "score_breakdown": "Score Breakdown",
+}
+
 
 class EvidenceFusionEngine:
-    """
-    Evidence Fusion Engine (Phase 4).
-    Consumes real Phase 3 ranked candidate outputs and synthesizes multi-modal evidence objects
-    categorized into SUPPORTING, CONTRADICTING, MISSING, and NEUTRAL with rule-based confidence.
-    Follows strict diagnostic safety and evidence traceability rules.
-    """
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None, disease_records: Optional[Dict[str, Dict[str, Any]]] = None,
+                 weights: Optional[Dict[str, float]] = None):
         self.config = config or {}
+        self.builder = EvidenceBuilder(disease_records or {}, weights or {})
 
-    def fuse_candidate_evidence(
-        self,
-        candidate: Dict[str, Any],
-        extracted_phenotypes: List[Dict[str, Any]],
-        hpo_terms: List[Dict[str, Any]],
-        rank: int
-    ) -> Dict[str, Any]:
-        """
-        Fuses clinical observation inputs with Phase 3 candidate attributes.
-        """
-        disease_id = candidate.get("disease_id", "Unknown")
-        disease_name = candidate.get("disease_name", "Unknown Disease")
-        final_score = float(candidate.get("final_score", 0.0))
-        p_score = float(candidate.get("phenotype_score", 0.0))
-        r_score = float(candidate.get("retrieval_score", 0.0))
-        ind_signal = float(candidate.get("indian_population_signal", 0.50))
-        gno_signal = float(candidate.get("global_population_signal", 0.50))
-        pop_status = candidate.get("population_evidence_status", "unavailable")
+    def set_context(self, disease_records: Dict[str, Dict[str, Any]], weights: Dict[str, float]):
+        self.builder.disease_records = disease_records
+        self.builder.weights = weights
 
-        matched_hpo_ids = candidate.get("matched_hpo_ids", [])
-        associated_genes = candidate.get("associated_genes", [])
-        associated_phenotypes = candidate.get("associated_phenotypes", [])
-        evidence_sources = candidate.get("evidence_sources", [])
-
-        # Clean evidence sources
-        cleaned_sources = []
-        for s in evidence_sources:
-            if s and s.strip() and s.strip() not in cleaned_sources:
-                cleaned_sources.append(s.strip())
-
-        # 1. Phenotype Evidence Analysis
-        # Patient's extracted HPO IDs
-        patient_hpo_map = {item.get("hpo_id"): item.get("name", item.get("hpo_id")) for item in hpo_terms if item.get("hpo_id")}
-        matched_phenotypes = []
-        for hid in matched_hpo_ids:
-            name = patient_hpo_map.get(hid, hid)
-            matched_phenotypes.append({"hpo_id": hid, "name": name})
-
-        # Missing disease phenotypes: phenotypes known for disease but not noted in patient
-        missing_phenotypes = []
-        patient_hpo_set = set(patient_hpo_map.keys())
-        for ph in associated_phenotypes:
-            if ph not in patient_hpo_set and ph not in [m["name"] for m in matched_phenotypes]:
-                missing_phenotypes.append(ph)
-        missing_phenotypes = missing_phenotypes[:6]  # keep top relevant
-
-        # Classify Phenotype Evidence Confidence
-        if len(matched_hpo_ids) >= 3 or p_score >= 0.70:
-            phenotype_confidence = "High"
-        elif len(matched_hpo_ids) >= 1 or p_score >= 0.30:
-            phenotype_confidence = "Moderate"
-        elif p_score > 0.0:
-            phenotype_confidence = "Low"
-        else:
-            phenotype_confidence = "Unknown"
-
-        # 2. Retrieval Evidence Analysis
-        if r_score >= 0.85:
-            retrieval_confidence = "High"
-        elif r_score >= 0.65:
-            retrieval_confidence = "Moderate"
-        elif r_score > 0.0:
-            retrieval_confidence = "Low"
-        else:
-            retrieval_confidence = "Unknown"
-
-        # 3. Population Evidence Analysis
-        if pop_status == "available":
-            pop_category = "SUPPORTING" if (ind_signal > 0.52 or gno_signal > 0.52) else "NEUTRAL"
-            if ind_signal > 0.60:
-                population_confidence = "High"
-            elif ind_signal > 0.50:
-                population_confidence = "Moderate"
-            else:
-                population_confidence = "Low"
-        elif pop_status == "not_found":
-            pop_category = "NEUTRAL"
-            population_confidence = "Unknown"
-        else:
-            pop_category = "MISSING"
-            population_confidence = "Unknown"
-
-        # Itemized Evidence Trail
-        evidence_items = []
-        if matched_hpo_ids:
-            evidence_items.append({
-                "category": "SUPPORTING",
-                "aspect": "Phenotype Match",
-                "description": f"Matched {len(matched_hpo_ids)} patient HPO phenotype(s): {', '.join([m['name'] for m in matched_phenotypes])}",
-                "confidence": phenotype_confidence,
-                "score": p_score,
-                "source": "Human Phenotype Ontology (HPO)"
-            })
-        else:
-            evidence_items.append({
-                "category": "MISSING",
-                "aspect": "Phenotype Match",
-                "description": "No direct overlapping HPO terms between patient presentation and disease profile",
-                "confidence": "Low",
-                "score": p_score,
-                "source": "Human Phenotype Ontology (HPO)"
-            })
-
-        evidence_items.append({
-            "category": "SUPPORTING" if r_score >= 0.60 else "NEUTRAL",
-            "aspect": "Semantic Knowledge Retrieval",
-            "description": f"Vector semantic similarity score of {r_score:.4f} against curated disease knowledge base",
-            "confidence": retrieval_confidence,
-            "score": r_score,
-            "source": "S-PubMedBERT Dense Index"
-        })
-
-        if associated_genes:
-            evidence_items.append({
-                "category": "SUPPORTING",
-                "aspect": "Associated Genetics",
-                "description": f"Established genetic associations documented in {', '.join(associated_genes)}",
-                "confidence": "High",
-                "score": None,
-                "source": "Orphanet / OMIM / Monarch"
-            })
-        else:
-            evidence_items.append({
-                "category": "NEUTRAL",
-                "aspect": "Associated Genetics",
-                "description": "No causal gene mapped in current annotation record",
-                "confidence": "Unknown",
-                "score": None,
-                "source": "Disease Annotations"
-            })
-
-        if pop_status == "available":
-            evidence_items.append({
-                "category": pop_category,
-                "aspect": "Population Ancestry Prior",
-                "description": f"Ancestral variant frequency calibrated with Indian (IndiGen signal: {ind_signal:.4f}) and global (gnomAD signal: {gno_signal:.4f}) datasets",
-                "confidence": population_confidence,
-                "score": ind_signal,
-                "source": "IndiGen & gnomAD SAS"
-            })
-        else:
-            evidence_items.append({
-                "category": "MISSING",
-                "aspect": "Population Ancestry Prior",
-                "description": "Ancestral allele frequency data unavailable for associated gene(s); unweighted neutral baseline applied",
-                "confidence": "Unknown",
-                "score": 0.50,
-                "source": "IndiGen / gnomAD"
-            })
-
+    def fuse_candidate_evidence(self, candidate: Dict[str, Any], extracted_phenotypes: List[Dict[str, Any]], hpo_terms: List[Dict[str, Any]],
+                                rank: int, clinical_text: str = "", retrieval_metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        pk = self.builder.build(candidate, rank, hpo_terms, extracted_phenotypes, clinical_text, retrieval_metadata)
+        pop = candidate.get("population") or {}
+        pop_status = candidate.get("population_evidence_status", pop.get("status", "unavailable"))
+        ph, rt = candidate.get("phenotype_score"), candidate.get("retrieval_score")
+        lbl = pk["labels"]
+        unverified = [i for i in pk["evidence"] if i["type"] == "disease_phenotype_unverified"]
+        items = [{"id": i["id"], "category": _CATEGORY.get(i["type"], "NEUTRAL"), "aspect": _ASPECT.get(i["type"], i["type"]),
+                  "description": i["text"], "source": i["source"], "type": i["type"], "confidence": "", "score": None}
+                 for i in pk["evidence"]]
         return {
-            "disease_id": disease_id,
-            "disease_name": disease_name,
-            "rank": rank,
-            "final_score": final_score,
-            "phenotype_evidence": {
-                "score": p_score,
-                "confidence": phenotype_confidence,
-                "matched_hpo_ids": matched_hpo_ids,
-                "matched_phenotypes": matched_phenotypes,
-                "missing_phenotypes": missing_phenotypes,
-                "contradicting_phenotypes": []
-            },
-            "retrieval_evidence": {
-                "score": r_score,
-                "confidence": retrieval_confidence,
-                "sources": cleaned_sources
-            },
-            "population_evidence": {
-                "indian_signal": ind_signal,
-                "global_signal": gno_signal,
-                "status": pop_status,
-                "confidence": population_confidence,
-                "category": pop_category
-            },
-            "genes": associated_genes,
-            "evidence_items": evidence_items,
-            "evidence_sources": cleaned_sources
+            "disease_id": candidate.get("disease_id"), "disease_name": candidate.get("disease_name"), "rank": rank,
+            "baseline_rank": candidate.get("baseline_rank"), "rank_change": candidate.get("rank_change"),
+            "final_score": candidate.get("final_score"), "base_score": candidate.get("base_score"),
+            "phenotype_score": ph, "retrieval_score": rt, "population": pop,
+            "population_contribution": candidate.get("population_contribution"),
+            "phenotype_evidence": {"score": ph, "confidence": lbl["label"], "label": lbl["label"], "labels": lbl["labels"],
+                                   "matched_fraction": lbl["matched_fraction"],
+                                   "matched_hpo_ids": [m["hpo_id"] for m in pk["matched_phenotypes"]], "matched_phenotypes": pk["matched_phenotypes"],
+                                   "missing_phenotypes": [n for i in unverified for n in i["data"].get("names", [])],
+                                   "unverified_note": "Annotated to the disease but not stated in the patient record; absence is not established.",
+                                   "contradicting_phenotypes": pk["negated_mentions"]},
+            "retrieval_evidence": {"score": rt, "confidence": "retrieval score (not a probability)", "label": "retrieval score (not a probability)",
+                                   "sources": [candidate.get("source_db")] if candidate.get("source_db") else []},
+            "population_evidence": {"indian_signal": candidate.get("indian_population_signal"), "global_signal": candidate.get("global_population_signal"),
+                                    "status": pop_status, "confidence": "", "label": "population frequency is not disease probability",
+                                    "category": "NEUTRAL" if pop_status == "available" else "MISSING"},
+            "genes": pk["genes"], "evidence_items": items, "evidence_sources": sorted({i["source"] for i in pk["evidence"]}),
+            "packet": pk, "labels": lbl, "evidence_completeness": pk["completeness"], "score_breakdown": pk["score_breakdown"],
+            "label_rules": LABEL_RULES,
         }
 
-    def fuse_all_candidates(
-        self,
-        ranked_candidates: List[Dict[str, Any]],
-        extracted_phenotypes: List[Dict[str, Any]],
-        hpo_terms: List[Dict[str, Any]],
-        top_k: int = 5
-    ) -> List[Dict[str, Any]]:
-        """
-        Fuses evidence for all top-k candidates.
-        """
-        fused = []
-        for idx, cand in enumerate(ranked_candidates[:top_k], 1):
-            fused_cand = self.fuse_candidate_evidence(
-                candidate=cand,
-                extracted_phenotypes=extracted_phenotypes,
-                hpo_terms=hpo_terms,
-                rank=idx
-            )
-            fused.append(fused_cand)
-        return fused
+    def fuse_all_candidates(self, ranked_candidates: List[Dict[str, Any]], extracted_phenotypes: List[Dict[str, Any]],
+                            hpo_terms: List[Dict[str, Any]], top_k: int = 5, clinical_text: str = "",
+                            retrieval_metadata: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        return [self.fuse_candidate_evidence(c, extracted_phenotypes, hpo_terms, i, clinical_text, retrieval_metadata)
+                for i, c in enumerate(ranked_candidates[:top_k], 1)]

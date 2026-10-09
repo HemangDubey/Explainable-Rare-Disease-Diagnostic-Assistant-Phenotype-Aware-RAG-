@@ -57,11 +57,11 @@ export default function FeaturesSection() {
               </div>
               <h3 className="font-title-md text-title-md text-primary mb-space-xs">03 Population Priors</h3>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Incorporates Indian population allele frequencies to refine candidate disease ranking, preventing common regional variations from distorting scores.
+                Reports gnomAD (global and South Asian) allele-frequency evidence for each candidate's genes. IndiGen is unavailable and the population weight is 0, so this evidence is shown but does not change the ranking.
               </p>
             </div>
             <div className="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary">
-              IndiGen Prior Engine
+              gnomAD evidence (IndiGen unavailable)
             </div>
           </div>
 
@@ -73,7 +73,7 @@ export default function FeaturesSection() {
               </div>
               <h3 className="font-title-md text-title-md text-primary mb-space-xs">04 Explainable Output</h3>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Every diagnostic suggestion is paired with specific phenotype overlap metrics, scientific literature citations, and transparent Bayesian prior shifts.
+                Every diagnostic suggestion is paired with specific phenotype overlap metrics, scientific literature citations, and transparent score breakdowns.
               </p>
             </div>
             <div className="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary">

@@ -1,113 +1,85 @@
-import os
-import sys
-import json
-from typing import List, Dict, Any, Optional
+"""Evidence-linked differential diagnosis (Phase 4R).
+
+Built only from the fused candidates (which carry the real upstream scores and evidence packets). A candidate is never
+described as confirmed or ruled out; a phenotype that is merely not stated in the patient record is "unverified", not absent
+(absence requires an explicit negation in the record, reported as contradictory evidence). Score differences are the real
+components of the ranking, not new numbers.
+"""
+from typing import Any, Dict, List, Optional
+
+DISCLAIMER = ("This differential comparison is an algorithmic decision-support aid for research use. It does not establish or exclude any diagnosis; "
+              "lower-ranked candidates are not ruled out, and absence of evidence in this system does not establish absence of disease. "
+              "Qualified clinical interpretation and genetic confirmation are required.")
+
+
+def _names(c: Dict[str, Any]) -> List[str]:
+    return [m.get("name") or m.get("hpo_id") for m in c.get("phenotype_evidence", {}).get("matched_phenotypes", [])]
+
+
+def _delta(a: Optional[float], b: Optional[float]) -> Optional[float]:
+    return None if a is None or b is None else round(a - b, 6)
+
 
 class DifferentialEngine:
-    """
-    Differential Diagnosis Engine (Phase 4).
-    Compares prioritized candidate diseases side-by-side.
-    Identifies distinguishing phenotypes, score breakdowns, and comparative clinical rationales.
-    Never refers to any candidate as a confirmed diagnosis.
-    """
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
 
-    def generate_differential(
-        self,
-        fused_candidates: List[Dict[str, Any]],
-        clinical_case_text: str = ""
-    ) -> Dict[str, Any]:
-        """
-        Generates comparative differential analysis across top candidates.
-        """
+    def generate_differential(self, fused_candidates: List[Dict[str, Any]], clinical_case_text: str = "") -> Dict[str, Any]:
         if not fused_candidates:
-            return {
-                "top_candidates": [],
-                "comparisons": [],
-                "distinguishing_features": [],
-                "summary": "No candidate diseases available for differential analysis."
-            }
-
-        top_candidates = []
-        for cand in fused_candidates:
-            top_candidates.append({
-                "rank": cand.get("rank"),
-                "disease_id": cand.get("disease_id"),
-                "disease_name": cand.get("disease_name"),
-                "final_score": cand.get("final_score"),
-                "phenotype_score": cand.get("phenotype_evidence", {}).get("score"),
-                "retrieval_score": cand.get("retrieval_evidence", {}).get("score"),
-                "indian_population_signal": cand.get("population_evidence", {}).get("indian_signal"),
-                "global_population_signal": cand.get("population_evidence", {}).get("global_signal"),
-                "population_status": cand.get("population_evidence", {}).get("status"),
-                "matched_phenotypes": [m.get("name") for m in cand.get("phenotype_evidence", {}).get("matched_phenotypes", [])],
-                "missing_phenotypes": cand.get("phenotype_evidence", {}).get("missing_phenotypes", []),
-                "associated_genes": cand.get("genes", [])
+            return {"top_candidates": [], "comparisons": [], "distinguishing_features": [],
+                    "summary": "No candidate diseases available for differential analysis.", "disclaimer": DISCLAIMER}
+        top = []
+        for c in fused_candidates:
+            pk = c.get("packet") or {}
+            top.append({
+                "rank": c.get("rank"), "disease_id": c.get("disease_id"), "disease_name": c.get("disease_name"), "final_score": c.get("final_score"),
+                "base_score": c.get("base_score"), "phenotype_score": c.get("phenotype_score", c.get("phenotype_evidence", {}).get("score")),
+                "retrieval_score": c.get("retrieval_score", c.get("retrieval_evidence", {}).get("score")),
+                "population_contribution": c.get("population_contribution"), "baseline_rank": c.get("baseline_rank"), "rank_change": c.get("rank_change"),
+                "indian_population_signal": c.get("population_evidence", {}).get("indian_signal"),
+                "global_population_signal": c.get("population_evidence", {}).get("global_signal"),
+                "population_status": c.get("population_evidence", {}).get("status"),
+                "matched_phenotypes": _names(c),
+                "missing_phenotypes": c.get("phenotype_evidence", {}).get("missing_phenotypes", []),     # = unverified, not absent
+                "contradictory_evidence": [e["text"] for e in c.get("evidence_items", []) if e.get("type") == "contradiction"],
+                "associated_genes": c.get("genes", []),
+                "evidence_label": (c.get("labels") or {}).get("label"), "evidence_labels": (c.get("labels") or {}).get("labels"),
+                "evidence_completeness": (c.get("evidence_completeness") or {}).get("fraction"),
+                "score_breakdown": c.get("score_breakdown"),
+                "source_references": [{"evidence_id": e["id"], "source": e["source"]} for e in pk.get("evidence", [])
+                                      if e["type"] in ("phenotype_match", "gene_association", "contradiction")],
+                "uncertainties": ["Retrieval and ranking scores are not probabilities.",
+                                  "Phenotypes not stated in the record are unverified, not absent.",
+                                  "Literature evidence was not assessed."]
+                                 + ([] if (c.get("evidence_completeness") or {}).get("fraction") == 1.0 else
+                                    ["Unavailable evidence categories: " + ", ".join((c.get("evidence_completeness") or {}).get("unavailable", []) or ["unknown"])]),
             })
-
-        # Pairwise / comparative insights against Rank #1
-        primary = top_candidates[0]
+        primary = top[0]
         comparisons = []
-        for idx in range(1, len(top_candidates)):
-            cand = top_candidates[idx]
-            diff_score = primary["final_score"] - cand["final_score"]
-            
-            # Phenotype differences
-            primary_phenos = set(primary["matched_phenotypes"])
-            cand_phenos = set(cand["matched_phenotypes"])
-            
-            shared = list(primary_phenos.intersection(cand_phenos))
-            primary_unique = list(primary_phenos - cand_phenos)
-            cand_unique = list(cand_phenos - primary_phenos)
-
-            # Why Rank 1 is prioritized over this candidate:
-            reasons = []
-            if primary["phenotype_score"] > cand["phenotype_score"]:
-                reasons.append(f"Higher phenotype alignment score ({primary['phenotype_score']:.4f} vs {cand['phenotype_score']:.4f})")
-            if primary["retrieval_score"] > cand["retrieval_score"]:
-                reasons.append(f"Stronger semantic retrieval similarity ({primary['retrieval_score']:.4f} vs {cand['retrieval_score']:.4f})")
-            if primary["indian_population_signal"] > cand["indian_population_signal"] and primary["population_status"] == "available":
-                reasons.append(f"Elevated Indian population frequency signal ({primary['indian_population_signal']:.4f} vs {cand['indian_population_signal']:.4f})")
-
+        for cand in top[1:]:
+            ps, cs = set(primary["matched_phenotypes"]), set(cand["matched_phenotypes"])
+            factors = []
+            for key, label in (("phenotype_score", "phenotype score"), ("retrieval_score", "retrieval score"), ("base_score", "base score"),
+                               ("population_contribution", "population contribution")):
+                d = _delta(primary.get(key), cand.get(key))
+                if d is not None and d != 0:
+                    factors.append(f"{label}: rank #{primary['rank']} {primary[key]:.4f} vs rank #{cand['rank']} {cand[key]:.4f} (difference {d:+.4f})")
             comparisons.append({
-                "compared_rank": cand["rank"],
-                "compared_disease": cand["disease_name"],
-                "score_delta": round(diff_score, 4),
-                "shared_phenotypes": shared,
-                "primary_differentiating_phenotypes": primary_unique,
-                "candidate_differentiating_phenotypes": cand_unique,
-                "distinguishing_factors": reasons if reasons else ["Slight variations in multi-factor weighted composite scoring."]
+                "compared_rank": cand["rank"], "compared_disease": cand["disease_name"],
+                "score_delta": _delta(primary["final_score"], cand["final_score"]),
+                "shared_phenotypes": sorted(ps & cs),
+                "primary_differentiating_phenotypes": sorted(ps - cs), "candidate_differentiating_phenotypes": sorted(cs - ps),
+                "distinguishing_factors": factors or ["No difference in the recorded score components."],
+                "note": "Rank order reflects the recorded score components only; the lower-ranked candidate is not ruled out.",
             })
-
-        # Distinguishing diagnostic phenotype checklist
-        all_matched = set()
-        for c in top_candidates:
-            all_matched.update(c["matched_phenotypes"])
-
-        all_missing = set()
-        for c in top_candidates:
-            all_missing.update(c["missing_phenotypes"])
-
-        distinguishing_features = [
-            {
-                "phenotype": feat,
-                "clinical_utility": "Can help discriminate between top differential candidates if confirmed in physical exam or genetics."
-            }
-            for feat in list(all_missing)[:5]
-        ]
-
-        summary = (
-            f"The differential diagnosis is led by Rank #1 candidate '{primary['disease_name']}' "
-            f"(composite score: {primary['final_score']:.4f}), which demonstrates the strongest overall combination "
-            f"of phenotype congruence and knowledge retrieval. Additional candidates remain in the differential "
-            f"due to overlapping clinical signs."
-        )
-
-        return {
-            "top_candidates": top_candidates,
-            "comparisons": comparisons,
-            "distinguishing_features": distinguishing_features,
-            "summary": summary,
-            "disclaimer": "This differential comparison is an algorithmic decision-support aid and does not constitute a confirmed medical diagnosis. Clinical correlation and genetic confirmation are required."
-        }
+        names = lambda c: set(c["missing_phenotypes"])  # noqa: E731
+        common_unverified = set.intersection(*[names(c) for c in top]) if top else set()
+        feats = []
+        for c in top:
+            for p in sorted(names(c) - common_unverified)[:3]:
+                feats.append({"phenotype": p, "annotated_to": c["disease_name"],
+                              "note": "Annotated to this candidate but not stated in the patient record. Verifying it could help compare candidates; its absence is not established."})
+        summary = (f"Rank #1 is '{primary['disease_name']}' (final score {primary['final_score']:.4f}; evidence label: {primary['evidence_label']}). "
+                   f"{len(top) - 1} other candidate(s) are listed for comparison. Scores are retrieval/ranking scores, not probabilities; "
+                   f"no candidate is confirmed or excluded.")
+        return {"top_candidates": top, "comparisons": comparisons, "distinguishing_features": feats[:8], "summary": summary, "disclaimer": DISCLAIMER}

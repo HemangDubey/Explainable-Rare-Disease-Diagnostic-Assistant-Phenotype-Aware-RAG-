@@ -41,7 +41,7 @@ class CounterfactualEngine:
             p3_base = self.ranking_pipeline.run(
                 clinical_text=baseline_text,
                 top_k_disease=request.top_k or 5,
-                exp_config=request.exp_config or "rag_indigen_gnomad"
+                exp_config=request.exp_config or "rag_south_asian_global"
             )
             baseline_hpos = case_ctx.get("hpo_terms") if case_ctx and case_ctx.get("hpo_terms") else p3_base.get("hpo_terms", [])
             baseline_ranked = p3_base.get("ranked_candidates", [])
@@ -52,12 +52,13 @@ class CounterfactualEngine:
 
         modified_hpos = list(baseline_hpos)
         target_term_label = ""
+        skipped_terms = []   # phrases that could not be mapped to an HPO term
 
         op = request.operation.lower()
 
         # Handle ADD operation
         if op == "add":
-            terms_to_add = request.added_phenotypes or []
+            terms_to_add = list(request.added_phenotypes or [])
             if request.phenotype_id:
                 terms_to_add.append(request.phenotype_id)
             
@@ -70,11 +71,11 @@ class CounterfactualEngine:
                     if best["hpo_id"] not in [h.get("hpo_id") for h in modified_hpos]:
                         modified_hpos.append(best)
                 else:
-                    modified_hpos.append({"hpo_id": t_add, "name": t_add, "score": 1.0})
+                    skipped_terms.append(t_add)
 
         # Handle REMOVE operation
         elif op == "remove":
-            terms_to_remove = request.removed_phenotypes or []
+            terms_to_remove = list(request.removed_phenotypes or [])
             if request.phenotype_id:
                 terms_to_remove.append(request.phenotype_id)
             
@@ -109,7 +110,7 @@ class CounterfactualEngine:
                 if norm_res:
                     modified_hpos.append(norm_res[0])
                 else:
-                    modified_hpos.append({"hpo_id": t_target, "name": t_target, "score": 1.0})
+                    skipped_terms.append(t_target)
 
         # Handle COMPARE / CUSTOM STATE operation
         elif op == "compare":
@@ -121,20 +122,13 @@ class CounterfactualEngine:
                 if norm_res:
                     modified_hpos.append(norm_res[0])
                 else:
-                    modified_hpos.append({"hpo_id": ct, "name": ct, "score": 1.0})
+                    skipped_terms.append(ct)
 
-        # Construct modified clinical text query for pipeline execution
-        modified_phenotype_names = [h.get("name", h.get("hpo_id")) for h in modified_hpos]
-        if modified_phenotype_names:
-            modified_text = "Patient presents with " + ", ".join(modified_phenotype_names)
-        else:
-            modified_text = "Patient presents with non-specific observations."
-
-        # Rerun Phase 3 ranking pipeline on modified phenotype set
-        p3_counterfactual = self.ranking_pipeline.run(
-            clinical_text=modified_text,
+        # Re-run ranking directly on the modified HPO term set (no text re-parsing)
+        p3_counterfactual = self.ranking_pipeline.run_from_hpo_terms(
+            modified_hpos,
             top_k_disease=request.top_k or 5,
-            exp_config=request.exp_config or "rag_indigen_gnomad"
+            exp_config=request.exp_config or "rag_south_asian_global"
         )
         cf_ranked = p3_counterfactual.get("ranked_candidates", [])
 
@@ -144,11 +138,11 @@ class CounterfactualEngine:
             counterfactual_ranked=cf_ranked
         )
 
-        def run_pipeline_for_ablation(text_query, top_k_disease):
-            return self.ranking_pipeline.run(
-                clinical_text=text_query,
+        def run_pipeline_for_ablation(hpo_list, top_k_disease):
+            return self.ranking_pipeline.run_from_hpo_terms(
+                hpo_list,
                 top_k_disease=top_k_disease,
-                exp_config=request.exp_config or "rag_indigen_gnomad"
+                exp_config=request.exp_config or "rag_south_asian_global"
             )
 
         phenotype_impacts = calculate_phenotype_impacts(
@@ -163,6 +157,9 @@ class CounterfactualEngine:
             deltas=ranking_deltas,
             impacts=phenotype_impacts
         )
+
+        if skipped_terms:
+            insights.append("Could not map to an HPO term and therefore not applied: " + ", ".join(skipped_terms))
 
         exp_id = f"exp_{str(uuid.uuid4())[:8]}"
 

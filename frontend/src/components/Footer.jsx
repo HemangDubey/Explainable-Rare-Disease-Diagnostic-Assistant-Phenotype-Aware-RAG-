@@ -10,7 +10,7 @@ export default function Footer() {
             <BrandLogo className="h-8 w-auto object-contain" />
             <div>
               <p className="font-headline-sm text-headline-sm text-primary leading-tight">Explainable Rare-Disease Diagnostic Assistant</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">Phenotype-Aware RAG with Indian Population Priors</p>
+              <p className="font-body-sm text-body-sm text-on-surface-variant">Phenotype-Aware RAG with Population-Frequency Evidence</p>
             </div>
           </div>
           <nav className="flex flex-wrap items-center gap-space-md">

@@ -63,18 +63,18 @@ export default function ArchitectureSection() {
               <span className="material-symbols-outlined text-secondary text-[24px]">add</span>
               <div className="flex-1 bg-surface-container-low p-space-md rounded-lg shadow-sm">
                 <div className="flex items-center justify-between mb-space-2xs">
-                  <span className="font-headline-sm text-headline-sm text-primary">IndiGen Prior Engine</span>
-                  <span className="px-space-2xs py-space-3xs rounded bg-primary-fixed/40 text-on-primary-fixed font-code-metric text-label-sm">Population Prior</span>
+                  <span className="font-headline-sm text-headline-sm text-primary">Population Evidence (ClinVar × gnomAD)</span>
+                  <span className="px-space-2xs py-space-3xs rounded bg-primary-fixed/40 text-on-primary-fixed font-code-metric text-label-sm">Evidence only · weight 0</span>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant">Allele frequency adjustments calculated across Indian sub-population cohorts.</p>
+                <p className="font-body-sm text-body-sm text-on-surface-variant">gnomAD (global and South Asian) allele-frequency evidence is reported per candidate gene; it is not applied to the ranking.</p>
               </div>
               <span className="material-symbols-outlined text-secondary text-[24px]">arrow_forward</span>
               <div className="flex-1 bg-surface-container-low p-space-md rounded-lg shadow-sm">
                 <div className="flex items-center justify-between mb-space-2xs">
-                  <span className="font-headline-sm text-headline-sm text-primary">Bayesian Re-Ranker</span>
-                  <span className="font-code-metric text-label-sm text-secondary font-semibold">P(D | Pheno, Pop)</span>
+                  <span className="font-headline-sm text-headline-sm text-primary">Weighted Re-Ranker</span>
+                  <span className="font-code-metric text-label-sm text-secondary font-semibold">score = 0.2·phenotype + 0.8·retrieval</span>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant">Calibrates posterior candidate disease distribution using combined priors.</p>
+                <p className="font-body-sm text-body-sm text-on-surface-variant">Orders candidates by a weighted phenotype and retrieval score. Scores are uncalibrated and are not probabilities.</p>
               </div>
             </div>
 
@@ -90,7 +90,7 @@ export default function ArchitectureSection() {
                 <div>
                   <h3 className="font-headline-sm text-headline-sm text-on-primary mb-space-3xs">Transparent AI Explanation Engine</h3>
                   <p className="font-body-sm text-body-sm text-on-primary-container max-w-2xl">
-                    Synthesizes retrieved clinical literature citations, HPO similarity metrics, and Indian population priors into structured, audit-ready clinical notes.
+                    Synthesizes retrieved clinical literature citations, HPO similarity metrics, and population-frequency evidence into structured, audit-ready clinical notes.
                   </p>
                 </div>
               </div>

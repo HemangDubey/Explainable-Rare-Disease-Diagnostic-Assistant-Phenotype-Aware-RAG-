@@ -12,7 +12,7 @@ export default function WorkflowSection() {
             From clinical narrative to explainable insight.
           </h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant mt-space-xs">
-            A sequential, deterministic multi-agent pipeline anchored by biomedical ontology norms and Bayesian genomic adjustments.
+            A sequential, deterministic multi-agent pipeline anchored by biomedical ontology norms and population-frequency evidence.
           </p>
         </div>
 
@@ -78,11 +78,11 @@ export default function WorkflowSection() {
               </div>
               <h4 className="font-title-md text-title-md text-primary mb-space-2xs">Population Prior</h4>
               <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-sm">
-                Bayesian re-weighting utilizing IndiGen variant frequency matrices and regional Indian genetic baselines.
+                gnomAD global and South Asian frequency evidence per gene, reported separately. IndiGen is unavailable; the population weight is 0, so ranking is unchanged.
               </p>
             </div>
             <div className="bg-surface-container p-space-2xs rounded text-center font-code-metric text-label-sm text-secondary">
-              Bayesian Prior Shift
+              Frequency Evidence
             </div>
           </div>
 

@@ -25,18 +25,36 @@ disease:
 retrieval:
   embeddings_dir: "data/embeddings"
   vector_db_dir: "data/vector_db"
+  # Model settings mirror each model's sentence-transformers config
+  # (Transformer + mean pooling [+ Normalize for MiniLM]). All vectors are L2-normalised.
   models:
     primary:
       name: "S-PubMedBERT"
+      key_dir: "spubmedbert"
       hf_id: "pritamdeka/S-PubMedBert-MS-MARCO"
       dim: 768
+      max_seq_length: 350
+      pooling: "mean"
     baseline:
       name: "MiniLM"
+      key_dir: "minilm"
       hf_id: "sentence-transformers/all-MiniLM-L6-v2"
       dim: 384
+      max_seq_length: 256
+      pooling: "mean"
   top_k_hpo: 5
   top_k_disease: 10
-  default_multi_phenotype_strategy: "mean_vector" # Strategy B: mean_vector, Strategy A: concat_text
+  candidate_pool: 50   # candidates retrieved before Phase 3 re-ranking truncates to top_k
+  default_multi_phenotype_strategy: "hpo_expansion_sym"   # mean_vector | per_phenotype_rrf | hpo_expansion | hpo_expansion_sym | concat_text
+  hpo_expansion_sym_tau: 0.1  # set from reports/retrieval_tau_calibration.json
+  hpo_expansion_tau: 0.1    # calibrated on a query set disjoint from the evaluation set
+  rrf_k: 60            # reciprocal-rank-fusion constant (Cormack et al., 2009)
+
+hpo_normalization:
+  lexical_threshold: 0.75     # token-Jaccard needed for a LEXICAL match
+  semantic_threshold: 0.88    # S-PubMedBERT cosine floor for a SEMANTIC match (calibrated on BioCreative TRAIN)
+  semantic_margin: 0.02       # min top-1 vs top-2 cosine gap, else AMBIGUOUS (calibrated on BioCreative TRAIN)
+  semantic_top_k: 5
 
 api:
   host: "0.0.0.0"
@@ -74,31 +92,47 @@ labels:
     "I-PHENOTYPE": 2
 
 population:
-  indigen_raw_dir: "data/raw/indigen"
-  gnomad_raw_dir: "data/raw/gnomad"
-  indigen_processed_dir: "data/processed/indigen"
-  gnomad_processed_dir: "data/processed/gnomad"
-  population_dir: "data/population"
-  indigen_file: "indigen_frequency.parquet"
-  gnomad_file: "gnomad_frequency.parquet"
+  # Real sources only. No synthetic generation exists in the production path.
+  indigen_raw_dir: "data/raw/indigen"                  # user-supplied IndiGen export goes here (access required)
+  indigen_processed_file: "data/processed/population/indigen_variants.parquet"
+  gnomad_gene_cache_dir: "data/raw/gnomad/gene_cache"  # per-gene records built from ClinVar P/LP + gnomAD v4.1 exome VCF (real)
+  processed_dir: "data/processed/population"
+  clinvar_min_gold_stars: 1                            # ClinVar review quality filter for P/LP variants
+  # Gene-level signal = empirical CDF of the cumulative P/LP allele frequency (see reports/population_scoring_method.md)
+  min_reference_genes: 100     # empirical-CDF reference must contain at least this many genes, else the signal is undefined
+  use_indigen: true            # automatically inactive while IndiGen data is unavailable
+  use_gnomad_global: true
+  use_gnomad_sas: false        # gnomAD South-Asian ancestry group (NOT IndiGen / not specifically Indian)
+  use_sas_vs_global: false     # log2(CAF_sas / CAF_global); defined only when both frequencies are > 0
+  min_candidate_coverage_for_tuning: 0.25   # tune w_population only if >= this share of validation candidate slots has a signal
 
+# ONE authoritative ranking configuration (also what the API uses). Weights are tuned on the VALIDATION
+# queries only (reports/ranking_weight_search.csv); see src/evaluation/evaluate_ranking.py.
+#   final = w_phenotype*phenotype_score + w_retrieval*retrieval_score + w_population*(population_signal - population_reference)
+# w_phenotype + w_retrieval = 1. The population term is an additive adjustment that is exactly 0 when
+# population evidence is missing (no fake neutral value) and when w_population = 0.
 ranking:
-  hpo_weight: 0.50
-  retrieval_weight: 0.35
-  population_weight: 0.15
+  w_phenotype: 0.20   # tuned on validation queries (reports/best_ranking_weights.json)
+  w_retrieval: 0.80
+  w_population: 0.00  # stays 0 until real population evidence is available AND a validation search selects >0
+  population_reference: 0.50
 
 evaluation:
   k_values: [1, 5, 10]
 
 llm:
-  provider: "ollama"
-  model: "gemma4:12b"
-  base_url: "http://127.0.0.1:11434"
+  # Groq is the only LLM provider. The API key comes from the GROQ_API_KEY environment variable (never from this file).
+  # GROQ_MODEL, if set, overrides `model`. Verified: model listed by the account's /models endpoint AND a real chat completion succeeded.
+  provider: "groq"
+  model: "openai/gpt-oss-120b"
   temperature: 0.1
-  max_tokens: 2000
-  timeout: 60
+  max_tokens: 2500       # includes the model's hidden reasoning tokens (reasoning_effort: low keeps them small)
+  reasoning_effort: "low"
+  timeout: 60            # seconds per request
+  max_retries: 2         # transport-level retries (429 / 5xx / connection); output-validation retries are `reasoning.max_attempts`
 
 reasoning:
+  max_attempts: 2       # bounded retries when model output is invalid
   top_k_candidates: 5
   enable_differential: true
   enable_copilot: true
@@ -107,7 +141,4 @@ reasoning:
 safety:
   allow_unverified_claims: false
 
-groq:
-  api_key: ""
-  model: "groq/compound-mini"
 

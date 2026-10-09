@@ -1,4 +1,0 @@
-Configuration,Recall@1,Recall@5,Recall@10,MRR,Avg_Rerank_Latency_ms
-Experiment A: RAG-Only,0.0,0.0,0.0,0.0,0.045
-Experiment B: RAG + Indian Prior,0.0,0.0,0.0,0.0,0.062
-Experiment C: RAG + Indian + Global Baseline,0.0,0.0,0.0,0.0,0.072

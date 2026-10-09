@@ -1,0 +1,120 @@
+{
+ "generated_at": "2026-10-09T13:10:41.039064+00:00",
+ "generator": "scripts/build_population_showcase.py",
+ "sources": {
+  "clinvar": "ClinVar variant_summary (GRCh38, germline P/LP, >=1 review star)",
+  "gnomad": "gnomAD v4.1 exomes (global and South Asian ancestry group)",
+  "indigen": "unavailable - access required (CSIR-IGIB); nothing substituted"
+ },
+ "note": "Reference allele frequencies of known pathogenic variants; examples only, not patient data. gnomAD South Asian is not India-specific.",
+ "rows": [
+  {
+   "gene": "GJB2",
+   "status": "available",
+   "variant_id": "13:20189481:A:G",
+   "clinvar_variation_id": "17000",
+   "clinical_significance": "Pathogenic",
+   "review_status": "reviewed by expert panel",
+   "gold_stars": 3,
+   "gnomad_global": {
+    "af": 0.01231599889441983,
+    "ac": 18002,
+    "an": 1461676
+   },
+   "gnomad_south_asian": {
+    "af": 2.318733044264614e-05,
+    "ac": 2,
+    "an": 86254
+   },
+   "log2_sas_vs_global": -9.05298119558537,
+   "indigen": {
+    "status": "unavailable",
+    "reason": "IndiGen dataset not available (access required)"
+   },
+   "dataset": "gnomad_v4.1_exomes",
+   "reference_genome": "GRCh38",
+   "fetched_at": "2026-10-08T18:05:48.241358+00:00"
+  },
+  {
+   "gene": "HFE",
+   "status": "available",
+   "variant_id": "6:26094198:GGCACTACGTCTTA:G",
+   "clinvar_variation_id": "1071037",
+   "clinical_significance": "Pathogenic",
+   "review_status": "criteria provided, multiple submitters, no conflicts",
+   "gold_stars": 2,
+   "gnomad_global": {
+    "af": 3.0785902519518265e-05,
+    "ac": 45,
+    "an": 1461708
+   },
+   "gnomad_south_asian": {
+    "af": 0.0,
+    "ac": 0,
+    "an": 86248
+   },
+   "log2_sas_vs_global": null,
+   "indigen": {
+    "status": "unavailable",
+    "reason": "IndiGen dataset not available (access required)"
+   },
+   "dataset": "gnomad_v4.1_exomes",
+   "reference_genome": "GRCh38",
+   "fetched_at": "2026-10-08T18:41:05.118830+00:00"
+  },
+  {
+   "gene": "HBB",
+   "status": "available",
+   "variant_id": "11:5226925:C:G",
+   "clinvar_variation_id": "15447",
+   "clinical_significance": "Pathogenic",
+   "review_status": "reviewed by expert panel",
+   "gold_stars": 3,
+   "gnomad_global": {
+    "af": 0.0002965920003726237,
+    "ac": 433,
+    "an": 1459918
+   },
+   "gnomad_south_asian": {
+    "af": 0.00470866580070514,
+    "ac": 406,
+    "an": 86224
+   },
+   "log2_sas_vs_global": 3.9887667391450012,
+   "indigen": {
+    "status": "unavailable",
+    "reason": "IndiGen dataset not available (access required)"
+   },
+   "dataset": "gnomad_v4.1_exomes",
+   "reference_genome": "GRCh38",
+   "fetched_at": "2026-10-08T18:06:06.127446+00:00"
+  },
+  {
+   "gene": "SLC25A20",
+   "status": "available",
+   "variant_id": "3:48883995:AC:A",
+   "clinvar_variation_id": "345943",
+   "clinical_significance": "Pathogenic",
+   "review_status": "criteria provided, multiple submitters, no conflicts",
+   "gold_stars": 2,
+   "gnomad_global": {
+    "af": 5.886008547031946e-05,
+    "ac": 86,
+    "an": 1461092
+   },
+   "gnomad_south_asian": {
+    "af": 0.0,
+    "ac": 0,
+    "an": 86230
+   },
+   "log2_sas_vs_global": null,
+   "indigen": {
+    "status": "unavailable",
+    "reason": "IndiGen dataset not available (access required)"
+   },
+   "dataset": "gnomad_v4.1_exomes",
+   "reference_genome": "GRCh38",
+   "fetched_at": "2026-10-08T18:02:02.020414+00:00"
+  }
+ ]
+}

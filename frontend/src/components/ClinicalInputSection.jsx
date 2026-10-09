@@ -68,7 +68,7 @@ export default function ClinicalInputSection({
         return;
       }
 
-      if (res.status === 'ENHANCEMENT_UNAVAILABLE') {
+      if (typeof res.status === 'string' && res.status.startsWith('ENHANCEMENT_')) {
         setValidationError("AI enhancement is temporarily unavailable. You can continue with the original clinical text.");
         return;
       }
@@ -201,7 +201,7 @@ export default function ClinicalInputSection({
       <div className="flex flex-wrap items-center justify-between gap-space-sm mt-space-sm pt-space-xs border-t border-outline-variant/20">
         <div className="flex items-center gap-space-xs text-label-sm text-on-surface-variant">
           <span className="material-symbols-outlined text-[16px] text-secondary">memory</span>
-          <span>End-to-End: BiomedBERT NER → HPO → FAISS → IndiGen Priors → Evidence Fusion → Explainable AI</span>
+          <span>End-to-End: BiomedBERT NER → HPO → S-PubMedBERT retrieval → Population evidence (gnomAD; IndiGen unavailable) → Evidence Fusion → Explainable AI</span>
         </div>
 
         <button

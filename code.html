@@ -678,7 +678,7 @@
 </div>
 </div>
 <div class="mt-space-md pt-space-sm border-t-0 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
-<span class="">Cohort reference: IndiGen 1,029 WGS samples &amp; 1000G South Asian</span>
+<span class="">Cohort reference: IndiGen / gnomAD integration in progress</span>
 <span class="font-code-metric font-semibold text-secondary">MAF Threshold: 0.01</span>
 </div>
 </div>
@@ -784,20 +784,20 @@
 </div>
 <div class="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.89</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.719</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">Precision</span>
 </div>
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.86</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.721</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">Recall</span>
 </div>
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-secondary font-bold">0.875</span>
+<span class="block font-headline-sm text-headline-sm text-secondary font-bold">0.720</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">F1 Score</span>
 </div>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-            Evaluated on gold-standard HPO-annotated clinical corpus of 1,200 rare disease summaries.
+            BiomedBERT, held-out test split (227 observations) of the BioCreative VIII Track 3 physical-exam corpus.
           </p>
 </div>
 <!-- Retrieval Performance -->
@@ -808,56 +808,37 @@
 </div>
 <div class="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.91</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.942</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">Recall@5</span>
 </div>
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.96</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Recall@20</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">0.980</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Recall@10</span>
 </div>
 <div class="p-space-xs bg-surface-container-low rounded-lg">
-<span class="block font-headline-sm text-headline-sm text-secondary font-bold">0.84</span>
+<span class="block font-headline-sm text-headline-sm text-secondary font-bold">0.868</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">MRR</span>
 </div>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-            Tested on PubMed + Orphanet semantic vector index with 120,000 disease profile embeddings.
+            S-PubMedBERT HPO-level retrieval over 12,880 HPO-annotated diseases. Simulated patients (4 phenotypes sampled from a disease's own annotations, 500 queries), not real patients.
           </p>
 </div>
 <!-- Ranking Comparison Analysis -->
 <div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm">
 <div class="flex items-center justify-between mb-space-md">
-<h3 class="font-title-md text-title-md text-primary">Ranking Enhancement</h3>
+<h3 class="font-title-md text-title-md text-primary">Population-Aware Ranking</h3>
 <span class="material-symbols-outlined text-secondary text-[20px]">insights</span>
 </div>
-<div class="flex flex-col gap-space-xs mb-space-md">
-<div>
-<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mb-space-3xs">
-<span class="">RAG Baseline (Top-3 Accuracy)</span>
-<span class="font-code-metric">72.4%</span>
-</div>
-<div class="w-full h-1.5 rounded-full bg-surface-container-highest">
-<div class="h-full bg-outline rounded-full" style="width: 72.4%;"></div>
-</div>
-</div>
-<div>
-<div class="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
-<span class="">+ Indian Population Prior (IndiGen)</span>
-<span class="font-code-metric font-bold text-secondary">85.8% (+13.4%)</span>
-</div>
-<div class="w-full h-1.5 rounded-full bg-surface-container-highest">
-<div class="h-full bg-secondary rounded-full" style="width: 85.8%;"></div>
-</div>
-</div>
-</div>
+<div class="mb-space-md p-space-sm bg-surface-container-low rounded-xl text-center"><span class="font-code-metric text-on-surface-variant">Pending evaluation</span></div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-            Population-aware re-ranking yields a 13.4% boost in candidate resolution on South Asian cohorts.
+            Not yet evaluated. Population frequency tables are currently prototype data, so no improvement from population priors is claimed.
           </p>
 </div>
 </div>
 <div class="w-full text-center">
 <span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-space-md py-space-xs rounded-full">
-          Live telemetry updated continuously. Research prototype evaluation data.
+          Measured on a research prototype. Not clinical validation.
         </span>
 </div>
 </div>

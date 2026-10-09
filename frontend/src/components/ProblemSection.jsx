@@ -60,7 +60,7 @@ export default function ProblemSection() {
               <span className="font-code-metric text-label-sm text-secondary block mb-space-2xs">CHALLENGE 03</span>
               <h3 className="font-headline-sm text-headline-sm text-primary mb-space-xs">Population Underrepresentation</h3>
               <p className="font-body-md text-body-md text-on-surface-variant">
-                Western-centric genomic reference baselines often mischaracterize benign common alleles in Indian subpopulations as rare or miss ultra-rare founder variations entirely.
+                Reference resources are weighted towards some ancestries, so allele frequencies can be unrepresentative for others. This project reports South Asian (gnomAD) frequencies next to global ones; Indian-specific data (IndiGen) are not available to it.
               </p>
             </div>
             <div className="mt-space-lg pt-space-sm flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">

@@ -25,7 +25,7 @@ export default function EvidenceSection() {
               <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
               <span className="font-label-sm text-label-sm text-on-surface-variant">Cohort: Pediatric Neurogenetics</span>
               <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-              <span className="font-label-sm text-label-sm text-secondary font-semibold">Population Prior: Active</span>
+              <span className="font-label-sm text-label-sm text-secondary font-semibold">Population evidence: reported only (weight 0)</span>
             </div>
             <span className="px-space-xs py-space-3xs rounded-full bg-surface-container text-on-surface-variant font-code-metric text-label-sm">
               DEMO MODE — ILLUSTRATIVE ONLY
@@ -70,6 +70,9 @@ export default function EvidenceSection() {
                   Prioritized Candidate Explanation
                 </span>
                 <div className="bg-surface-container p-space-md rounded-xl mb-space-md">
+                  <div className="mb-space-xs inline-block px-space-xs py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm font-bold">
+                    ILLUSTRATIVE MOCK-UP — not a real patient, not a computed result; values are placeholders
+                  </div>
                   <div className="flex items-start justify-between mb-space-2xs">
                     <h4 className="font-headline-sm text-headline-sm text-primary">Congenital Myasthenic Syndrome</h4>
                     <span className="px-space-xs py-space-3xs rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-code-metric text-label-sm">ORPHA:589</span>
@@ -82,12 +85,12 @@ export default function EvidenceSection() {
                     {[
                       { label: 'Phenotype Overlap (HPO)', value: 92, color: 'bg-secondary' },
                       { label: 'Biomedical Literature Support', value: 84, color: 'bg-primary' },
-                      { label: 'Indian Population Prior Match', value: 71, color: 'bg-on-tertiary-container' },
+                      { label: 'Population evidence (gnomAD; IndiGen unavailable)', value: 71, color: 'bg-on-tertiary-container' },
                     ].map((m) => (
                       <div key={m.label}>
                         <div className="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
                           <span>{m.label}</span>
-                          <span className="font-bold">{m.value}%</span>
+                          <span className="font-bold">example</span>
                         </div>
                         <div className="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
                           <div className={`h-full ${m.color} rounded-full`} style={{ width: `${m.value}%` }}></div>
@@ -99,8 +102,8 @@ export default function EvidenceSection() {
               </div>
               {/* Provenance tags */}
               <div className="flex flex-wrap gap-space-xs">
-                <span className="px-space-xs py-space-3xs rounded-full bg-surface-container-high text-primary font-code-metric text-label-sm">PMID: 3490128</span>
-                <span className="px-space-xs py-space-3xs rounded-full bg-surface-container-high text-primary font-code-metric text-label-sm">IndiGen v2.4</span>
+                <span className="px-space-xs py-space-3xs rounded-full bg-surface-container-high text-primary font-code-metric text-label-sm">PMID: (example)</span>
+                <span className="px-space-xs py-space-3xs rounded-full bg-surface-container-high text-primary font-code-metric text-label-sm">gnomAD v4.1 (IndiGen unavailable)</span>
                 <span className="px-space-xs py-space-3xs rounded-full bg-surface-container-high text-primary font-code-metric text-label-sm">Orphadata</span>
               </div>
             </div>
@@ -114,11 +117,11 @@ export default function EvidenceSection() {
                 </span>
                 <h4 className="font-title-md text-title-md text-primary mb-space-xs">Why this candidate?</h4>
                 <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
-                  Strong phenotype concordance across observed hypotonia and early-onset seizures. Retrieved literature highlights 47 indexed case histories with recurrent CHRNE/RAPSN regional variants documented in Indian sub-cohorts, elevating this explanation above generic neuromuscular atrophy profiles.
+                  Illustrative text only. In the live workspace this panel shows an explanation generated from the case's own recorded evidence, each statement citing numbered evidence items, with unverified findings labelled as unverified.
                 </p>
                 <div className="p-space-sm bg-surface-container-lowest rounded-lg mb-space-sm">
-                  <span className="font-label-sm text-label-sm text-primary font-semibold block mb-space-3xs">Recommended Next Diagnostic Action:</span>
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">Targeted neuromuscular exome panel sequencing focusing on NMJ-related genes.</span>
+                  <span className="font-label-sm text-label-sm text-primary font-semibold block mb-space-3xs">Tests and treatment:</span>
+                  <span className="font-body-sm text-body-sm text-on-surface-variant">Not generated: the application does not recommend tests or treatment.</span>
                 </div>
               </div>
               {/* Mandatory Research Disclaimer Box */}

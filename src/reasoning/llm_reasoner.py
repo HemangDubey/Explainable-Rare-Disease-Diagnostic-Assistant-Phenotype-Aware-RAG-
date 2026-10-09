@@ -1,218 +1,194 @@
-import os
-import sys
-import json
-import hashlib
-import logging
-from typing import Dict, Any, List, Optional
-from pydantic import BaseModel, Field
+"""Evidence-grounded explanations from the configured language model (Groq is the only provider).
 
-from src.reasoning.llm_provider import get_llm_provider, BaseLLMProvider
+One structured request covers all candidates. The model only sees the evidence packets (each fact has an id such as C1-E3);
+it must cite those ids. Output is schema-validated and grounding-checked (grounding.py); unsupported claims are removed and
+counted. Invalid output is retried a bounded number of times with the validation errors fed back. If the language model is unavailable,
+times out or keeps returning invalid output, the response says so explicitly (`provider.status`, `fallback: true`) and a
+deterministic explanation built verbatim from the evidence is returned, labelled as a fallback. A fallback is never
+presented as an LLM result and no LLM result is ever fabricated.
+"""
+import hashlib
+import json
+import logging
+import time
+from typing import Any, Dict, List, Optional
+
+from src.reasoning.grounding import CLAIM_FIELDS, parse_batch, validate_and_filter
+from src.reasoning.llm_provider import (BaseLLMProvider, InvalidModelOutput, ProviderTimeout, ProviderUnavailable,
+                                        get_llm_provider)
 
 logger = logging.getLogger(__name__)
 
-class CandidateRef(BaseModel):
-    disease_id: str
-    disease_name: str
-    rank: int
+LIMITATIONS = [
+    "Research decision-support prototype; not a diagnosis and not a substitute for qualified clinical interpretation.",
+    "Scores are retrieval/ranking scores, not probabilities. Absence of evidence in this system does not establish absence of disease.",
+    "Population allele frequency is evidence about occurrence in a population, not a disease probability.",
+    "Literature evidence was not assessed.",
+]
 
-class PhenotypeReasoning(BaseModel):
-    supporting: List[str] = Field(default_factory=list)
-    missing: List[str] = Field(default_factory=list)
-    contradicting: List[str] = Field(default_factory=list)
+SYSTEM_PROMPT = """You explain why candidate rare diseases were prioritised for a patient, using ONLY the numbered evidence supplied.
+Rules:
+1. Every claim must cite one or more evidence ids (for example "C1-E3") copied exactly from the evidence list of the SAME candidate.
+2. Do not add facts, genes, phenotypes, numbers, citations, PMIDs, DOIs or URLs that are not in the evidence. If something is unknown, say it is unavailable.
+3. Never state or imply a definitive diagnosis. Never give treatment, medication or dosage advice.
+4. Scores are not probabilities and are not calibrated: never call a score "high", "low" or "strong"; quote the number instead. Population frequency is not disease probability. A phenotype that is merely not stated is "unverified", not absent.
+5. Return valid JSON only, exactly in the requested structure. Cite evidence ids INLINE in the text, in parentheses, e.g. (C1-E2); do not output separate id lists. Output compact JSON without extra whitespace."""
 
-class CandidateExplanationSchema(BaseModel):
-    candidate: CandidateRef
-    reasoning_summary: str
-    phenotype_reasoning: PhenotypeReasoning
-    retrieval_reasoning: str
-    population_reasoning: str
-    gene_reasoning: str
-    overall_assessment: str
-    limitations: List[str]
-    evidence_references: List[str]
+# The model is asked for SHORT text only (generation on the target machine is ~5-11 tokens/s). The structured evidence sections
+# (supporting / unverified / contradictory / genetic / population) are filled verbatim from the knowledge-base evidence by the
+# backend, so they are grounded by construction and cost no tokens.
+JSON_SHAPE = """{"candidates":[{"candidate_id":"<exactly as given>","summary":"<=50 words, cite evidence inline like (C1-E2)","ranking_note":"<=25 words: quote THIS candidate's own rank and score numbers, cite only THIS candidate's own evidence ids; never cite another candidate's ids","uncertainties":["<=20 words, cite inline"]}]}"""
 
-CLINICAL_SYSTEM_PROMPT = """You are an Explainable Rare-Disease Clinical Diagnostic Reasoning Assistant.
-Your objective is to provide a strictly evidence-grounded clinical explanation for why a specific candidate disease was prioritized by the diagnostic pipeline.
 
-CRITICAL RULES:
-1. USE ONLY THE SUPPLIED EVIDENCE. Do NOT invent facts, genes, phenotypes, allele frequencies, clinical history, or citations.
-2. If any piece of evidence is missing or unavailable, explicitly state "Evidence unavailable" or "No matching population record was found".
-3. NEVER describe any candidate as a "Confirmed Diagnosis". Refer to it strictly as "Prioritized Candidate".
-4. Do NOT make unsupported therapeutic, drug, or treatment claims. State that clinical & molecular confirmation is required.
-5. You MUST return valid JSON adhering strictly to the requested schema.
-"""
+def _provider_block(provider, status, attempts=0, latency_ms=None, fallback=False, reason=None, grounding=None):
+    return {"name": "llm", "model": getattr(provider, "model", None), "status": status, "attempts": attempts,
+            "latency_ms": latency_ms, "fallback": fallback, "reason": reason, "grounding": grounding}
+
 
 class LLMReasoner:
-    """
-    LLM Reasoner Engine (Phase 4).
-    Produces structured, validated, evidence-grounded clinical explanations.
-    Features local deterministic caching based on SHA256 hashes of input evidence.
-    """
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], provider: Optional[BaseLLMProvider] = None):
         self.config = config
-        self.provider: BaseLLMProvider = get_llm_provider(config)
+        self.provider = provider or get_llm_provider(config)
+        self.max_attempts = int(config.get("reasoning", {}).get("max_attempts", 2))
         self.cache: Dict[str, Dict[str, Any]] = {}
 
-    def _compute_hash(self, candidate_evidence: Dict[str, Any]) -> str:
-        content_str = json.dumps(candidate_evidence, sort_keys=True)
-        return hashlib.sha256(content_str.encode("utf-8")).hexdigest()
+    # ---------------------------------------------------------------------------------------------
+    @staticmethod
+    def _prompt(clinical_text: str, packets: List[Dict[str, Any]], errors: Optional[List[str]] = None) -> str:
+        blocks = []
+        for pk in packets:
+            ev = "\n".join(f"  [{e['id']}] ({e['type']}) {e['text']}  <source: {e['source']}>" for e in pk["evidence"])
+            blocks.append(f"CANDIDATE candidate_id=\"{pk['candidate_id']}\" name=\"{pk['disease_name']}\" rank={pk['rank']} "
+                          f"evidence_label=\"{pk['labels']['label']}\" evidence_completeness={pk['completeness']['fraction']}\n{ev}")
+        retry = ("\nYour previous answer was rejected: " + "; ".join(errors[:6]) + ". Fix these problems.\n") if errors else ""
+        return (f"=== PATIENT NARRATIVE ===\n{clinical_text}\n\n=== CANDIDATES AND NUMBERED EVIDENCE ===\n" + "\n\n".join(blocks) +
+                f"\n\n=== TASK ===\nFor EACH candidate write the short explanation fields. Use only the evidence above, cite ids, and respect the word limits.{retry}\n"
+                f"Return JSON in exactly this shape:\n{JSON_SHAPE}\n")
 
-    def explain_candidate(
-        self,
-        candidate_evidence: Dict[str, Any],
-        clinical_case_text: str
-    ) -> Dict[str, Any]:
-        """
-        Generates structured LLM explanation for a single prioritized candidate disease.
-        """
-        cache_key = self._compute_hash(candidate_evidence)
-        if cache_key in self.cache:
-            logger.info("Using cached LLM explanation.")
-            return self.cache[cache_key]
+    # ---------------------------------------------------------------------------------------------
+    @staticmethod
+    def deterministic_fallback(pk: Dict[str, Any], reason: str) -> Dict[str, Any]:
+        """Built verbatim from the evidence items - grounded by construction, labelled as a fallback."""
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for e in pk["evidence"]:
+            by_type.setdefault(e["type"], []).append(e)
 
-        disease_name = candidate_evidence.get("disease_name", "Unknown Disease")
-        disease_id = candidate_evidence.get("disease_id", "Unknown")
-        rank = candidate_evidence.get("rank", 1)
+        def claims(*types):
+            return [{"text": e["text"], "evidence_ids": [e["id"]]} for t in types for e in by_type.get(t, [])]
 
-        user_prompt = f"""Explain why the following disease candidate was prioritized for this clinical case.
-
-=== CLINICAL CASE ===
-{clinical_case_text}
-
-=== CANDIDATE EVIDENCE DATA ===
-Candidate: {disease_name} ({disease_id}), Rank: {rank}
-Final Priority Score: {candidate_evidence.get('final_score')}
-Phenotype Score: {candidate_evidence.get('phenotype_evidence', {}).get('score')}
-Phenotype Confidence: {candidate_evidence.get('phenotype_evidence', {}).get('confidence')}
-Matched Phenotypes: {json.dumps(candidate_evidence.get('phenotype_evidence', {}).get('matched_phenotypes', []))}
-Missing Phenotypes: {json.dumps(candidate_evidence.get('phenotype_evidence', {}).get('missing_phenotypes', []))}
-Retrieval Score: {candidate_evidence.get('retrieval_evidence', {}).get('score')}
-Retrieval Confidence: {candidate_evidence.get('retrieval_evidence', {}).get('confidence')}
-Associated Genes: {json.dumps(candidate_evidence.get('genes', []))}
-Population Evidence Status: {candidate_evidence.get('population_evidence', {}).get('status')}
-Indian Population Signal: {candidate_evidence.get('population_evidence', {}).get('indian_signal')}
-Global Population Signal: {candidate_evidence.get('population_evidence', {}).get('global_signal')}
-Evidence Sources: {json.dumps(candidate_evidence.get('evidence_sources', []))}
-
-=== INSTRUCTIONS ===
-Generate a valid JSON object with the following exact keys:
-{{
-  "candidate": {{
-    "disease_id": "{disease_id}",
-    "disease_name": "{disease_name}",
-    "rank": {rank}
-  }},
-  "reasoning_summary": "Concise summary explaining why this disease was prioritized based on real scores and evidence.",
-  "phenotype_reasoning": {{
-    "supporting": ["Matched patient phenotypes and their clinical relevance"],
-    "missing": ["Expected disease phenotypes not documented in patient"],
-    "contradicting": []
-  }},
-  "retrieval_reasoning": "Explanation of semantic knowledge-base similarity match.",
-  "population_reasoning": "Explanation of Indian (IndiGen) and global (gnomAD) population signals.",
-  "gene_reasoning": "Explanation of causal/associated genes identified, or state 'No associated genes found'.",
-  "overall_assessment": "Balanced non-diagnostic synthesis of evidence strength and clinical implications.",
-  "limitations": [
-    "State that this is an evidence-supported candidate prioritization and NOT a confirmed diagnosis.",
-    "State that molecular genetic testing and clinical correlation are required."
-  ],
-  "evidence_references": ["Traceable sources such as HPO, OMIM, IndiGen, gnomAD"]
-}}
-"""
-
-        try:
-            # Check Ollama health
-            health = self.provider.check_health()
-            if health.get("status") != "healthy":
-                logger.warning(f"Ollama health check returned: {health}")
-                # Fallback to rule-based structured explanation if Ollama unavailable
-                fallback_explanation = self._generate_rule_based_explanation(candidate_evidence)
-                return fallback_explanation
-
-            # Query Ollama
-            response_json = self.provider.generate_json(
-                prompt=user_prompt,
-                system_prompt=CLINICAL_SYSTEM_PROMPT
-            )
-
-            # Validate with Pydantic
-            try:
-                validated = CandidateExplanationSchema(**response_json).dict()
-                self.cache[cache_key] = validated
-                return validated
-            except Exception as val_err:
-                logger.warning(f"Schema validation error: {val_err}. Retrying once or repairing...")
-                # Attempt safe repair
-                repaired = self._repair_json_structure(response_json, candidate_evidence)
-                validated = CandidateExplanationSchema(**repaired).dict()
-                self.cache[cache_key] = validated
-                return validated
-
-        except Exception as e:
-            logger.error(f"LLM Reasoning failed: {e}. Generating rule-based explanation.")
-            return self._generate_rule_based_explanation(candidate_evidence)
-
-    def _repair_json_structure(self, raw: Dict[str, Any], evidence: Dict[str, Any]) -> Dict[str, Any]:
-        """Ensures all required fields exist."""
-        d_name = evidence.get("disease_name", "Unknown Disease")
-        d_id = evidence.get("disease_id", "Unknown")
-        rank = evidence.get("rank", 1)
-
-        repaired = {
-            "candidate": raw.get("candidate", {
-                "disease_id": d_id,
-                "disease_name": d_name,
-                "rank": rank
-            }),
-            "reasoning_summary": raw.get("reasoning_summary", f"{d_name} prioritized with composite score {evidence.get('final_score')}."),
-            "phenotype_reasoning": raw.get("phenotype_reasoning", {
-                "supporting": [m.get("name", "") for m in evidence.get("phenotype_evidence", {}).get("matched_phenotypes", [])],
-                "missing": evidence.get("phenotype_evidence", {}).get("missing_phenotypes", []),
-                "contradicting": []
-            }),
-            "retrieval_reasoning": raw.get("retrieval_reasoning", f"Semantic retrieval similarity score: {evidence.get('retrieval_evidence', {}).get('score')}."),
-            "population_reasoning": raw.get("population_reasoning", f"Population prior status: {evidence.get('population_evidence', {}).get('status')}."),
-            "gene_reasoning": raw.get("gene_reasoning", f"Associated genes: {', '.join(evidence.get('genes', [])) or 'None mapped'}."),
-            "overall_assessment": raw.get("overall_assessment", "Evidence indicates moderate-to-high phenotypic alignment. Clinical correlation recommended."),
-            "limitations": raw.get("limitations", [
-                "Prioritized candidate decision-support only; not a definitive diagnosis.",
-                "Molecular and clinical validation required."
-            ]),
-            "evidence_references": raw.get("evidence_references", evidence.get("evidence_sources", []))
-        }
-        return repaired
-
-    def _generate_rule_based_explanation(self, evidence: Dict[str, Any]) -> Dict[str, Any]:
-        """Safe rule-based fallback explanation when LLM is offline."""
-        d_name = evidence.get("disease_name", "Unknown Disease")
-        d_id = evidence.get("disease_id", "Unknown")
-        rank = evidence.get("rank", 1)
-        p_evidence = evidence.get("phenotype_evidence", {})
-        r_evidence = evidence.get("retrieval_evidence", {})
-        pop_evidence = evidence.get("population_evidence", {})
-        genes = evidence.get("genes", [])
-
-        matched_ph = [m.get("name", "") for m in p_evidence.get("matched_phenotypes", [])]
-
+        retr = (by_type.get("retrieval") or [None])[0]
+        sb = (by_type.get("score_breakdown") or [None])[0]
+        summary = (f"{pk['disease_name']} is ranked #{pk['rank']}. Evidence label: {pk['labels']['label']} "
+                   f"(matched fraction {pk['labels']['matched_fraction']}). See the score breakdown for the exact components.")
         return {
-            "candidate": {
-                "disease_id": d_id,
-                "disease_name": d_name,
-                "rank": rank
-            },
-            "reasoning_summary": f"Candidate {d_name} was prioritized at Rank #{rank} with a composite priority score of {evidence.get('final_score', 0.0):.4f}. It demonstrates {p_evidence.get('confidence', 'Moderate').lower()} phenotypic overlap and {r_evidence.get('confidence', 'Moderate').lower()} semantic retrieval similarity.",
-            "phenotype_reasoning": {
-                "supporting": [f"Matches patient phenotype: {p}" for p in matched_ph] if matched_ph else ["No direct HPO terms matched"],
-                "missing": p_evidence.get("missing_phenotypes", []),
-                "contradicting": []
-            },
-            "retrieval_reasoning": f"Knowledge base dense semantic similarity score of {r_evidence.get('score', 0.0):.4f} ({r_evidence.get('confidence', 'Moderate')} confidence).",
-            "population_reasoning": f"Population prior status is '{pop_evidence.get('status', 'unavailable')}' (Indian signal: {pop_evidence.get('indian_signal', 0.5):.4f}, Global signal: {pop_evidence.get('global_signal', 0.5):.4f}).",
-            "gene_reasoning": f"Associated causal genes: {', '.join(genes)}" if genes else "No causal genes mapped in current record.",
-            "overall_assessment": "The candidate shows clinical alignment with patient findings. This represents a prioritized decision-support candidate requiring specialist evaluation.",
-            "limitations": [
-                "Decision-support output only; does not establish a confirmed diagnosis.",
-                "Requires confirmatory molecular genetic testing and clinical specialist evaluation."
-            ],
-            "evidence_references": evidence.get("evidence_sources", ["HPO", "OMIM", "IndiGen", "gnomAD"])
+            "candidate_id": pk["candidate_id"], "summary": summary,
+            "summary_evidence_ids": [e["id"] for e in (retr, sb) if e],
+            "supporting_evidence": claims("phenotype_match"),
+            "missing_or_unverified_evidence": claims("patient_phenotype_not_annotated", "disease_phenotype_unverified", "disease_phenotypes_unavailable"),
+            "contradictory_evidence": claims("contradiction"),
+            "genetic_evidence": claims("gene_association", "gene_association_unavailable", "variant_evidence_unavailable"),
+            "population_evidence": claims("population_evidence", "population_unavailable"),
+            "uncertainties": [{"text": e["text"], "evidence_ids": [e["id"]]} for e in (retr, sb) if e],
+            "generated_by": "deterministic_fallback", "fallback": True, "fallback_reason": reason,
         }
+
+    def _finalize(self, expl: Dict[str, Any], pk: Dict[str, Any], provider_status: str, generated_by: str) -> Dict[str, Any]:
+        src = {e["id"]: e["source"] for e in pk["evidence"]}
+        used: List[str] = []
+        if expl.get("ranking_note"):
+            expl["ranking_note_evidence_ids"] = expl["ranking_note"]["evidence_ids"]
+        for f in ["summary_evidence_ids", "ranking_note_evidence_ids"] + CLAIM_FIELDS:
+            vals = expl.get(f, [])
+            ids = vals if f.endswith("evidence_ids") else [i for c in vals for i in c["evidence_ids"]]
+            for i in ids:
+                if i not in used:
+                    used.append(i)
+        expl.update({
+            "disease_name": pk["disease_name"], "rank": pk["rank"],
+            "source_references": [{"evidence_id": i, "source": src[i]} for i in used if i in src],
+            "provider_status": provider_status, "generated_by": generated_by, "limitations": LIMITATIONS,
+            "evidence_label": pk["labels"]["label"], "evidence_completeness": pk["completeness"]["fraction"], "calibrated_confidence": None,
+        })
+        expl["fallback"] = generated_by != "language_model"
+        return expl
+
+    # ---------------------------------------------------------------------------------------------
+    def explain_candidates(self, clinical_text: str, packets: List[Dict[str, Any]]) -> Dict[str, Any]:
+        if not packets:
+            return {"provider": _provider_block(self.provider, "no_candidates"), "candidates": []}
+        key = hashlib.sha256((json.dumps([p["evidence"] for p in packets], sort_keys=True, default=str) + clinical_text
+                              + str(getattr(self.provider, "model", ""))).encode()).hexdigest()
+        if key in self.cache:
+            cached = json.loads(json.dumps(self.cache[key]))
+            cached["provider"]["cached"] = True
+            return cached
+        by_id = {p["candidate_id"]: p for p in packets}
+        health = self.provider.check_health()
+        if health.get("status") != "healthy":
+            status = "provider_unavailable" if health.get("status") == "offline" else health.get("status", "provider_unavailable")
+            return self._all_fallback(packets, status, f"Language-model health check: {health.get('status')}"
+                                      + (f" ({health.get('error')})" if health.get("error") else ""))
+        errors: List[str] = []
+        retry_log: List[str] = []
+        t0 = time.time()
+        for attempt in range(1, self.max_attempts + 1):
+            retry_log.extend(errors)
+            try:
+                data, _ = self.provider.generate_json_with_meta(self._prompt(clinical_text, packets, errors), SYSTEM_PROMPT)
+            except ProviderTimeout as e:
+                return self._all_fallback(packets, "timeout", str(e), attempts=attempt, started=t0)
+            except ProviderUnavailable as e:                      # not_configured / auth_error / model_unavailable / rate_limited / provider_unavailable
+                return self._all_fallback(packets, e.status, str(e), attempts=attempt, started=t0)
+            except InvalidModelOutput as e:
+                errors = [f"invalid_output: {e}"]
+                logger.warning("LLM invalid output (attempt %d): %s", attempt, e)
+                continue
+            batch, schema_errors = parse_batch(data)
+            if batch is None:
+                errors = schema_errors
+                continue
+            filtered, stats = validate_and_filter(batch, by_id)
+            if not filtered:
+                errors = ["no candidate in the answer matched the supplied candidate_ids exactly"]
+                continue
+            missing = [cid for cid in by_id if cid not in filtered]
+            out_cands = []
+            for pk in sorted(packets, key=lambda p: p["rank"]):
+                e = filtered.get(pk["candidate_id"])
+                if e is None:
+                    out_cands.append(self._finalize(self.deterministic_fallback(pk, "model omitted this candidate"), pk, "partial_fallback", "deterministic_fallback"))
+                    continue
+                base = self.deterministic_fallback(pk, "")
+                merged = {k: base[k] for k in CLAIM_FIELDS}                      # evidence sections: verbatim from the knowledge base
+                merged["uncertainties"] = list(e.get("uncertainties") or []) + base["uncertainties"]
+                merged.update(candidate_id=pk["candidate_id"], summary=e.get("summary"), summary_evidence_ids=e.get("summary_evidence_ids", []),
+                              ranking_note=e.get("ranking_note"))
+                if not merged["summary"]:
+                    merged["summary"], merged["summary_evidence_ids"] = base["summary"], base["summary_evidence_ids"]
+                    merged["summary_note"] = "model summary removed by the grounding check; deterministic summary shown"
+                merged["evidence_sections_source"] = "knowledge-base evidence, verbatim"
+                out_cands.append(self._finalize(merged, pk, "ok", "language_model"))
+            result = {"provider": _provider_block(self.provider, "ok" if not missing else "partial", attempt, round((time.time() - t0) * 1000, 1), False,
+                                                  None if not missing else f"model omitted: {missing}", {**stats, "retry_reasons": retry_log}),
+                      "candidates": out_cands}
+            if not missing:
+                self.cache[key] = result
+            return result
+        return self._all_fallback(packets, "invalid_output", "; ".join(errors[:4]) or "model output failed validation",
+                                  attempts=self.max_attempts, started=t0)
+
+    def _all_fallback(self, packets, status, reason, attempts=0, started=None):
+        cands = [self._finalize(self.deterministic_fallback(pk, reason), pk, status, "deterministic_fallback")
+                 for pk in sorted(packets, key=lambda p: p["rank"])]
+        return {"provider": _provider_block(self.provider, status, attempts, round((time.time() - started) * 1000, 1) if started else None, True, reason),
+                "candidates": cands}
+
+    # ---- legacy single-candidate wrapper (existing /api/explain contract) --------------------------
+    def explain_candidate(self, candidate_evidence: Dict[str, Any], clinical_case_text: str) -> Dict[str, Any]:
+        pk = candidate_evidence.get("packet")
+        if pk is None:
+            raise ValueError("candidate_evidence must be a fused candidate containing an evidence packet")
+        res = self.explain_candidates(clinical_case_text, [pk])
+        out = res["candidates"][0]
+        out["provider"] = res["provider"]
+        return out

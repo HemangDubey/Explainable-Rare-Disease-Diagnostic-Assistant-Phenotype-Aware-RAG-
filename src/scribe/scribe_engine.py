@@ -118,13 +118,9 @@ class ClinicalScribeEngine:
             medications=[],
             investigations=[],
             genetic_findings=None,
-            notes="Case processed by AI Clinical Scribe module.",
+            notes=None,
             extracted_hpo_terms=hpo_terms,
-            confidence={
-                "ner_confidence": 0.92,
-                "hpo_mapping_confidence": 0.95,
-                "extraction_completeness": 0.88
-            },
+            confidence={},
             source_text=clinical_text
         )
 
@@ -134,9 +130,5 @@ class ClinicalScribeEngine:
             phenotypes=extracted_phenotypes,
             hpo_terms=hpo_terms,
             missing_information=missing_information,
-            confidence={
-                "ner_confidence": 0.92,
-                "hpo_mapping_confidence": 0.95,
-                "extraction_completeness": 0.88
-            }
+            confidence={}   # no calibrated confidence exists; the previous hard-coded values were removed
         )

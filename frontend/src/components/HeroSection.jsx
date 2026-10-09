@@ -31,7 +31,7 @@ export default function HeroSection() {
             
             {/* Body Description */}
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-space-xl max-w-xl">
-              An evidence-driven diagnostic assistant that extracts clinical phenotypes, retrieves rare-disease knowledge, incorporates Indian population priors, and generates transparent, evidence-linked diagnostic insights.
+              An evidence-driven diagnostic assistant that extracts clinical phenotypes, retrieves rare-disease knowledge, reports population-frequency evidence (gnomAD; IndiGen unavailable), and generates transparent, evidence-linked diagnostic insights.
             </p>
             
             {/* CTAs */}
@@ -104,7 +104,7 @@ export default function HeroSection() {
                   Rare Disease
                 </div>
                 <div className="absolute bottom-6 left-8 px-space-xs py-space-3xs rounded-full bg-primary-fixed/50 text-on-primary-fixed-variant font-label-sm text-label-sm font-semibold shadow-sm">
-                  IndiGen Allele Prior
+                  gnomAD Global / South Asian
                 </div>
                 <div className="absolute bottom-4 right-6 px-space-xs py-space-3xs rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm shadow-sm flex items-center gap-space-3xs">
                   <span className="material-symbols-outlined text-[12px] text-secondary">database</span> 47 Sources
@@ -139,7 +139,7 @@ export default function HeroSection() {
                   </div>
                   <div className="bg-surface-container-lowest p-space-xs rounded-lg text-center flex flex-col justify-center items-center">
                     <span className="inline-flex items-center text-secondary font-label-md text-label-md font-bold gap-space-3xs">
-                      <span className="material-symbols-outlined text-[16px]">check_circle</span> 94.2%
+                      <span className="material-symbols-outlined text-[16px]">check_circle</span> example
                     </span>
                     <span className="block font-label-sm text-label-sm text-on-surface-variant">Confidence</span>
                   </div>

@@ -5,10 +5,18 @@ import time
 def test_api_quality_gate():
     time.sleep(2) # Give server time to bind
     base_url = "http://127.0.0.1:8000"
+    # authenticate first: every /api route except health and /api/auth/* now requires a session (synthetic account)
+    import uuid
+    email, pw = f"qg-{uuid.uuid4().hex[:8]}@example.test", "Synthetic-Passw0rd-xyz"
+    for path, body in (("/api/auth/register", {"email": email, "password": pw}), ("/api/auth/login", {"email": email, "password": pw})):
+        rq = urllib.request.Request(base_url + path, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(rq) as resp:
+            last = json.loads(resp.read().decode("utf-8"))
+    H = {"Content-Type": "application/json", "Authorization": "Bearer " + last["access_token"]}
 
     print("=== TESTING API /api/input/validate ===")
     req_data = json.dumps({"text": "hii"}).encode("utf-8")
-    req = urllib.request.Request(f"{base_url}/api/input/validate", data=req_data, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(f"{base_url}/api/input/validate", data=req_data, headers=H)
     with urllib.request.urlopen(req) as resp:
         res = json.loads(resp.read().decode("utf-8"))
         print("Validate 'hii' response:", res)
@@ -17,7 +25,7 @@ def test_api_quality_gate():
 
     print("\n=== TESTING API /api/input/enhance ===")
     req_data_enh = json.dumps({"text": "pt has dev delay and seizures since 2 yrs"}).encode("utf-8")
-    req_enh = urllib.request.Request(f"{base_url}/api/input/enhance", data=req_data_enh, headers={"Content-Type": "application/json"})
+    req_enh = urllib.request.Request(f"{base_url}/api/input/enhance", data=req_data_enh, headers=H)
     with urllib.request.urlopen(req_enh) as resp:
         res_enh = json.loads(resp.read().decode("utf-8"))
         print("Enhance response:", res_enh)
@@ -26,7 +34,7 @@ def test_api_quality_gate():
 
     print("\n=== TESTING END-TO-END /api/diagnose WITH VALID CASE ===")
     diag_data = json.dumps({"text": "Patient presents with hypotonia, short stature, developmental delay and recurrent seizures.", "top_k": 5}).encode("utf-8")
-    req_diag = urllib.request.Request(f"{base_url}/api/diagnose", data=diag_data, headers={"Content-Type": "application/json"})
+    req_diag = urllib.request.Request(f"{base_url}/api/diagnose", data=diag_data, headers=H)
     with urllib.request.urlopen(req_diag) as resp:
         res_diag = json.loads(resp.read().decode("utf-8"))
         print("Diagnose response case_id:", res_diag.get("case_id"))
@@ -36,7 +44,7 @@ def test_api_quality_gate():
 
     print("\n=== TESTING BLOCKING OF INVALID CASE ON /api/diagnose ===")
     bad_data = json.dumps({"text": "asdfgh"}).encode("utf-8")
-    req_bad = urllib.request.Request(f"{base_url}/api/diagnose", data=bad_data, headers={"Content-Type": "application/json"})
+    req_bad = urllib.request.Request(f"{base_url}/api/diagnose", data=bad_data, headers=H)
     try:
         with urllib.request.urlopen(req_bad) as resp:
             print("FAILED: Should have blocked 'asdfgh'")

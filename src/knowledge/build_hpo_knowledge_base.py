@@ -27,7 +27,10 @@ def parse_hp_obo(obo_path):
                     "name": "",
                     "definition": "",
                     "synonyms": [],
-                    "is_a": []
+                    "is_a": [],
+                    "alt_ids": [],
+                    "is_obsolete": False,
+                    "replaced_by": []
                 }
             elif line.startswith("[") and line.endswith("]"):
                 if current_term and "id" in current_term and current_term["id"].startswith("HP:"):
@@ -48,6 +51,12 @@ def parse_hp_obo(obo_path):
                     match = re.search(r'"([^"]*)"', line)
                     if match:
                         current_term["synonyms"].append(match.group(1))
+                elif line.startswith("alt_id:"):
+                    current_term["alt_ids"].append(line.split("alt_id:")[1].strip())
+                elif line.startswith("is_obsolete:"):
+                    current_term["is_obsolete"] = line.split("is_obsolete:")[1].strip().lower() == "true"
+                elif line.startswith("replaced_by:"):
+                    current_term["replaced_by"].append(line.split("replaced_by:")[1].strip())
                 elif line.startswith("is_a:"):
                     parent_id = line.split("is_a:")[1].strip().split()[0]
                     current_term["is_a"].append(parent_id)

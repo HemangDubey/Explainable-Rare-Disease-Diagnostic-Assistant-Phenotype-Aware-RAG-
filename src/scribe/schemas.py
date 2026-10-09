@@ -32,4 +32,5 @@ class ScribeResponse(BaseModel):
     hpo_terms: List[Dict[str, Any]]
     missing_information: List[str]
     confidence: Dict[str, float]
+    case_token: Optional[str] = None
     disclaimer: str = "Extracted case structure and HPO annotations are clinical decision support aids and require professional verification."

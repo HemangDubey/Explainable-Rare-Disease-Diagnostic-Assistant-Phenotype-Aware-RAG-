@@ -63,3 +63,39 @@ body, main {
 .bg-surface\/85 {
   background-color: rgba(234, 243, 248, 0.88) !important;
 }
+
+/* ---------------------------------------------------------------------------------------------------------------------------
+   Unified workspace design system (internal application only; the static landing page does not use these classes).
+   Tokens live in tailwind.config.js (ink, ocean, line, success, warn, danger). Components below are the shared building blocks.
+   --------------------------------------------------------------------------------------------------------------------------- */
+@layer components {
+  .ui-card { @apply bg-white border border-line rounded-xl shadow-[0_1px_2px_rgba(10,37,64,0.04)]; }
+  .ui-card-pad { @apply p-4 lg:p-5; }
+  .ui-section-title { @apply text-[13px] font-semibold uppercase tracking-wide text-ink-muted; }
+  .ui-btn { @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-colors
+                   focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean/40 disabled:opacity-50 disabled:cursor-not-allowed; }
+  .ui-btn-primary { @apply ui-btn bg-ocean text-white hover:bg-ocean-hover; }
+  .ui-btn-secondary { @apply ui-btn bg-white text-ink border border-line hover:bg-ocean-soft; }
+  .ui-btn-ghost { @apply ui-btn text-ink-muted hover:bg-ocean-soft hover:text-ink; }
+  .ui-input { @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-[14px] text-ink placeholder:text-slate-400
+                     focus:outline-none focus:ring-2 focus:ring-ocean/30 focus:border-ocean; }
+  .ui-chip { @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium border; }
+  .ui-chip-neutral { @apply ui-chip bg-slate-50 text-ink-muted border-line; }
+  .ui-chip-info { @apply ui-chip bg-ocean-soft text-ocean border-ocean/20; }
+  .ui-chip-success { @apply ui-chip bg-success-soft text-success border-success/20; }
+  .ui-chip-warn { @apply ui-chip bg-warn-soft text-warn border-warn/20; }
+  .ui-chip-danger { @apply ui-chip bg-danger-soft text-danger border-danger/20; }
+  .ui-alert { @apply rounded-lg border px-3.5 py-2.5 text-[13px] flex items-start gap-2; }
+  .ui-alert-error { @apply ui-alert bg-danger-soft border-danger/25 text-danger; }
+  .ui-alert-warn { @apply ui-alert bg-warn-soft border-warn/25 text-warn; }
+  .ui-alert-info { @apply ui-alert bg-ocean-soft border-ocean/20 text-ink; }
+  .ui-alert-success { @apply ui-alert bg-success-soft border-success/25 text-success; }
+  .ui-tab { @apply px-3 py-2 text-[13px] font-medium border-b-2 border-transparent text-ink-muted hover:text-ink whitespace-nowrap; }
+  .ui-tab-active { @apply border-ocean text-ocean font-semibold; }
+  .ui-spinner { @apply inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin; }
+}
+
+/* The internal shell scrolls normally; landing-page scrollbar hiding above is left as it was. */
+.app-shell ::-webkit-scrollbar { display: block; width: 8px; height: 8px; }
+.app-shell ::-webkit-scrollbar-thumb { background: #c3d3de; border-radius: 8px; }
+.app-shell ::-webkit-scrollbar-track { background: transparent; }

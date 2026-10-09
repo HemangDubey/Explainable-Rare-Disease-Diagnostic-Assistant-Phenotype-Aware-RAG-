@@ -1,8 +1,0 @@
-{
-  "BiomedBERT": {
-    "overall_precision": 0.7193460490463215,
-    "overall_recall": 0.7213114754098361,
-    "overall_f1": 0.7203274215552524,
-    "overall_accuracy": 0.9068919814446653
-  }
-}
