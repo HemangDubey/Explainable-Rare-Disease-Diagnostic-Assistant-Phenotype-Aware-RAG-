@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="https://lh3.googleusercontent.com/aida/AEtjO1WsvG4PmtCG5os6CRAflm_m7FddHjQ1303ktfydHJYjv73FM4gZdW8u-WsJuxbsBABuo5yixcrlsh4usHyJ1WM1hKOJ6Zb9GkurAKXxLYdnXVVhjoRkgWmx8A9C6MGG4mS3TN3aahW9_WiX8r03km6-YLg3AMyJ1gU0k-Xbi8sKH6RceS4hSiPgJN6baSnx3yGLjB7_Mxx9cDA8TAO1ltc5C60hM9RUr_z2u-6KCczeC4ccZYNNsweV_g" width="120" alt="ERDDA Logo">
-</p>
 
 <h1 align="center">Explainable Rare-Disease Diagnostic Assistant</h1>
 <h3 align="center">Phenotype-Aware RAG with Population-Frequency Evidence (gnomAD global &amp; South Asian)</h3>
