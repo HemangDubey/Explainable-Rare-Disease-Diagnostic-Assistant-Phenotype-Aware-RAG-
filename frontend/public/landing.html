@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container-highest":"#ccdfea","on-primary-fixed":"#001c37","primary-container":"#0a2540","tertiary-container":"#00282f","on-secondary":"#ffffff","surface-variant":"#dde3e7","surface-container-high":"#d7e8f2","inverse-surface":"#2b3134","on-tertiary":"#ffffff","on-error":"#ffffff","on-secondary-fixed":"#001f24","surface-tint":"#147d8a","secondary":"#147d8a","error-container":"#ffdad6","on-error-container":"#93000a","primary-fixed-dim":"#b0c8eb","on-tertiary-container":"#0891b2","secondary-container":"#99f0fe","on-secondary-fixed-variant":"#004f58","surface-container-lowest":"#ffffff","inverse-primary":"#b0c8eb","error":"#ba1a1a","primary":"#0a2540","on-tertiary-fixed":"#001f25","primary-fixed":"#d2e4ff","surface-container":"#e4eef6","on-primary-container":"#768dad","surface-container-low":"#deecf5","on-surface-variant":"#43474d","background":"#eaf3f8","tertiary-fixed":"#a2eeff","surface-bright":"#f4fafe","on-surface":"#0a2540","tertiary-fixed-dim":"#2fd9f4","surface":"#eaf3f8","surface-dim":"#d5dbdf","on-primary":"#ffffff","secondary-fixed":"#99f0fe","on-secondary-container":"#006f7b","inverse-on-surface":"#ecf2f6","tertiary":"#001114","outline":"#74777e","outline-variant":"#c4c6ce","on-background":"#0a2540","on-primary-fixed-variant":"#314865","secondary-fixed-dim":"#7dd4e2","on-tertiary-fixed-variant":"#004e5a","accent-cyan":"#06b6d4","accent-cyan-light":"#22d3ee","accent-sage":"#2e7d68"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.375rem","xl":"0.75rem","2xl":"1rem","full":"9999px"},"spacing":{"space-xl":"2rem","gutter-tablet":"1.5rem","space-sm":"0.75rem","container-max":"104rem","space-2xl":"3rem","gutter-mobile":"1rem","space-lg":"1.5rem","space-2xs":"0.25rem","space-md":"1rem","space-3xl":"4rem","space-3xs":"0.125rem","gutter-desktop":"2rem","space-xs":"0.5rem"},"fontFamily":{"title-md":["Plus Jakarta Sans","Inter"],"body-lg":["Plus Jakarta Sans","Inter"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans","Inter"],"label-md":["Plus Jakarta Sans","Inter"],"headline-sm":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans","Inter"],"code-metric":["JetBrains Mono"],"headline-lg-mobile":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans","Inter"],"display-hero":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"]},"fontSize":{"title-md":["1.125rem",{"lineHeight":"1.5rem","letterSpacing":"-0.005em","fontWeight":"600"}],"body-lg":["1rem",{"lineHeight":"1.625rem","letterSpacing":"0em","fontWeight":"400"}],"headline-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0.005em","fontWeight":"400"}],"label-md":["0.8125rem",{"lineHeight":"1.125rem","letterSpacing":"0.01em","fontWeight":"500"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["0.6875rem",{"lineHeight":"0.875rem","letterSpacing":"0.04em","fontWeight":"600"}],"code-metric":["0.8125rem",{"lineHeight":"1rem","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.015em","fontWeight":"600"}],"body-md":["0.875rem",{"lineHeight":"1.375rem","letterSpacing":"0em","fontWeight":"400"}],"display-hero":["3rem",{"lineHeight":"3.5rem","letterSpacing":"-0.025em","fontWeight":"700"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.015em","fontWeight":"600"}]}}}}</script><style>:root{--color-ocean-bg:#eaf3f8;--color-ocean-surface:#e5f0f6;--color-ocean-card:#ffffff;--color-ocean-low:#deecf5;--color-ocean-high:#d7e8f2;}body,main{background-color:#eaf3f8!important;font-family:'Plus Jakarta Sans',sans-serif;}.bg-surface{background-color:#eaf3f8!important;}.bg-surface-container-low{background-color:#deecf5!important;}.bg-surface-container{background-color:#e4eef6!important;}.bg-surface-container-high{background-color:#d7e8f2!important;}.bg-surface-container-highest{background-color:#ccdfea!important;}.bg-surface-container-lowest{background-color:#ffffff!important;border:1px solid rgba(20,125,138,0.12)!important;}.bg-surface\/85{background-color:rgba(234,243,248,0.88)!important;}</style></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-md shadow-[0_1px_8px_rgba(10,37,64,0.06)] border-b border-[#147d8a]/10"><div class="h-20 max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop flex items-center justify-between"><a class="flex items-center gap-space-sm group" href="#"><img alt="Explainable Rare-Disease Diagnostic Assistant Brand Logo" class="h-10 w-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" src="/logo.jpg"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary leading-tight tracking-tight font-bold">Explainable Rare-Disease Diagnostic Assistant</span><span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Phenotype-Aware RAG</span></div></a><nav class="hidden xl:flex items-center gap-space-md" data-active-classes="bg-surface-container-high text-on-surface font-semibold rounded-lg"><a aria-current="page" class="px-space-xs py-space-2xs transition-colors bg-surface-container-high text-on-surface font-semibold rounded-lg text-label-md" data-path="platform" href="#platform">Platform</a><a class="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg" data-path="how-it-works" href="#how-it-works">How It Works</a><a class="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg" data-path="research" href="#research">Research</a><a class="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg" data-path="technology" href="#technology">Technology</a><a class="px-space-xs py-space-2xs text-on-surface-variant font-label-md text-label-md transition-colors hover:text-on-surface hover:bg-surface-container-high rounded-lg" data-path="evidence" href="#evidence">Evidence</a></nav><div class="flex items-center gap-space-sm"><a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-2xs rounded-lg font-label-md text-label-md text-primary bg-surface-container-lowest shadow-[0_1px_3px_rgba(10,37,64,0.06)] hover:bg-surface-container transition-colors border border-[#147d8a]/20" data-path="research-portal" href="#">Research Portal</a><a class="inline-flex items-center justify-center px-space-md py-space-2xs rounded-lg font-label-md text-label-md text-on-primary bg-primary hover:bg-[#06182c] shadow-[0_2px_8px_rgba(10,37,64,0.18)] transition-all gap-1.5" data-path="diagnostic-workspace" href="/dashboard"><span>Launch Diagnostic Assistant</span><span class="material-symbols-outlined text-[16px]">arrow_forward</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-2xs"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- HERO SECTION -->
+<section class="relative w-full overflow-hidden pb-space-3xl pt-space-xl">
+<!-- Ambient biomedical gradient illumination -->
+<div class="absolute -top-32 left-1/4 -z-10 h-96 w-96 rounded-full bg-secondary-fixed opacity-40 blur-3xl pointer-events-none"></div>
+<div class="absolute top-48 right-10 -z-10 h-80 w-80 rounded-full bg-primary-fixed opacity-30 blur-3xl pointer-events-none"></div>
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-center">
+<!-- Left Column (Clinical Context & Direct Actions) -->
+<div class="lg:col-span-6 flex flex-col items-start">
+<!-- Eyebrow Pill Badge -->
+<div class="inline-flex items-center gap-space-xs px-space-sm py-space-3xs rounded-full bg-secondary-fixed/40 border border-[#147d8a]/20 shadow-[0_1px_3px_rgba(10,37,64,0.04)] mb-space-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-secondary tracking-wider font-bold uppercase">Explainable Biomedical AI</span>
+</div>
+<!-- Editorial Heading -->
+<h1 class="font-display-hero text-display-hero text-primary mb-space-md tracking-tight font-extrabold">
+            From Clinical Phenotypes to 
+            <span class="text-secondary bg-clip-text text-transparent bg-gradient-to-r from-[#0a2540] via-[#147d8a] to-[#06b6d4]">
+              Explainable Rare-Disease Insights.
+            </span>
+</h1>
+<!-- Body Description -->
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-space-xl max-w-xl leading-relaxed">
+            An evidence-driven diagnostic assistant that extracts clinical phenotypes, retrieves rare-disease knowledge, reports population-frequency evidence (gnomAD; IndiGen unavailable), and generates transparent, evidence-linked diagnostic insights.
+          </p>
+<!-- CTAs -->
+<div class="flex flex-wrap items-center gap-space-md mb-space-xl w-full sm:w-auto">
+<a class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-sm rounded-lg font-label-md text-label-md text-on-primary bg-primary hover:bg-[#06182c] shadow-[0_4px_16px_rgba(10,37,64,0.22)] transition-all group" href="/dashboard">
+<span class="font-semibold">Launch Diagnostic Assistant</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-sm rounded-lg font-label-md text-label-md text-primary bg-surface-container-lowest hover:bg-surface-container transition-colors border border-[#147d8a]/20 shadow-sm" href="#research">
+<span class="font-semibold">Explore the Research</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">upload_file</span>
+</a>
+</div>
+<!-- Trust Strip -->
+<div class="pt-space-md flex flex-wrap items-center gap-y-space-xs gap-x-space-md text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<span class="inline-flex items-center gap-space-3xs text-secondary font-bold">
+<span class="material-symbols-outlined text-[15px]">verified</span> Evidence-linked
+            </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-semibold">Phenotype-aware</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-semibold">Population-aware</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-semibold text-accent-sage">Fully Explainable</span>
+</div>
+</div>
+<!-- Right Column (2.5D Molecular Diagram & Translucent Product Demo) -->
+<div class="lg:col-span-6 relative flex flex-col items-center justify-center">
+<!-- Central Interactive Genomic Card -->
+<div class="relative w-full rounded-2xl p-space-lg bg-surface-container-lowest/90 backdrop-blur-md border border-[#147d8a]/20 shadow-[0_8px_32px_rgba(10,37,64,0.08)] flex flex-col items-center">
+<!-- Orbiting Micro-Tokens Container -->
+<div class="relative w-full max-w-sm h-64 flex items-center justify-center my-space-xs">
+<!-- Subtle Orbital Ring SVGs -->
+<svg class="absolute inset-0 w-full h-full text-surface-container-highest" fill="none" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-60" cx="200" cy="150" r="110" stroke="#147d8a" stroke-dasharray="4 6" stroke-width="1"></circle>
+<circle class="opacity-40" cx="200" cy="150" r="70" stroke="#06b6d4" stroke-dasharray="3 3" stroke-width="1"></circle>
+<line stroke="#147d8a" stroke-dasharray="2 4" stroke-opacity="0.4" stroke-width="1" x1="80" x2="160" y1="70" y2="130"></line>
+<line stroke="#147d8a" stroke-dasharray="2 4" stroke-opacity="0.4" stroke-width="1" x1="320" x2="240" y1="80" y2="130"></line>
+<line stroke="#147d8a" stroke-dasharray="2 4" stroke-opacity="0.4" stroke-width="1" x1="100" x2="170" y1="230" y2="180"></line>
+<line stroke="#147d8a" stroke-dasharray="2 4" stroke-opacity="0.4" stroke-width="1" x1="300" x2="230" y1="220" y2="180"></line>
+</svg>
+<!-- Central Emblem DNA Asset with custom brand logo -->
+<div class="relative z-10 w-32 h-32 flex items-center justify-center rounded-2xl bg-white p-space-xs shadow-[0_4px_24px_rgba(20,125,138,0.18)] border border-[#147d8a]/20">
+<img alt="Brand Logo Molecular Core" class="w-full h-full object-contain" src="/genomic-graph.jpg"/>
+</div>
+<!-- Orbiting Semantic Badges -->
+<div class="absolute top-2 left-6 px-space-xs py-space-3xs rounded-full bg-surface-container-lowest text-primary font-code-metric text-label-sm shadow-md border border-[#147d8a]/20 flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> HPO:0001263
+              </div>
+<div class="absolute top-6 right-6 px-space-xs py-space-3xs rounded-full bg-secondary-fixed/50 text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold shadow-md border border-[#147d8a]/20">
+                Rare Disease
+              </div>
+<div class="absolute bottom-6 left-6 px-space-xs py-space-3xs rounded-full bg-primary-fixed/60 text-on-primary-fixed-variant font-label-sm text-label-sm font-bold shadow-md border border-primary/20">
+                gnomAD frequency evidence
+              </div>
+<div class="absolute bottom-4 right-6 px-space-xs py-space-3xs rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm shadow-md border border-[#147d8a]/20 flex items-center gap-space-3xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-secondary">database</span> 47 Sources
+              </div>
+</div>
+<!-- Floating Translucent Preview Panel -->
+<div class="w-full bg-surface-container-low/90 rounded-xl p-space-md shadow-[0_4px_16px_rgba(10,37,64,0.06)] mt-space-sm border border-[#147d8a]/15">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm border-b border-[#147d8a]/10">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">psychology</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">AI Evidence Synthesis</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-full bg-surface-container-highest text-primary font-code-metric text-[11px] font-semibold">
+                  ILLUSTRATIVE DEMO
+                </span>
+</div>
+<!-- 4-Stat Metric Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs mb-space-sm">
+<div class="bg-surface-container-lowest p-space-xs rounded-lg text-center border border-[#147d8a]/10">
+<span class="block font-headline-md text-headline-md text-primary font-extrabold">08</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant font-medium">Phenotypes</span>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded-lg text-center border border-[#147d8a]/10">
+<span class="block font-headline-md text-headline-md text-primary font-extrabold">12</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant font-medium">Candidates</span>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded-lg text-center border border-[#147d8a]/10">
+<span class="block font-headline-md text-headline-md text-primary font-extrabold">47</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant font-medium">Evidence Refs</span>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded-lg text-center flex flex-col justify-center items-center border border-[#147d8a]/10">
+<span class="inline-flex items-center text-accent-sage font-headline-sm text-headline-sm font-extrabold gap-0.5">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> example
+                  </span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant font-medium">Confidence</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm bg-surface-container-highest/70 p-space-xs rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-secondary">info</span>
+<span class="">Clinical verification mode: Demonstration telemetry values. Not actual clinical statistics.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RESEARCH CREDIBILITY STRIP -->
+<section class="w-full bg-surface-container-low py-space-lg border-y border-[#147d8a]/10">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="flex flex-col md:flex-row items-center justify-between gap-space-md">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider text-center md:text-left">
+          Built around structured biomedical knowledge and evidence retrieval
+        </span>
+<div class="flex flex-wrap items-center justify-center gap-space-sm">
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-secondary font-code-metric text-label-md font-bold">HPO</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Human Phenotype</span>
+</div>
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-secondary font-code-metric text-label-md font-bold">OMIM</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Mendelian Inheritance</span>
+</div>
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-secondary font-code-metric text-label-md font-bold">Orphanet</span>
+</div>
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-secondary font-code-metric text-label-md font-bold">PMC</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Literature</span>
+</div>
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-accent-sage font-code-metric text-label-md font-bold">IndiGen</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant hidden sm:inline">Genome Variation</span>
+</div>
+<div class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm font-bold border border-[#147d8a]/15">
+<span class="text-secondary font-code-metric text-label-md font-bold">gnomAD</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- THE PROBLEM SECTION -->
+<section class="w-full py-space-3xl">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="max-w-2xl mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">Diagnostic Bottleneck</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          Rare-disease diagnosis is a knowledge retrieval problem.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          Over 7,000 recognized rare conditions often take years to pinpoint. Clinicians navigate incomplete phenotyping, siloed datasets, and population biases that obscure rare variants.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg mb-space-2xl">
+<!-- Card 01 -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-xl shadow-[0_4px_20px_rgba(10,37,64,0.04)] flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary mb-space-lg border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[26px] text-secondary">clinical_notes</span>
+</div>
+<span class="font-code-metric text-label-sm text-secondary font-bold block mb-space-2xs">CHALLENGE 01</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs font-bold">Clinical Complexity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Clinical cases contain scattered phenotype observations, inconsistent non-standardized terminology, and fragmented symptom chronologies that evade generic LLM parsers.
+            </p>
+</div>
+<div class="mt-space-lg pt-space-sm flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm border-t border-[#147d8a]/10">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Unstructured Electronic Health Records
+          </div>
+</div>
+<!-- Card 02 -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-xl shadow-[0_4px_20px_rgba(10,37,64,0.04)] flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-space-lg border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[26px] text-secondary">schema</span>
+</div>
+<span class="font-code-metric text-label-sm text-secondary font-bold block mb-space-2xs">CHALLENGE 02</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs font-bold">Knowledge Fragmentation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Relevant clinical evidence is distributed across phenotype ontologies, genetic databases, disconnected case reports, and rapidly multiplying biomedical literature.
+            </p>
+</div>
+<div class="mt-space-lg pt-space-sm flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm border-t border-[#147d8a]/10">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> High Cross-Ontology Disconnect
+          </div>
+</div>
+<!-- Card 03 -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-xl shadow-[0_4px_20px_rgba(10,37,64,0.04)] flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-on-tertiary-container mb-space-lg border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[26px] text-secondary">public</span>
+</div>
+<span class="font-code-metric text-label-sm text-secondary font-bold block mb-space-2xs">CHALLENGE 03</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs font-bold">Population Underrepresentation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Reference resources are weighted towards some ancestries, so allele frequencies can be unrepresentative for others. This project reports South Asian (gnomAD) frequencies next to global ones; Indian-specific data (IndiGen) are not available to it.
+            </p>
+</div>
+<div class="mt-space-lg pt-space-sm flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm border-t border-[#147d8a]/10">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Global Reference Baseline Skew
+          </div>
+</div>
+</div>
+<!-- Transformation banner -->
+<div class="w-full bg-surface-container-low rounded-2xl p-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md shadow-sm border border-[#147d8a]/15">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-secondary shadow-sm">
+<span class="material-symbols-outlined text-[28px]">sync_alt</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary font-bold">The Cognitive Transformation</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Converting chaotic diagnostic journeys into verifiable computational paths.</p>
+</div>
+</div>
+<div class="font-code-metric text-body-sm text-secondary bg-surface-container-lowest px-space-md py-space-xs rounded-xl shadow-sm font-bold border border-[#147d8a]/20">
+          Clinical Narrative ──→ Structured Biomedical Intelligence
+        </div>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS PIPELINE -->
+<section class="w-full bg-surface-container-low py-space-3xl border-y border-[#147d8a]/10" id="how-it-works">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="max-w-2xl mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">System Workflow</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          From clinical narrative to explainable insight.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          A sequential, deterministic multi-agent pipeline anchored by biomedical ontology norms and population-frequency evidence.
+        </p>
+</div>
+<!-- 5-Step Connected Flow Grid -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-space-md relative">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between relative group hover:shadow-md transition-all border border-[#147d8a]/15">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="w-8 h-8 rounded-full bg-primary text-on-primary font-code-metric text-label-sm flex items-center justify-center font-bold">01</span>
+<span class="material-symbols-outlined text-secondary text-[22px]">mic</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary mb-space-2xs font-bold">Clinical Ingestion</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-relaxed">
+              Case capture from typed clinical text (the Doctor Copilot also accepts browser voice dictation). PDF and lab-report ingestion are not implemented.
+            </p>
+</div>
+<div class="bg-surface-container-low p-space-2xs rounded-lg text-center font-code-metric text-label-sm text-secondary font-semibold">
+            Text input
+          </div>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between relative group hover:shadow-md transition-all border border-[#147d8a]/15">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="w-8 h-8 rounded-full bg-primary text-on-primary font-code-metric text-label-sm flex items-center justify-center font-bold">02</span>
+<span class="material-symbols-outlined text-secondary text-[22px]">psychology_alt</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary mb-space-2xs font-bold">Phenotype NER</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-relaxed">
+              Transformer-based entity recognition mapping lay terminology into standardized HPO identifiers.
+            </p>
+</div>
+<div class="bg-surface-container-low p-space-2xs rounded-lg text-center font-code-metric text-label-sm text-secondary font-semibold">
+            HPO Concept Matching
+          </div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between relative group hover:shadow-md transition-all border border-[#147d8a]/15">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="w-8 h-8 rounded-full bg-primary text-on-primary font-code-metric text-label-sm flex items-center justify-center font-bold">03</span>
+<span class="material-symbols-outlined text-secondary text-[22px]">manage_search</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary mb-space-2xs font-bold">Knowledge RAG</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-relaxed">
+              Dense vector retrieval spanning Orphanet graphs, PubMed vectors, and curated rare-syndrome ontologies.
+            </p>
+</div>
+<div class="bg-surface-container-low p-space-2xs rounded-lg text-center font-code-metric text-label-sm text-secondary font-semibold">
+            HPO + Vector Hops
+          </div>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between relative group hover:shadow-md transition-all border border-[#147d8a]/15">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="w-8 h-8 rounded-full bg-secondary text-on-secondary font-code-metric text-label-sm flex items-center justify-center font-bold">04</span>
+<span class="material-symbols-outlined text-secondary text-[22px]">tune</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary mb-space-2xs font-bold">Population Prior</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-relaxed">
+              gnomAD global and South Asian frequency evidence per gene, reported separately. IndiGen is unavailable; the population weight is 0, so ranking is unchanged.
+            </p>
+</div>
+<div class="bg-surface-container-low p-space-2xs rounded-lg text-center font-code-metric text-label-sm text-secondary font-semibold">
+            Frequency Evidence
+          </div>
+</div>
+<!-- Step 5 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between relative group hover:shadow-md transition-all border border-[#147d8a]/15">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="w-8 h-8 rounded-full bg-primary-container text-on-primary font-code-metric text-label-sm flex items-center justify-center font-bold">05</span>
+<span class="material-symbols-outlined text-accent-sage text-[22px]">fact_check</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary mb-space-2xs font-bold">Explainable Card</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-relaxed">
+              Deterministic evidence synthesis with point-by-point provenance links, match bars, and literature PMIDs.
+            </p>
+</div>
+<div class="bg-surface-container-low p-space-2xs rounded-lg text-center font-code-metric text-label-sm text-secondary font-semibold">
+            Cited Evidence Trails
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- CORE AI ARCHITECTURE (Scientific System Pipeline) -->
+<section class="w-full py-space-3xl" id="technology">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="max-w-3xl mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">Architectural Blueprint</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          An AI pipeline designed for transparency.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          Each inferential transition operates as a discrete, inspectable stage. No black-box generative jumps without traceable biological provenance.
+        </p>
+</div>
+<!-- Node Architecture Diagram -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-xl shadow-[0_4px_30px_rgba(10,37,64,0.06)] overflow-x-auto border border-[#147d8a]/15">
+<div class="min-w-[840px] flex flex-col gap-space-lg">
+<!-- Layer 1: Ingestion & NER -->
+<div class="flex items-center justify-between gap-space-md">
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">Unstructured EHR</span>
+<span class="font-code-metric text-label-sm text-on-surface-variant">Input: raw_str</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Multimodal clinical notes, discharge summaries &amp; clinical observations.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-[24px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">BiomedBERT NER</span>
+<span class="px-space-2xs py-space-3xs rounded bg-surface-container font-code-metric text-label-sm text-secondary font-semibold">dim=768</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Token-level classification &amp; biomedical entity span identification.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-[24px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">HPO Normalizer</span>
+<span class="font-code-metric text-label-sm text-secondary font-bold">Ontology Linker</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Maps string phenotypes to canonical [HP:xxxxxxx] term identifiers.</p>
+</div>
+</div>
+<!-- Connecting Visual Pipe -->
+<div class="flex justify-center items-center py-space-2xs text-secondary">
+<span class="material-symbols-outlined text-[28px]">south</span>
+</div>
+<!-- Layer 2: Retrieval & Prior Fusion -->
+<div class="flex items-center justify-between gap-space-md">
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">S-PubMedBERT + FAISS</span>
+<span class="px-space-2xs py-space-3xs rounded bg-secondary-fixed/50 text-on-secondary-fixed font-code-metric text-label-sm font-bold">RAG Engine</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Multi-vector index matching phenotypic profiles to known syndrome corpora.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-[24px]">add</span>
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">IndiGen Prior Engine</span>
+<span class="px-space-2xs py-space-3xs rounded bg-primary-fixed/50 text-on-primary-fixed font-code-metric text-label-sm font-bold">Population Prior</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">gnomAD (global and South Asian) allele-frequency evidence is reported per candidate gene; it is not applied to the ranking.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-[24px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-low p-space-md rounded-xl shadow-sm border border-[#147d8a]/10">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">Weighted Re-Ranker</span>
+<span class="font-code-metric text-label-sm text-secondary font-bold">score = 0.2·phenotype + 0.8·retrieval</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Orders candidates by a weighted phenotype and retrieval score. Scores are uncalibrated and are not probabilities.</p>
+</div>
+</div>
+<!-- Connecting Visual Pipe -->
+<div class="flex justify-center items-center py-space-2xs text-secondary">
+<span class="material-symbols-outlined text-[28px]">south</span>
+</div>
+<!-- Layer 3: Explainable Generation -->
+<div class="w-full bg-primary-container text-on-primary p-space-lg rounded-2xl shadow-md flex flex-col md:flex-row items-center justify-between gap-space-lg border border-[#147d8a]/30">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-accent-cyan text-[30px]">auto_stories</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary mb-space-3xs font-bold">Transparent AI Explanation Engine</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container max-w-2xl leading-relaxed text-slate-300">
+                  Synthesizes retrieved clinical literature citations, HPO similarity metrics, and Indian population priors into structured, audit-ready clinical notes.
+                </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 bg-white/5 px-space-md py-space-xs rounded-xl border border-white/10">
+<div class="text-right">
+<span class="block font-code-metric text-label-sm text-accent-cyan font-bold">LATENCY / STEP</span>
+<span class="block font-code-metric text-headline-sm text-on-primary font-bold">~180ms</span>
+</div>
+<div class="w-2 h-10 bg-accent-cyan rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- EXPLAINABILITY DEEP-DIVE (Diagnostic Insight Interface) -->
+<section class="w-full bg-surface-container-low py-space-3xl border-y border-[#147d8a]/10" id="evidence">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="max-w-2xl mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">Clinical Transparency</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          Don't just show the result. Show the evidence behind it.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          Interactive simulation of the clinical decision dashboard. Clinicians verify matching phenotypes, literature sources, and population adjustments directly.
+        </p>
+</div>
+<!-- Realistic Mock Diagnostic Insight Panel -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-xl shadow-[0_8px_32px_rgba(10,37,64,0.06)] border border-[#147d8a]/15">
+<!-- Top Metadata Ribbon -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-md mb-space-lg bg-surface-container-low p-space-sm rounded-xl border border-[#147d8a]/10">
+<div class="flex items-center gap-space-md">
+<span class="font-code-metric text-label-sm text-primary font-bold">CASE: #IND-2024-8891</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cohort: Pediatric Neurogenetics</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">Population evidence: reported only (weight 0)</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-full bg-surface-container-highest text-primary font-code-metric text-label-sm font-semibold">
+            DEMO MODE — ILLUSTRATIVE ONLY
+          </span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- Left: Detected Phenotypes (col-span-4) -->
+<div class="lg:col-span-4 flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider mb-space-sm flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">bubble_chart</span>
+              Detected HPO Phenotypes (04)
+            </span>
+<div class="flex flex-col gap-space-xs">
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between border border-[#147d8a]/10">
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Developmental Delay</span>
+<span class="font-code-metric text-label-sm text-secondary font-semibold">HP:0001263</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">Weight: 0.94</span>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between border border-[#147d8a]/10">
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Generalized Hypotonia</span>
+<span class="font-code-metric text-label-sm text-secondary font-semibold">HP:0001252</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">Weight: 0.89</span>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between border border-[#147d8a]/10">
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Short Stature</span>
+<span class="font-code-metric text-label-sm text-secondary font-semibold">HP:0004322</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">Weight: 0.72</span>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between border border-[#147d8a]/10">
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Refractory Seizures</span>
+<span class="font-code-metric text-label-sm text-secondary font-semibold">HP:0001250</span>
+</div>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">Weight: 0.85</span>
+</div>
+</div>
+<div class="mt-space-md p-space-sm rounded-xl bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm border border-[#147d8a]/10">
+              Extracted via Biomedical Transformer from unstructured neurological consult notes.
+            </div>
+</div>
+<!-- Middle: Candidate Disease & Match Meters (col-span-4) -->
+<div class="lg:col-span-4 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider mb-space-sm flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">search_insights</span>
+                Prioritized Candidate Explanation
+              </span>
+<div class="bg-surface-container-low p-space-md rounded-2xl mb-space-md border border-[#147d8a]/15">
+<div class="flex items-start justify-between mb-space-2xs">
+<h4 class="font-headline-sm text-headline-sm text-primary font-bold">Congenital Myasthenic Syndrome</h4><div class="font-label-sm text-label-sm font-bold bg-tertiary-fixed text-on-tertiary-fixed inline-block px-space-xs rounded">ILLUSTRATIVE MOCK-UP — not a real patient or computed result</div>
+<span class="px-space-xs py-space-3xs rounded-full bg-secondary-fixed/60 text-on-secondary-fixed font-code-metric text-label-sm font-bold">ORPHA:589</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+                  MIM #608930 • Mitochondrial &amp; Neuromuscular Junction Pathology
+                </p>
+<!-- Confidence Meters -->
+<div class="flex flex-col gap-space-sm">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
+<span class="font-semibold">Phenotype Overlap (HPO)</span>
+<span class="font-bold text-secondary">example</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 92%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
+<span class="font-semibold">Biomedical Literature Support</span>
+<span class="font-bold text-primary">example</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 84%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm text-primary mb-space-3xs">
+<span class="font-semibold">Population evidence (gnomAD; IndiGen unavailable)</span>
+<span class="font-bold text-accent-cyan">example</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-accent-cyan rounded-full" style="width: 71%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Provenance tags -->
+<div class="flex flex-wrap gap-space-xs">
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-low text-primary font-code-metric text-label-sm border border-[#147d8a]/15 font-semibold">PMID: (example)</span>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-low text-primary font-code-metric text-label-sm border border-[#147d8a]/15 font-semibold">gnomAD v4.1 (IndiGen unavailable)</span>
+<span class="px-space-xs py-space-3xs rounded-lg bg-surface-container-low text-primary font-code-metric text-label-sm border border-[#147d8a]/15 font-semibold">Orphanet</span>
+</div>
+</div>
+<!-- Right: Why this Candidate? Narrative Reasoning (col-span-4) -->
+<div class="lg:col-span-4 flex flex-col justify-between bg-surface-container-low p-space-md rounded-2xl border border-[#147d8a]/15">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase font-bold tracking-wider mb-space-sm flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                Evidence-Linked Synthesis
+              </span>
+<h4 class="font-title-md text-title-md text-primary mb-space-xs font-bold">Why this candidate?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md leading-relaxed">
+                Strong phenotype concordance across observed hypotonia and early-onset seizures. Illustrative text only. In the live workspace this panel shows an explanation generated from the case's own recorded evidence, each statement citing numbered evidence items.
+              </p>
+<div class="p-space-sm bg-surface-container-lowest rounded-xl mb-space-sm border border-[#147d8a]/10">
+<span class="font-label-sm text-label-sm text-primary font-bold block mb-space-3xs">Tests and treatment:</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Not generated: the application does not recommend tests or treatment.</span>
+</div>
+</div>
+<!-- Mandatory Research Disclaimer Box -->
+<div class="p-space-xs rounded-lg bg-surface-container-highest text-primary font-label-sm text-label-sm flex items-center gap-space-xs font-medium">
+<span class="material-symbols-outlined text-[18px] text-secondary">verified_user</span>
+<span class="">Illustrative demonstration — not a clinical diagnosis.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- INDIAN POPULATION INTELLIGENCE (Genomic Frequency Prior) -->
+<section class="w-full py-space-3xl" id="research">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-center">
+<div class="lg:col-span-6 flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">Demographic Genome Variation</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-space-md font-extrabold">
+            Population-aware rare-disease prioritization.
+          </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-space-md leading-relaxed">
+            Global genomic frequency data may not fully represent the rich genetic variation observed across Indian populations. The platform reports population-frequency evidence next to phenotype and retrieval evidence, and keeps it separate from the ranking score.
+          </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-lg leading-relaxed">
+            Evidence currently comes from gnomAD v4.1 (global and South Asian) joined to ClinVar pathogenic variants at gene level. IndiGen data are not available, gnomAD South Asian is not an India-specific dataset, and the population weight is 0, so no re-weighting is applied and no benefit is claimed.
+          </p>
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary shrink-0 border border-[#147d8a]/15">
+<span class="material-symbols-outlined text-[20px]">strikethrough_s</span>
+</div>
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">IndiGen &amp; GenomeAsia Integration</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Calibrated against whole-genome sequences spanning hundreds of distinct ethno-linguistic groups.</span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary shrink-0 border border-[#147d8a]/15">
+<span class="material-symbols-outlined text-[20px]">calculate</span>
+</div>
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Population evidence kept separate</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Population frequency is shown as evidence and, with weight 0, does not change the ranking.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Frequency Matrix Comparison Graphic -->
+<div class="lg:col-span-6">
+<div class="bg-surface-container-lowest p-space-xl rounded-2xl shadow-[0_4px_24px_rgba(10,37,64,0.06)] border border-[#147d8a]/15">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold block mb-space-md">
+              Allele Frequency Prior Shift Comparison
+            </span>
+<!-- Comparison Table Container -->
+<div class="flex flex-col gap-space-sm">
+<!-- Row 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border border-[#147d8a]/10">
+<div>
+<span class="font-title-md text-title-md text-primary font-bold">Variant c.1268G&gt;A (SLC25A20)</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">Carnitine-acylcarnitine translocase deficiency</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="text-right">
+<span class="block font-code-metric text-label-sm text-on-surface-variant">gnomAD Global</span>
+<span class="font-code-metric text-body-md text-primary font-bold">0.00004</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-[22px]">trending_up</span>
+<div class="text-right bg-secondary-fixed/50 px-space-xs py-space-2xs rounded-lg border border-[#147d8a]/20">
+<span class="block font-code-metric text-label-sm text-on-secondary-fixed-variant font-bold">IndiGen Prior</span>
+<span class="font-code-metric text-body-md text-secondary font-extrabold">0.00310</span>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border border-[#147d8a]/10">
+<div>
+<span class="font-title-md text-title-md text-primary font-bold">Variant c.845G&gt;A (HFE)</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">Hereditary Hemochromatosis</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="text-right">
+<span class="block font-code-metric text-label-sm text-on-surface-variant">gnomAD Global</span>
+<span class="font-code-metric text-body-md text-primary font-bold">0.06200</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[22px]">trending_down</span>
+<div class="text-right bg-surface-container-highest px-space-xs py-space-2xs rounded-lg border border-[#147d8a]/10">
+<span class="block font-code-metric text-label-sm text-on-surface-variant font-bold">IndiGen Prior</span>
+<span class="font-code-metric text-body-md text-primary font-extrabold">0.00120</span>
+</div>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border border-[#147d8a]/10">
+<div>
+<span class="font-title-md text-title-md text-primary font-bold">Variant c.1444C&gt;T (GJB2)</span>
+<span class="block font-body-sm text-body-sm text-on-surface-variant">Autosomal Recessive Sensorineural Deafness</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="text-right">
+<span class="block font-code-metric text-label-sm text-on-surface-variant">gnomAD Global</span>
+<span class="font-code-metric text-body-md text-primary font-bold">0.00012</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-[22px]">trending_up</span>
+<div class="text-right bg-secondary-fixed/50 px-space-xs py-space-2xs rounded-lg border border-[#147d8a]/20">
+<span class="block font-code-metric text-label-sm text-on-secondary-fixed-variant font-bold">IndiGen Prior</span>
+<span class="font-code-metric text-body-md text-secondary font-extrabold">0.01420</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm border-t border-[#147d8a]/10">
+<span class="">Cohort reference: IndiGen / gnomAD integration in progress</span>
+<span class="font-code-metric font-bold text-secondary">MAF Threshold: 0.01</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RESEARCH FEATURES (Grid) -->
+<section class="w-full bg-surface-container-low py-space-3xl border-y border-[#147d8a]/10" id="platform">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="text-center max-w-2xl mx-auto mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">System Capabilities</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          Built as a research platform, not a black box.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          Designed specifically for clinical geneticists, medical researchers, and diagnostic laboratories.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+<!-- Feature 1 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-space-md border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[24px]">cognition</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary mb-space-xs font-bold">01 Phenotype-aware NLP</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Fine-tuned biomedical transformer models extract phenotypic descriptions directly from clinical consultation notes into standardized HPO identifiers.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary font-bold">
+            BiomedBERT + Clinical NER
+          </div>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-space-md border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[24px]">travel_explore</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary mb-space-xs font-bold">02 Grounded Retrieval</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Structured multi-hop retrieval connects clinical findings to Orphanet knowledge graphs, PubMed Central papers, and OMIM curated records.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary font-bold">
+            Dense Vector + Graph RAG
+          </div>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-space-md border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[24px]">groups</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary mb-space-xs font-bold">03 Population Priors</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Incorporates Indian population allele frequencies to refine candidate disease ranking, preventing common regional variations from distorting scores.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary font-bold">
+            IndiGen Prior Engine
+          </div>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between border border-[#147d8a]/15 hover:border-[#147d8a]/40 transition-colors">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-space-md border border-[#147d8a]/10">
+<span class="material-symbols-outlined text-[24px]">fact_check</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary mb-space-xs font-bold">04 Explainable Output</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Every diagnostic suggestion is paired with specific phenotype overlap metrics, scientific literature citations, and transparent score breakdowns.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-code-metric text-label-sm text-secondary font-bold">
+            Traceable Provenance Cards
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- MODEL EVALUATION PREVIEW -->
+<section class="w-full py-space-3xl">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="max-w-2xl mb-space-2xl">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block mb-space-2xs">System Validation</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight font-extrabold">
+          Measure every layer of the pipeline.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed">
+          Modular evaluation metrics across Named Entity Recognition (NER), vector retrieval precision, and downstream clinical candidate ranking.
+        </p>
+</div>
+<!-- Evaluation Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg mb-space-xl">
+<!-- NER Performance -->
+<div class="bg-surface-container-lowest p-space-xl rounded-2xl shadow-sm border border-[#147d8a]/15">
+<div class="flex items-center justify-between mb-space-md">
+<h3 class="font-title-md text-title-md text-primary font-bold">NER Extraction (HPO)</h3>
+<span class="material-symbols-outlined text-secondary text-[22px]">token</span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-primary font-extrabold">0.719</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Precision</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-primary font-extrabold">0.721</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Recall</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-secondary font-extrabold">0.720</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">F1 Score</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            BiomedBERT, held-out test split (227 observations) of the BioCreative VIII Track 3 physical-exam corpus.
+          </p>
+</div>
+<!-- Retrieval Performance -->
+<div class="bg-surface-container-lowest p-space-xl rounded-2xl shadow-sm border border-[#147d8a]/15">
+<div class="flex items-center justify-between mb-space-md">
+<h3 class="font-title-md text-title-md text-primary font-bold">Retrieval Accuracy</h3>
+<span class="material-symbols-outlined text-secondary text-[22px]">search_check</span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs text-center mb-space-lg">
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-primary font-extrabold">0.942</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Recall@5</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-primary font-extrabold">0.980</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Recall@10</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded-xl border border-[#147d8a]/10">
+<span class="block font-headline-sm text-headline-sm text-secondary font-extrabold">0.868</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">MRR</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            S-PubMedBERT HPO-level retrieval over 12,880 HPO-annotated diseases. Simulated patients (4 phenotypes sampled from a disease's own annotations, 500 queries), not real patients.
+          </p>
+</div>
+<!-- Ranking Comparison Analysis -->
+<div class="bg-surface-container-lowest p-space-xl rounded-2xl shadow-sm border border-[#147d8a]/15">
+<div class="flex items-center justify-between mb-space-md">
+<h3 class="font-title-md text-title-md text-primary font-bold">Population-Aware Ranking</h3>
+<span class="material-symbols-outlined text-secondary text-[22px]">insights</span>
+</div>
+<div class="mb-space-md p-space-sm bg-surface-container-low rounded-xl text-center"><span class="font-code-metric text-on-surface-variant">Pending evaluation</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Not yet evaluated. Population frequency tables are currently prototype data, so no improvement from population priors is claimed.
+          </p>
+</div>
+</div>
+<div class="w-full text-center">
+<span class="font-label-sm text-label-sm text-primary bg-surface-container-low px-space-md py-space-xs rounded-full border border-[#147d8a]/15 font-medium">
+          Measured on a research prototype. Not clinical validation.
+        </span>
+</div>
+</div>
+</section>
+<!-- RESEARCH CALL-TO-ACTION (CTA) -->
+<section class="w-full py-space-2xl">
+<div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0a2540] via-[#082038] to-[#041220] p-space-2xl text-on-primary shadow-[0_12px_40px_rgba(10,37,64,0.25)] border border-[#147d8a]/30">
+<!-- Ambient radial shine -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-[#06b6d4] opacity-15 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 max-w-2xl">
+<span class="font-label-sm text-label-sm text-accent-cyan uppercase tracking-wider font-bold block mb-space-xs">
+            Open Research Workspace
+          </span>
+<h2 class="font-headline-lg text-headline-lg text-on-primary mb-space-md tracking-tight font-extrabold">
+            Explore rare-disease intelligence with evidence at every step.
+          </h2>
+<p class="font-body-lg text-body-lg text-slate-300 mb-space-xl leading-relaxed">
+            Transform unstructured clinical observations into structured, retrievable, and explainable biomedical insights tailored to population realities.
+          </p>
+<div class="flex flex-wrap items-center gap-space-md">
+<a class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-sm rounded-lg font-label-md text-label-md text-[#0a2540] bg-accent-cyan hover:bg-accent-cyan-light transition-all shadow-[0_2px_12px_rgba(6,182,212,0.3)] font-bold" href="/dashboard">
+<span>Launch Diagnostic Assistant</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-sm rounded-lg font-label-md text-label-md text-on-primary bg-white/10 hover:bg-white/20 transition-colors border border-white/15 font-semibold" href="#technology">
+<span>View Research Architecture</span>
+<span class="material-symbols-outlined text-[18px]">architecture</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-surface-container-low py-space-2xl mt-space-3xl border-t border-[#147d8a]/15"><div class="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop flex flex-col gap-space-xl"><div class="flex flex-col md:flex-row md:items-center justify-between gap-space-lg"><div class="flex items-center gap-space-sm"><img alt="Explainable Rare-Disease Diagnostic Assistant Brand Logo" class="h-9 w-9 object-contain" src="/logo.jpg"/><div><p class="font-headline-sm text-headline-sm text-primary leading-tight font-bold">Explainable Rare-Disease Diagnostic Assistant</p><p class="font-body-sm text-body-sm text-on-surface-variant">Phenotype-Aware RAG with Indian Population Priors</p></div></div><nav class="flex flex-wrap items-center gap-space-md" data-active-classes="text-on-surface font-semibold"><a aria-current="page" class="transition-colors text-primary font-bold text-label-md" data-path="platform" href="#platform">Platform</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="research" href="#research">Research</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="technology" href="#technology">Technology</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="evidence" href="#evidence">Evidence</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="diagnostic-workspace" href="/dashboard">Dashboard</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="documentation" href="#">Documentation</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium" data-path="github" href="#">GitHub</a></nav></div><div class="flex flex-col md:flex-row items-center justify-between gap-space-sm pt-space-md text-on-surface-variant border-t border-[#147d8a]/10"><p class="font-body-sm text-body-sm">© 2026 Genomic Intelligence &amp; Computational Phenomics Lab. All rights reserved.</p><p class="font-label-sm text-label-sm text-secondary uppercase tracking-wide font-bold">RESEARCH &amp; CLINICAL DECISION SUPPORT PROTOTYPE — NOT A SUBSTITUTE FOR PROFESSIONAL MEDICAL DIAGNOSIS.</p></div></div></footer>
+</body></html>

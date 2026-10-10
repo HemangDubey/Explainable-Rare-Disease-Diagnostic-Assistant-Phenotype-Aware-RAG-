@@ -111,6 +111,14 @@ class TestDesignSystem(unittest.TestCase):
         self.assertNotIn("/", [r["source"] for r in cfg["rewrites"]])
         self.assertIn({"source": "/(.*)", "destination": "/index.html"}, cfg["rewrites"])      # SPA deep links / refresh
 
+    def test_landing_page_is_deployable(self):
+        """Vercel builds from Git: a git-ignored landing.html is missing from the deploy and `/landing.html` falls through to the SPA
+        (sign-in card). The file must not be ignored, and its CTA must lead into the app."""
+        landing = "frontend/public/landing.html"
+        ignored = subprocess.run(["git", "check-ignore", "-q", landing]).returncode == 0
+        self.assertFalse(ignored, "frontend/public/landing.html is git-ignored, so Vercel cannot serve it")
+        self.assertIn('href="/dashboard"', Path(landing).read_text(encoding="utf-8"))   # CTA -> sign-in / register card
+
     def test_landing_page_unchanged(self):
         data = Path("frontend/public/landing.html").read_bytes()
         self.assertEqual(hashlib.sha256(data).hexdigest(), LANDING_SHA256)

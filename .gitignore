@@ -60,7 +60,7 @@ desktop.ini
 *.tar.gz
 *.log
 step595_raw.txt
-landing.html
+/landing.html
 temp_phase2_extract/
 sample_data/
 .config/
