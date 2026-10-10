@@ -102,6 +102,15 @@ class TestDesignSystem(unittest.TestCase):
         for rel in INTERNAL:
             self.assertNotIn("dark:", read(rel), rel)
 
+    def test_vercel_serves_landing_at_root(self):
+        """Vercel checks the filesystem BEFORE rewrites, and `/` maps to dist/index.html (the React app), so a rewrite of `/` never fires
+        and visitors land on the sign-in card. Only a redirect (applied before the filesystem) can send `/` to the landing page."""
+        import json
+        cfg = json.loads(Path("frontend/vercel.json").read_text(encoding="utf-8"))
+        self.assertIn({"source": "/", "destination": "/landing.html", "permanent": False}, cfg["redirects"])
+        self.assertNotIn("/", [r["source"] for r in cfg["rewrites"]])
+        self.assertIn({"source": "/(.*)", "destination": "/index.html"}, cfg["rewrites"])      # SPA deep links / refresh
+
     def test_landing_page_unchanged(self):
         data = Path("frontend/public/landing.html").read_bytes()
         self.assertEqual(hashlib.sha256(data).hexdigest(), LANDING_SHA256)
