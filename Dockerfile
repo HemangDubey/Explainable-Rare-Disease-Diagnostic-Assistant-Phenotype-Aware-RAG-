@@ -5,7 +5,7 @@
 # * No local model server is used or required. Groq (a remote API) is the only LLM provider.
 FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PIP_NO_CACHE_DIR=1 APP_ENV=production PORT=8000
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PIP_NO_CACHE_DIR=1 APP_ENV=production PORT=8000 DISABLE_SAFETENSORS_CONVERSION=1
 WORKDIR /app
 
 COPY requirements-runtime.txt .

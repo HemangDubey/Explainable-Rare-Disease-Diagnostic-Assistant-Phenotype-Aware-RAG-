@@ -10,12 +10,18 @@ There is NO fallback of any kind: if the model cannot be loaded, ``EncoderUnavai
 is raised. Vectors always come from the model; nothing is random or hash-seeded.
 All returned vectors are L2-normalised float32, so inner product == cosine similarity.
 """
+import os
 import threading
 from typing import List, Optional
 
 import numpy as np
 import torch
 import yaml
+# This encoder's Hub repo ships only pytorch_model.bin. By default transformers then starts a NON-daemon "auto_conversion" thread that
+# downloads a safetensors conversion; if it is still running at shutdown the interpreter waits for it forever (observed with a thread dump:
+# the container stayed alive after "Application shutdown complete" until Docker sent SIGKILL). The official switch below disables it.
+os.environ.setdefault("DISABLE_SAFETENSORS_CONVERSION", "1")
+
 from transformers import AutoModel, AutoTokenizer
 
 

@@ -1,0 +1,19 @@
+# Public-demo stack: ONLY the API runs here. The database is a managed PostgreSQL (e.g. Neon) reached over TLS via DATABASE_URL, so no
+# database port is ever opened on this machine. The API listens on 127.0.0.1 only; a Cloudflare Tunnel is the sole public entry point.
+# Values come from the git-ignored .env file or your shell (names only are listed in docs/DEPLOYMENT_DEMO.md).
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL (Neon, postgresql+psycopg://...?sslmode=require)}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:?set the exact Vercel origin, e.g. https://your-project.vercel.app}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-}
+      RETENTION_DAYS: ${RETENTION_DAYS:-0}
+    volumes:
+      - ./models:/app/models:ro
+      - ./data:/app/data
+    ports:
+      - "127.0.0.1:8000:8000"

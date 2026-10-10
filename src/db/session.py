@@ -45,7 +45,12 @@ def get_engine():
                     os.makedirs(os.path.dirname(path), exist_ok=True)
                 kw["connect_args"] = {"check_same_thread": False, "timeout": 15}
             else:
-                kw.update(pool_size=int(os.environ.get("DB_POOL_SIZE", 5)), max_overflow=int(os.environ.get("DB_MAX_OVERFLOW", 10)))
+                kw.update(pool_size=int(os.environ.get("DB_POOL_SIZE", 5)), max_overflow=int(os.environ.get("DB_MAX_OVERFLOW", 10)),
+                          pool_recycle=int(os.environ.get("DB_POOL_RECYCLE_SECONDS", 280)))      # below Neon's 5-minute autosuspend
+                if "psycopg" in url.split("://", 1)[0] and "-pooler" in url:
+                    # Hosted poolers (e.g. Neon's "-pooler" host, pgbouncer in transaction mode) cannot keep psycopg's server-side
+                    # prepared statements; disable them. Direct (non-pooler) connection strings are unaffected.
+                    kw["connect_args"] = {"prepare_threshold": None}
             _engine = create_engine(url, **kw)
             if is_sqlite(url):
                 @event.listens_for(_engine, "connect")
